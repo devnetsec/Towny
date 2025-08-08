@@ -652,7 +652,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		String[] subArg = StringMgmt.remFirstArg(split);
 		switch (split[0].toLowerCase(Locale.ROOT)) {
 		case "add"-> townAdd(player, null, subArg);
-		case "allylist"-> townAllyList(player, split);
 		case "baltop"-> parseTownBaltop(player, split.length > 1 ? getTownOrThrow(split[1]) : getTownFromPlayerOrThrow(player));
 		case "bankhistory"-> parseTownBankHistoryCommand(player, split);
 		case "buy"-> townBuy(player, subArg, null, false);
@@ -661,7 +660,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		case "claim"-> parseTownClaimCommand(player, subArg);
 		case "delete"-> townDelete(player, subArg);
 		case "deposit"-> parseTownDepositCommand(player, split);
-		case "enemylist"-> townEnemyList(player, split);
 		case "forsale", "fs"-> parseTownForSaleCommand(player, subArg);
 		case "here" -> parseTownHereCommand(player);
 		case "invite", "invites"-> parseInviteCommand(player, subArg);
@@ -737,28 +735,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 	private void parseTownyMayorCommand(final Player player) throws NoPermissionException {
 		checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_TOWN_MAYOR.getNode());
 		HelpMenu.TOWN_MAYOR_HELP.send(player);
-	}
-
-	private void townEnemyList(Player player, String[] split) throws TownyException {
-		Town town = split.length == 1 ? getTownFromPlayerOrThrow(player) : getTownOrThrow(split[1]);
-
-		if (town.getEnemies().isEmpty())
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_error_town_has_no_enemies")); 
-		else {
-			TownyMessaging.sendMessage(player, ChatTools.formatTitle(town.getName() + " " + Translatable.of("status_nation_enemies").forLocale(player)));
-			TownyMessaging.sendMessage(player, TownyFormatter.getFormattedTownyObjects(Translatable.of("status_nation_enemies").forLocale(player), new ArrayList<>(town.getEnemies())));
-		}
-	}
-
-	private void townAllyList(Player player, String[] split) throws TownyException {
-		Town town = split.length == 1 ? getTownFromPlayerOrThrow(player) : getTownOrThrow(split[1]);
-
-		if (town.getAllies().isEmpty())
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_error_town_has_no_allies")); 
-		else {
-			TownyMessaging.sendMessage(player, ChatTools.formatTitle(town.getName() + " " + Translatable.of("status_nation_allies").forLocale(player)));
-			TownyMessaging.sendMessage(player, TownyFormatter.getFormattedTownyObjects(Translatable.of("status_nation_allies").forLocale(player), new ArrayList<>(town.getAllies())));
-		}
 	}
 
 	private void parseTownPurgeCommand(Player player, String[] arg) throws TownyException {
@@ -1655,13 +1631,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		if (jaileeLocTown != null) {
 			if (!TownySettings.canOutlawsTeleportOutOfTowns() && jaileeLocTown.hasOutlaw(jailedResident))
 				throw new TownyException(Translatable.of("msg_err_resident_cannot_be_jailed_because_they_are_outlawed_there"));
-
-			Nation jaileeLocNation = jaileeLocTown.getNationOrNull();
-
-			if (jaileeLocNation != null && jailedResident.hasNation() &&
-				TownySettings.getDisallowedTownSpawnZones().contains("enemy") &&
-				jaileeLocNation.hasEnemy(jailedResident.getNationOrNull()))
-					throw new TownyException(Translatable.of("msg_err_resident_cannot_be_jailed_because_they_are_enemied_there"));
 		}
 	}
 
@@ -3686,16 +3655,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		if (!wc.canBeStolen())
 			throw new TownyException(Translatable.of("msg_err_this_townblock_cannot_be_taken_over"));
 
-		// Make sure that if nations are involved and the setting is true, that the
-		// overclaiming nation has the other declared as an enemy.
-		if (TownySettings.isOverclaimingWithNationsRequiringEnemy()) {
-			Nation overclaimingNation = town.getNationOrNull();
-			Nation overclaimedNation = overclaimedTown.getNationOrNull();
-			if (overclaimingNation != null && overclaimedNation != null && !overclaimingNation.hasEnemy(overclaimedNation)) {
-				throw new TownyException(Translatable.of("msg_err_cannot_overclaim_this_town_because_they_arent_your_enemy"));
-			}
-		}
-
 		// Not enough available claims.
 		if (!town.hasUnlimitedClaims() && town.availableTownBlocks() < 1)
 			throw new TownyException(Translatable.of("msg_err_not_enough_blocks"));
@@ -4149,9 +4108,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		if (town.hasOutlaw(resident))
 			throw new TownyException(Translatable.of("msg_err_you_cannot_add_trust_on_outlaw"));
 
-		if (resident.hasNation() && town.hasNation() && town.getNationOrNull().hasEnemy(resident.getNationOrNull()))
-			throw new TownyException(Translatable.of("msg_err_you_cannot_add_trust_on_enemy"));
-
 		BukkitTools.ifCancelledThenThrow(new TownTrustAddEvent(sender, resident, town));
 
 		town.addTrustedResident(resident);
@@ -4217,9 +4173,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 
 		if (trustTown.getResidents().stream().filter(res -> town.hasOutlaw(res)).findAny().isPresent())
 			throw new TownyException(Translatable.of("msg_err_you_cannot_add_towntrust_on_outlaw"));
-
-		if (trustTown.hasNation() && town.hasNation() && town.getNationOrNull().hasEnemy(trustTown.getNationOrNull()))
-			throw new TownyException(Translatable.of("msg_err_you_cannot_add_towntrust_on_enemy"));
 
 		if (town == trustTown)
 			throw new TownyException(Translatable.of("msg_cannot_trust_your_own_town"));

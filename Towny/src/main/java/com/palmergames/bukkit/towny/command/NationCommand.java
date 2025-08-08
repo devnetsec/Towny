@@ -12,21 +12,15 @@ import com.palmergames.bukkit.towny.TownyCommandAddonAPI.CommandType;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.confirmations.ConfirmationTransaction;
 import com.palmergames.bukkit.towny.event.DeleteNationEvent;
-import com.palmergames.bukkit.towny.event.NationAddEnemyEvent;
 import com.palmergames.bukkit.towny.event.NationInviteTownEvent;
-import com.palmergames.bukkit.towny.event.NationPreAddEnemyEvent;
-import com.palmergames.bukkit.towny.event.NationPreRemoveEnemyEvent;
 import com.palmergames.bukkit.towny.event.nation.NationRankAddEvent;
 import com.palmergames.bukkit.towny.event.nation.NationRankRemoveEvent;
 import com.palmergames.bukkit.towny.event.nation.NationSanctionTownAddEvent;
 import com.palmergames.bukkit.towny.event.nation.NationSanctionTownRemoveEvent;
 import com.palmergames.bukkit.towny.event.nation.NationSetSpawnEvent;
 import com.palmergames.bukkit.towny.event.nation.NationTownLeaveEvent;
-import com.palmergames.bukkit.towny.event.NationRemoveEnemyEvent;
-import com.palmergames.bukkit.towny.event.NationRequestAllyNationEvent;
 import com.palmergames.bukkit.towny.event.NewNationEvent;
 import com.palmergames.bukkit.towny.event.nation.NationMergeEvent;
-import com.palmergames.bukkit.towny.event.nation.NationPreAddAllyEvent;
 import com.palmergames.bukkit.towny.event.nation.NationPreInviteTownEvent;
 import com.palmergames.bukkit.towny.event.nation.NationPreMergeEvent;
 import com.palmergames.bukkit.towny.event.nation.NationPreTownKickEvent;
@@ -38,9 +32,6 @@ import com.palmergames.bukkit.towny.event.nation.toggle.NationTogglePublicEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleTaxPercentEvent;
 import com.palmergames.bukkit.towny.event.NationPreAddTownEvent;
 import com.palmergames.bukkit.towny.event.NationPreRenameEvent;
-import com.palmergames.bukkit.towny.event.NationRemoveAllyEvent;
-import com.palmergames.bukkit.towny.event.NationDenyAllyRequestEvent;
-import com.palmergames.bukkit.towny.event.NationAcceptAllyRequestEvent;
 import com.palmergames.bukkit.towny.event.nation.NationKingChangeEvent;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
@@ -58,7 +49,6 @@ import com.palmergames.bukkit.towny.object.Translatable;
 import com.palmergames.bukkit.towny.object.Translator;
 import com.palmergames.bukkit.towny.object.comparators.ComparatorCaches;
 import com.palmergames.bukkit.towny.object.comparators.ComparatorType;
-import com.palmergames.bukkit.towny.object.inviteobjects.NationAllyNationInvite;
 import com.palmergames.bukkit.towny.object.inviteobjects.TownJoinNationInvite;
 import com.palmergames.bukkit.towny.permissions.PermissionNodes;
 import com.palmergames.bukkit.towny.permissions.TownyPerms;
@@ -113,7 +103,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		"add",
 		"kick",
 		"delete",
-		"enemy",
 		"rank",
 		"ranklist",
 		"say",
@@ -123,9 +112,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		"join",
 		"merge",
 		"townlist",
-		"allylist",
-		"enemylist",
-		"ally",
 		"spawn",
 		"sanctiontown",
 		"king",
@@ -172,20 +158,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		"open",
 		"taxpercent"
 	);
-	
-	private static final List<String> nationEnemyTabCompletes = Arrays.asList(
-		"add",
-		"remove"
-	);
-	
-	private static final List<String> nationAllyTabCompletes = Arrays.asList(
-		"add",
-		"remove",
-		"sent",
-		"received",
-		"accept",
-		"deny"
-	);
 
 	private static final List<String> nationKingTabCompletes = Collections.singletonList("?");
 	
@@ -218,8 +190,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 						return NameUtil.filterByStart(nationKingTabCompletes, args[1]);
 					break;
 				case "townlist":
-				case "allylist":
-				case "enemylist":
 				case "ranklist":
 				case "online":
 				case "join":
@@ -259,50 +229,10 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 					if (res.hasNation())
 						return NameUtil.filterByStart(NameUtil.getNames(res.getNationOrNull().getTowns()), args[args.length - 1]);
 					break;
-				case "ally":
-					if (!res.hasNation())
-						break;
-					if (args.length == 2) {
-						return NameUtil.filterByStart(nationAllyTabCompletes, args[1]);
-					} else if (args.length > 2){
-						switch (args[1].toLowerCase(Locale.ROOT)) {
-							case "add":
-								if (args[args.length - 1].startsWith("-")) {
-									return NameUtil.filterByStart(nation.getSentAllyInvites()
-										// Get names of sent invites
-										.stream()
-										.map(Invite::getReceiver)
-										.map(InviteReceiver::getName)
-										// Collect sent invite names and check with the last arg without the hyphen
-										.collect(Collectors.toList()), args[args.length - 1].substring(1))
-										// Add the hyphen back to the beginning
-										.stream()
-										.map(e -> "-" + e)
-										.collect(Collectors.toList());
-								} else {
-									// Otherwise return possible nations to send invites to
-									return getTownyStartingWith(args[args.length - 1], "n");
-								}
-							case "remove":
-								return NameUtil.filterByStart(NameUtil.getNames(nation.getAllies()), args[args.length - 1]);
-							case "accept":
-							case "deny":
-								return NameUtil.filterByStart(nation.getReceivedInvites()
-									.stream()
-									.map(Invite::getSender)
-									.map(InviteSender::getName)
-									.collect(Collectors.toList()), args[args.length - 1]);
-							default:
-								return Collections.emptyList();
-						}
-					}
-					break;
 				case "rank":
 					if (!res.hasNation())
 						break;
 					switch (args.length) {
-					case 2:
-						return NameUtil.filterByStart(nationEnemyTabCompletes, args[1]);
 					case 3:
 						return getNationResidentNamesOfPlayerStartingWith(player, args[2]);
 					case 4:
@@ -323,22 +253,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 					default:
 						return Collections.emptyList();
 					}
-				case "enemy":
-					if (!res.hasNation())
-						break;
-					if (args.length == 2) {
-						return NameUtil.filterByStart(nationEnemyTabCompletes, args[1]);
-					} else if (args.length >= 3){
-						switch (args[1].toLowerCase(Locale.ROOT)) {
-							case "add":
-								return getTownyStartingWith(args[2], "n");
-							case "remove":
-								return NameUtil.filterByStart(NameUtil.getNames(nation.getEnemies()), args[2]);
-							default:
-								return Collections.emptyList();
-						}
-					}
-					break;
 				case "set":
 					if (!res.hasNation())
 						return Collections.emptyList();
@@ -484,14 +398,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_TOWNLIST.getNode());
 			nationTownList(player, getPlayerNationOrNationFromArg(player, StringMgmt.remFirstArg(split)));
 			break;
-		case "allylist":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLYLIST.getNode());
-			nationAllyList(player, getPlayerNationOrNationFromArg(player, StringMgmt.remFirstArg(split)));
-			break;
-		case "enemylist":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ENEMYLIST.getNode());
-			nationEnemyList(player, getPlayerNationOrNationFromArg(player, StringMgmt.remFirstArg(split)));
-			break;
 		case "new":
 		case "create":
 			newNation(player, StringMgmt.remFirstArg(split));
@@ -557,14 +463,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		case "toggle":
 			/* Permission test is internal*/
 			nationToggle(player, StringMgmt.remFirstArg(split), false, null);
-			break;
-		case "ally":
-			/* Permission test is internal*/
-			nationAlly(player, StringMgmt.remFirstArg(split));
-			break;
-		case "enemy":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ENEMY.getNode());
-			nationEnemy(player, StringMgmt.remFirstArg(split));
 			break;
 		case "delete":
 			nationDelete(player, StringMgmt.remFirstArg(split));
@@ -640,27 +538,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 	private void nationTownList(Player player, Nation nation) {
 		TownyMessaging.sendMessage(player, ChatTools.formatTitle(nation.getName() + " " + Translatable.of("town_plu").forLocale(player)));
 		TownyMessaging.sendMessage(player, TownyFormatter.getFormattedTownyObjects(Translatable.of("status_nation_towns").forLocale(player), new ArrayList<>(nation.getTowns())));
-	}
-
-	private void nationAllyList(Player player, Nation nation) throws TownyException {
-		if (nation.getAllies().isEmpty())
-			throw new TownyException(Translatable.of("msg_error_nation_has_no_allies")); 
-
-		TownyMessaging.sendMessage(player, ChatTools.formatTitle(nation.getName() + " " + Translatable.of("status_nation_allies").forLocale(player)));
-		TownyMessaging.sendMessage(player, TownyFormatter.getFormattedTownyObjects(Translatable.of("status_nation_allies").forLocale(player), new ArrayList<>(nation.getAllies())));
-	}
-
-	private void nationEnemyList(Player player, Nation nation) throws TownyException {
-		if (nation.getEnemies().isEmpty())
-			TownyMessaging.sendMsg(player, Translatable.of("msg_error_nation_has_no_enemies"));
-		else {
-			TownyMessaging.sendMessage(player, ChatTools.formatTitle(nation.getName() + " " + Translatable.of("status_nation_enemies").forLocale(player)));
-			TownyMessaging.sendMessage(player, TownyFormatter.getFormattedTownyObjects(Translatable.of("status_nation_enemies").forLocale(player), new ArrayList<>(nation.getEnemies())));
-		}
-		List<Nation> enemiedByList = TownyAPI.getInstance().getNations().stream().filter(n-> n.hasEnemy(nation)).collect(Collectors.toList());
-		if (!enemiedByList.isEmpty()) {
-			TownyMessaging.sendMessage(player, TownyFormatter.getFormattedTownyObjects(Translatable.of("status_nation_enemied_by").forLocale(player), new ArrayList<>(enemiedByList)));
-		}
 	}
 
 	private void parseInviteCommand(Player player, String[] newSplit) throws TownyException {
@@ -1424,496 +1301,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		TownyMessaging.sendMsg(sender, Translatable.of("msg_err_nation_town_unsanctioned", town.getName()));
 	}
 
-	private void nationAlly(Player player, String[] split) throws TownyException {
-		if (split.length == 0) {
-			HelpMenu.ALLIES_STRING.send(player);
-			return;
-		}
-		Resident resident = getResidentOrThrow(player);
-		Nation nation = getNationFromResidentOrThrow(resident);
-
-		switch (split[0].toLowerCase(Locale.ROOT)) {
-		case "add":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLY_ADD.getNode());
-			nationAllyAdd(player, resident, nation, StringMgmt.remFirstArg(split));
-			break;
-		case "remove":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLY_REMOVE.getNode());
-			nationAllyRemove(player, resident, nation, StringMgmt.remFirstArg(split));
-			break;
-		case "sent":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLY_LIST_SENT.getNode());
-			nationAllySent(player, nation, StringMgmt.remFirstArg(split));
-			break;
-		case "received":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLY_LIST_RECEIVED.getNode());
-			nationAllyReceived(player, nation, StringMgmt.remFirstArg(split));
-			break;
-		case "accept":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLY_ACCEPT.getNode());
-			nationAllyAccept(player, nation, split);
-			break;
-		case "deny":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLY_DENY.getNode());
-			nationAllyDeny(player, nation, split);
-			break;
-		default:
-			HelpMenu.ALLIES_STRING.send(player);
-		}
-	}
-
-	private void nationAllyAdd(Player player, Resident resident, Nation nation, String[] names) throws TownyException {
-		if (names.length == 0)
-			throw new TownyException(Translatable.of("msg_usage", "/n ally add [names]"));
-		
-		TownyUniverse townyUniverse = TownyUniverse.getInstance();
-		ArrayList<Nation> list = new ArrayList<>();
-		ArrayList<Nation> remlist = new ArrayList<>();
-		Nation ally;
-		for (String name : names) {
-			ally = townyUniverse.getNation(name);
-			if (ally != null) {
-				if (nation.equals(ally)) {
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_own_nation_disallow"));
-				} else if (nation.isAlliedWith(ally)) {
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_already_ally", ally));
-				} else {
-					list.add(ally);
-				}
-			}
-			// So "-Name" isn't a nation, remove the - check if that is a town.
-			else {
-				if (name.startsWith("-")) {
-					ally = townyUniverse.getNation(name.substring(1));
-
-					if (ally != null) {
-						if (nation.equals(ally)) {
-							TownyMessaging.sendErrorMsg(player, Translatable.of("msg_own_nation_disallow"));
-						} else {
-							remlist.add(ally);
-						}
-					} else {
-						// Do nothing here as it doesn't match a Nation
-						// Well we don't want to send the commands again so just say invalid name
-						TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_invalid_name", name));
-					}
-				} else {
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_invalid_name", name));
-				}
-			}
-		}
-		if (!list.isEmpty()) {
-			nationAddOrRemoveAlly(resident,nation,list,true);
-		}
-		if (!remlist.isEmpty()) {
-			nationRemoveAllyRequest(player,nation, remlist);
-		}
-		
-	}
-
-	private void nationAllyRemove(Player player, Resident resident, Nation nation, String[] names) throws TownyException {
-		if (names.length == 0)
-			throw new TownyException(Translatable.of("msg_usage", "/n ally add [names]"));
-		
-		ArrayList<Nation> list = new ArrayList<>();
-		Nation ally;
-		for (String name : names) {
-			ally = TownyUniverse.getInstance().getNation(name);
-			if (ally != null) {
-				if (nation.equals(ally))
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_own_nation_disallow"));
-				else if (!nation.isAlliedWith(ally))
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_nation_not_allied_with", ally.getName()));
-				else
-					list.add(ally);
-			}
-		}
-		if (!list.isEmpty()) {
-			nationAddOrRemoveAlly(resident,nation,list,false);
-		}
-	}
-
-	private void nationAllySent(Player player, Nation nation, String[] split) {
-		String sent = Translatable.of("nation_sent_ally_requests").forLocale(player)
-				.replace("%a", Integer.toString(nation.getSentAllyInvites().size()))
-				.replace("%m", Integer.toString(InviteHandler.getSentAllyRequestsMaxAmount(nation)));
-		InviteCommand.sendInviteList(player, nation.getSentAllyInvites(), getPage(split, 0), true);
-		TownyMessaging.sendMessage(player, sent);
-	}
-
-	private void nationAllyReceived(Player player, Nation nation, String[] split) {
-		String received = Translatable.of("nation_received_requests").forLocale(player)
-				.replace("%a", Integer.toString(nation.getReceivedInvites().size()))
-				.replace("%m", Integer.toString(InviteHandler.getReceivedInvitesMaxAmount(nation)));
-		InviteCommand.sendInviteList(player, nation.getReceivedInvites(), getPage(split, 0), false);
-		TownyMessaging.sendMessage(player, received);
-	}
-
-	private void nationAllyAccept(Player player, Nation nation, String[] split) throws TownyException {
-		Nation sendernation;
-		List<Invite> invites = nation.getReceivedInvites();
-
-		if (invites.size() == 0) {
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_nation_no_requests"));
-			return;
-		}
-		if (split.length >= 2) { // /nation ally accept args[1]
-			sendernation = TownyUniverse.getInstance().getNation(split[1]);
-
-			if (sendernation == null) {
-				TownyMessaging.sendErrorMsg(player, Translatable.of("msg_invalid_name"));
-				return;
-			}
-		} else {
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_nation_specify_invite"));
-			InviteCommand.sendInviteList(player, invites, 1, false);
-			return;
-		}
-		
-		Invite toAccept = null;
-
-		for (Invite invite : InviteHandler.getActiveInvites()) {
-			if (invite.getSender().equals(sendernation) && invite.getReceiver().equals(nation)) {
-				toAccept = invite;
-				break;
-			}
-		}
-		if (toAccept != null) {
-			
-			// Check if either nation has reached the max amount of allies
-			if (nation.hasReachedMaximumAllies()) {
-				toAccept.getReceiver().deleteReceivedInvite(toAccept);
-				toAccept.getSender().deleteSentInvite(toAccept);
-				TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_ally_limit_reached"));
-				return;
-			}
-			if (sendernation.hasReachedMaximumAllies()) {
-				toAccept.getReceiver().deleteReceivedInvite(toAccept);
-				toAccept.getSender().deleteSentInvite(toAccept);
-				TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_ally_limit_reached_cannot_accept", sendernation));
-				return;
-			}
-			
-			try {
-				NationAcceptAllyRequestEvent acceptAllyRequestEvent = new NationAcceptAllyRequestEvent((Nation)toAccept.getSender(), (Nation) toAccept.getReceiver());
-				if (BukkitTools.isEventCancelled(acceptAllyRequestEvent)) {
-					toAccept.getReceiver().deleteReceivedInvite(toAccept);
-					toAccept.getSender().deleteSentInvite(toAccept);
-					TownyMessaging.sendErrorMsg(player, acceptAllyRequestEvent.getCancelMessage());
-					return;
-				}
-				InviteHandler.acceptInvite(toAccept);
-			} catch (InvalidObjectException e) {
-				plugin.getLogger().log(Level.WARNING, "unknown exception occurred while accepting invite", e); // Shouldn't happen, however like i said a fallback
-			}
-		}
-
-	}
-
-	private void nationAllyDeny(Player player, Nation nation, String[] split) {
-		Nation sendernation;
-		List<Invite> invites = nation.getReceivedInvites();
-
-		if (invites.size() == 0) {
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_nation_no_requests"));
-			return;
-		}
-		if (split.length >= 2) { // /invite deny args[1]
-			sendernation = TownyUniverse.getInstance().getNation(split[1]);
-
-			if (sendernation == null) {
-				TownyMessaging.sendErrorMsg(player, Translatable.of("msg_invalid_name"));
-				return;
-			}
-		} else {
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_nation_specify_invite"));
-			InviteCommand.sendInviteList(player, invites, 1, false);
-			return;
-		}
-
-		Invite toDecline = null;
-		
-		for (Invite invite : InviteHandler.getActiveInvites()) {
-			if (invite.getSender().equals(sendernation) && invite.getReceiver().equals(nation)) {
-				toDecline = invite;
-				break;
-			}
-		}
-		if (toDecline != null) {
-			try {
-				NationDenyAllyRequestEvent denyAllyRequestEvent = new NationDenyAllyRequestEvent(nation, sendernation);
-				if (BukkitTools.isEventCancelled(denyAllyRequestEvent)) {
-					sendernation.deleteSentAllyInvite(toDecline);
-					nation.deleteReceivedInvite(toDecline);
-					TownyMessaging.sendErrorMsg(player, denyAllyRequestEvent.getCancelMessage());
-					return;
-				}
-				InviteHandler.declineInvite(toDecline, false);
-				TownyMessaging.sendMsg(player, Translatable.of("successful_deny_request"));
-			} catch (InvalidObjectException e) {
-				plugin.getLogger().log(Level.WARNING, "unknown exception occurred while declining invite", e); // Shouldn't happen, however like i said a fallback
-			}
-		}
-	}
-
-	private void nationRemoveAllyRequest(CommandSender sender, Nation invitingNation, ArrayList<Nation> remlist) {
-		for (Nation invitedNation : remlist) {
-			if (InviteHandler.inviteIsActive(invitingNation, invitedNation)) {
-				for (Invite receivedInvite : invitedNation.getReceivedInvites()) {
-					if (receivedInvite.getSender().equals(invitingNation)) {
-						try {
-							InviteHandler.declineInvite(receivedInvite, true);
-							TownyMessaging.sendMsg(sender, Translatable.of("nation_revoke_ally_successful"));
-							break;
-						} catch (InvalidObjectException e) {
-							plugin.getLogger().log(Level.WARNING, "An exception occurred while revoking invites for nation " + invitedNation.getName(), e);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public void nationAddOrRemoveAlly(Resident resident, final Nation nation, List<Nation> targetNations, boolean add) throws TownyException {
-		// This is where we add/remove those invites for nations to ally other nations.
-		List<Nation> remove = new ArrayList<>();
-		for (Nation targetNation : targetNations) {
-			if (add) { // If we are adding as an ally (sending an invite to ally.)
-				try {
-					nationAddAlly(resident, nation, targetNation);
-				} catch (TownyException e) {
-					// One of the Allies was not added because the nationCreateAllyRequest() method
-					// threw an exception or a non-admin player tried to ally an NPC-led nation, continue;
-					TownyMessaging.sendErrorMsg(resident, e.getMessage());
-					remove.add(targetNation);
-				}
-	
-			} else { // So we are removing an ally
-				try {
-					nationRemoveAlly(resident, nation, targetNation);
-				} catch (TownyException e) {
-					// One of the Allies was not removed because the NationRemoveAllyEvent was cancelled, continue;
-					TownyMessaging.sendErrorMsg(resident, e.getMessage());
-					remove.add(targetNation);
-				}
-			}
-		}
-		for (Nation removedNation : remove)
-			targetNations.remove(removedNation);
-	
-		if (targetNations.size() > 0) {
-			TownyUniverse.getInstance().getDataSource().saveNations();
-			plugin.resetCache();
-		} else {
-			throw new TownyException(Translatable.of("msg_invalid_name"));
-		}
-	}
-
-	private void nationAddAlly(Resident resident, Nation nation, Nation targetNation) throws TownyException {
-		Player player = resident.getPlayer();
-		if (player == null)
-			throw new TownyException("Could not add " + targetNation + " as Ally because your Player is null! This shouldn't be possible!");
-		if (nation.hasAlly(targetNation))
-			throw new TownyException(Translatable.of("msg_already_ally", targetNation));
-		if (nation.hasReachedMaximumAllies())
-			throw new TownyException(Translatable.of("msg_err_ally_limit_reached_cannot_send", targetNation));
-		if (targetNation.hasReachedMaximumAllies())
-			throw new TownyException(Translatable.of("msg_err_ally_limit_reached_cannot_send_targetNation", targetNation, targetNation));
-		if (!targetNation.hasEnemy(nation)) {
-			BukkitTools.ifCancelledThenThrow(new NationPreAddAllyEvent(nation, targetNation));
-
-			if (!targetNation.getCapital().getMayor().isNPC()) {
-				nationCreateAllyRequest(player, nation, targetNation);
-				TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_ally_req_sent", targetNation));
-			} else {
-				nationAddNPCNationAsAlly(player, resident, nation, targetNation);
-			}
-		} else {
-			throw new TownyException(Translatable.of("msg_unable_ally_enemy", targetNation));
-		}
-	}
-
-	private void nationCreateAllyRequest(CommandSender sender, Nation sendingNation, Nation receivingNation) throws TownyException {
-		NationAllyNationInvite invite = new NationAllyNationInvite(sender, receivingNation, sendingNation);
-		try {
-			if (!InviteHandler.inviteIsActive(invite)) {
-				receivingNation.newReceivedInvite(invite);
-				sendingNation.newSentAllyInvite(invite);
-				InviteHandler.addInvite(invite);
-				Player king = receivingNation.getKing().getPlayer();
-				if (king != null)
-					TownyMessaging.sendRequestMessage(king, invite);
-				
-				// Player is not the king and has permissions to accept invites, show them the invite as well
-				for (Player player : TownyAPI.getInstance().getOnlinePlayers(receivingNation))
-					if (!player.getUniqueId().equals(receivingNation.getKing().getUUID()) && player.hasPermission(PermissionNodes.TOWNY_COMMAND_NATION_ALLY_ACCEPT.getNode()))
-						TownyMessaging.sendRequestMessage(player, invite);
-				
-				BukkitTools.fireEvent(new NationRequestAllyNationEvent(invite));
-			} else {
-				throw new TownyException(Translatable.of("msg_err_ally_already_requested", receivingNation));
-			}
-		} catch (TooManyInvitesException e) {
-			receivingNation.deleteReceivedInvite(invite);
-			sendingNation.deleteSentAllyInvite(invite);
-			throw new TownyException(e.getMessage());
-		}
-	}
-
-	private void nationAddNPCNationAsAlly(Player player, Resident resident, Nation nation, Nation targetNation) throws TownyException {
-		if (TownyUniverse.getInstance().getPermissionSource().isTownyAdmin(player)) {
-			targetNation.addAlly(nation);
-			nation.addAlly(targetNation);
-			TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_allied_nations", resident, targetNation));
-			TownyMessaging.sendPrefixedNationMessage(targetNation, Translatable.of("msg_added_ally", nation));
-		} else {
-			throw new TownyException(Translatable.of("msg_unable_ally_npc", nation.getName()));
-		}
-	}
-
-	private void nationRemoveAlly(Resident resident, Nation nation, Nation targetNation) throws TownyException {
-		if (nation.hasAlly(targetNation)) {
-			BukkitTools.ifCancelledThenThrow(new NationRemoveAllyEvent(nation, targetNation));
-	
-			nation.removeAlly(targetNation);
-			TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_removed_ally", targetNation));
-			TownyMessaging.sendMsg(resident, Translatable.of("msg_ally_removed_successfully"));
-	
-			// Remove the reciprocal ally relationship
-			if (targetNation.hasAlly(nation)) {
-				BukkitTools.ifCancelledThenThrow(new NationRemoveAllyEvent(targetNation, nation));
-
-				targetNation.removeAlly(nation);
-				TownyMessaging.sendPrefixedNationMessage(targetNation, Translatable.of("msg_removed_ally", nation.getName()));
-			}
-		}
-	}
-
-	public void nationEnemy(Player player, String[] split) throws TownyException {
-		TownyUniverse townyUniverse = TownyUniverse.getInstance();
-
-		if (split.length < 2) {
-			TownyMessaging.sendErrorMsg(player, "Eg: /nation enemy [add/remove] [name]");
-			return;
-		}
-
-		Resident resident = getResidentOrThrow(player);
-		Nation nation = getNationFromResidentOrThrow(resident);
-		
-		ArrayList<Nation> list = new ArrayList<>();
-		Nation enemy;
-		// test add or remove
-		String test = split[0];
-		String[] newSplit = StringMgmt.remFirstArg(split);
-		boolean add = test.equalsIgnoreCase("add");
-
-		if ((test.equalsIgnoreCase("remove") || test.equalsIgnoreCase("add")) && newSplit.length > 0) {
-			for (String name : newSplit) {
-				enemy = townyUniverse.getNation(name);
-
-				if (enemy == null) {
-					throw new TownyException(Translatable.of("msg_err_no_nation_with_that_name", name));
-				}
-
-				if (nation.equals(enemy))
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_own_nation_disallow"));
-				else if (add && nation.hasEnemy(enemy))
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_nation_already_enemies_with", enemy.getName()));
-				else if (!add && !nation.hasEnemy(enemy))
-					TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_nation_not_enemies_with", enemy.getName()));
-				else
-					list.add(enemy);
-			}
-			if (!list.isEmpty())
-				nationEnemy(player, nation, list, add);
-
-		} else {
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_err_invalid_property", "[add/remove]"));
-		}
-	}
-
-	public void nationEnemy(Player player, Nation nation, List<Nation> enemies, boolean add) {
-
-		ArrayList<Nation> remove = new ArrayList<>();
-		for (Nation targetNation : enemies) {
-			if (add) {
-				if (!nation.getEnemies().contains(targetNation)) {
-					
-					NationPreAddEnemyEvent npaee = new NationPreAddEnemyEvent(nation, targetNation);
-					if (BukkitTools.isEventCancelled(npaee)) {
-						TownyMessaging.sendErrorMsg(player, npaee.getCancelMessage());
-						remove.add(targetNation);
-						continue;
-					}
-	
-					nation.addEnemy(targetNation);
-					BukkitTools.fireEvent(new NationAddEnemyEvent(nation, targetNation));
-	
-					// Remove the targetNation from the nation ally list if present.
-					if (nation.hasAlly(targetNation)) {
-						nation.removeAlly(targetNation);
-						BukkitTools.fireEvent(new NationRemoveAllyEvent(nation, targetNation));
-						TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_removed_ally", targetNation));
-						TownyMessaging.sendMsg(player, Translatable.of("msg_ally_removed_successfully"));
-					}
-					
-					// Remove the nation from the targetNation ally list if present.
-					if (targetNation.hasAlly(nation)) {
-						targetNation.removeAlly(nation);
-						BukkitTools.fireEvent(new NationRemoveAllyEvent(targetNation, nation));
-						TownyMessaging.sendPrefixedNationMessage(targetNation, Translatable.of("msg_removed_ally", nation));
-						TownyMessaging.sendMsg(player, Translatable.of("msg_ally_removed_successfully"));
-					}
-	
-					TownyMessaging.sendPrefixedNationMessage(targetNation, Translatable.of("msg_added_enemy", nation));
-				} else {
-					// TargetNation is already an enemy.
-					remove.add(targetNation);
-				}
-			}
-
-			if (!add) {
-				if (nation.getEnemies().contains(targetNation)) {
-	
-					NationPreRemoveEnemyEvent npree = new NationPreRemoveEnemyEvent(nation, targetNation);
-					if (BukkitTools.isEventCancelled(npree)) {
-						TownyMessaging.sendErrorMsg(player, npree.getCancelMessage());
-						remove.add(targetNation);
-						continue;
-					}
-	
-					nation.removeEnemy(targetNation);
-					BukkitTools.fireEvent(new NationRemoveEnemyEvent(nation, targetNation));
-					TownyMessaging.sendPrefixedNationMessage(targetNation, Translatable.of("msg_removed_enemy", nation));
-				} else {
-					// TargetNation is already not an enemy.
-					remove.add(targetNation);
-				}
-			}
-		}
-		
-		for (Nation newEnemy : remove)
-			enemies.remove(newEnemy);
-
-		if (enemies.size() > 0) {
-			String msg = "";
-
-			for (Nation newEnemy : enemies)
-				msg += newEnemy.getName() + ", ";
-
-			msg = msg.substring(0, msg.length() - 2);
-			if (add)
-				TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_enemy_nations", player.getName(), msg));
-			else
-				TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_enemy_to_neutral", player.getName(), msg));
-
-			TownyUniverse.getInstance().getDataSource().saveNations();
-
-			plugin.resetCache();
-		} else
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_invalid_name"));
-	}
-
 	public static void nationSet(CommandSender sender, String[] split, boolean admin, Nation nation) throws TownyException {
 		if (split.length == 0) {
 			HelpMenu.NATION_SET.send(sender);
@@ -1955,10 +1342,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		case "taxpercentcap":
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_SET_TAXPERCENTCAP.getNode());
 			nationSetTaxPercentCap(sender, split, nation);
-			break;
-		case "conqueredtax":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_SET_CONQUEREDTAX.getNode());
-			nationSetConqueredTax(sender, split, nation);
 			break;
 		case "spawncost":
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_SET_SPAWNCOST.getNode());
@@ -2211,20 +1594,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		nation.setMaxPercentTaxAmount(MathUtil.getPositiveIntOrThrow(split[1]));
 
 		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_town_set_tax_max_percent_amount", sender.getName(), TownyEconomyHandler.getFormattedBalance(nation.getMaxPercentTaxAmount())));
-	}
-
-	public static void nationSetConqueredTax(CommandSender sender, String[] split, Nation nation) throws TownyException {
-		if (split.length < 2) 
-			throw new TownyException("Eg. /nation set conqueredtax 10000");
-
-		double input = MathUtil.getPositiveIntOrThrow(split[1]);
-		double max = TownySettings.getMaxNationConqueredTaxAmount();
-		if (input > max)
-			TownyMessaging.sendErrorMsg(sender, Translatable.of("msg_err_cannot_set_nation_conquere_tax_amount_higher_than", TownyEconomyHandler.getFormattedBalance(max)));
-
-		nation.setConqueredTax(Math.min(input, max));
-
-		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_set_conquered_tax__amount_set", sender.getName(), TownyEconomyHandler.getFormattedBalance(nation.getConqueredTax())));
 	}
 
 	private static void nationSetCapital(CommandSender sender, Nation nation, String[] split, boolean admin) throws TownyException {
@@ -2547,11 +1916,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 	public static void nationSpawn(Player player, String[] split, boolean ignoreWarning) throws TownyException {
 
 		Nation nation = getPlayerNationOrNationFromArg(player, split);
-		if (TownySettings.isConqueredTownsDeniedNationSpawn()) {
-			Town town = TownyAPI.getInstance().getTown(player);
-			if (town != null && nation.hasTown(town) && town.isConquered())
-				throw new TownyException(Translatable.of("nation_spawn_not_allowed_for_conquered_towns"));
-		}
 
 		String notAffordMSG = split.length == 0 ? 
 			Translatable.of("msg_err_cant_afford_tp").forLocale(player) : 

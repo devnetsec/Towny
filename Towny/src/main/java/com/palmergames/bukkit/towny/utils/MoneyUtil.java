@@ -349,8 +349,6 @@ public class MoneyUtil {
 
 		screen.addComponentOf("nationtax", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_nation_tax")) +
 				" " + TownyFormatter.colourKeyImportant(nation.isTaxPercentage() ? nation.getTaxes() + "%" : formatMoney(nation.getTaxes())));
-		screen.addComponentOf("nationConqueredTax", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_nation_conquered_tax")) +
-				" " + TownyFormatter.colourKeyImportant(formatMoney(nation.getConqueredTax())));
 
 	}
 

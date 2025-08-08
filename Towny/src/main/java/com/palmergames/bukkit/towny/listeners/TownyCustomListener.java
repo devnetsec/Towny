@@ -11,7 +11,6 @@ import com.palmergames.bukkit.towny.command.TownyCommand;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.event.BedExplodeEvent;
 import com.palmergames.bukkit.towny.event.ChunkNotificationEvent;
-import com.palmergames.bukkit.towny.event.NationAddEnemyEvent;
 import com.palmergames.bukkit.towny.event.NewTownEvent;
 import com.palmergames.bukkit.towny.event.PlayerChangePlotEvent;
 import com.palmergames.bukkit.towny.event.SpawnEvent;
@@ -166,10 +165,6 @@ public class TownyCustomListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST) 
 	public void onTownLeaveNation(NationPreTownLeaveEvent event ) {
-		if (event.getTown().isConquered()) {
-			event.setCancelMessage(Translation.of("msg_err_your_conquered_town_cannot_leave_the_nation_yet"));
-			event.setCancelled(true);
-		}
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) 
@@ -441,46 +436,6 @@ public class TownyCustomListener implements Listener {
 		.stream()
 		.filter(Resident::isOnline)
 		.forEach(r -> TownyPerms.assignPermissions(r, r.getPlayer()));
-	}
-
-	@EventHandler
-	public void onNationAddEnemy(NationAddEnemyEvent event) {
-		Nation targetNation = event.getEnemy();
-		Nation targettingNation = event.getNation();
-		for (Town nationTown : targettingNation.getTowns()) {
-			boolean save = false;
-			for (Town town : new ArrayList<>(nationTown.getTrustedTowns())) {
-				save = false;
-				if (town.hasNation() && town.getNationOrNull().equals(targetNation)) {
-					nationTown.removeTrustedTown(town);
-					save = true;
-				}
-				if (save)
-					town.save();
-			}
-			for (Resident resident : new ArrayList<>(nationTown.getTrustedResidents())) {
-				save = false;
-				if (resident.hasNation() && resident.getNationOrNull().equals(targetNation)) {
-					nationTown.removeTrustedResident(resident);
-					save = true;
-				}
-				if (save)
-					resident.save();
-			}
-			for (TownBlock tb : nationTown.getTownBlocks()) {
-				if (tb.getTrustedResidents().isEmpty())
-					continue;
-				save = false;
-				for (Resident resident : new ArrayList<>(tb.getTrustedResidents())) {
-					if (resident.hasNation() && resident.getNationOrNull().equals(targetNation)) {
-						tb.removeTrustedResident(resident);
-						save = true;
-					}
-				}
-				if (save)
-					tb.save();
-			}
-		}
 	}
 
 	@EventHandler

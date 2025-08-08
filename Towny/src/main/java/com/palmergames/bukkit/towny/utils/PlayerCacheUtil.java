@@ -217,12 +217,10 @@ public class PlayerCacheUtil {
 		if (owner != null) {
 			if (resident == owner)
 				return TownBlockStatus.PLOT_OWNER;
-			else if (owner.hasFriend(resident) && !CombatUtil.isEnemy(resident, owner))
+			else if (owner.hasFriend(resident))
 				return TownBlockStatus.PLOT_FRIEND;
 			else if (resident.hasTown() && CombatUtil.isSameTown(owner, resident))
 				return TownBlockStatus.PLOT_TOWN;
-			else if (resident.hasTown() && CombatUtil.isAlly(owner, resident))
-				return TownBlockStatus.PLOT_ALLY;
 			else
 				return TownBlockStatus.OUTSIDER;
 		}
@@ -238,14 +236,6 @@ public class PlayerCacheUtil {
 		// Nation group.
 		if (TownySettings.areConqueredTownsGivenNationPlotPerms() && CombatUtil.isSameNation(town, resident.getTownOrNull()))
 			return TownBlockStatus.TOWN_NATION;
-		
-		// Ally group.
-		if (CombatUtil.isAlly(town, resident.getTownOrNull()))
-			return TownBlockStatus.TOWN_ALLY;
-		
-		// Enemy.
-		if (CombatUtil.isEnemy(resident.getTownOrNull(), town))
-			return TownBlockStatus.ENEMY;
 
 		// Nothing left but Outsider.
 		return TownBlockStatus.OUTSIDER;
@@ -335,19 +325,6 @@ public class PlayerCacheUtil {
 
 				// This player is in their nation's nationzone.
 				if (nearestNation.hasResident(res)) {
-
-					// Prevent conquered towns using their nation's Nation Zone, unless that nation zone is surrounding the conquered town.
-					if (TownySettings.getNationZonesSkipConqueredTowns() && res.getTownOrNull().isConquered() && !nearestTown.hasResident(res)) {
-						cacheBlockErrMsg(player, Translatable.of("nation_zone_conquered_status_denies_use").forLocale(res));
-						return false;
-					}
-
-					// Prevent conquering nations using the nation zones surrounding a conquered town.
-					if (TownySettings.getNationZonesProtectsConqueredTowns() && nearestTown.isConquered() && !nearestTown.hasResident(res)) {
-						cacheBlockErrMsg(player, Translatable.of("nation_zone_conquered_status_denies_use").forLocale(res));
-						return false;
-					}
-
 					// Allow a resident to use their nation's nation zone.
 					return true;
 				}

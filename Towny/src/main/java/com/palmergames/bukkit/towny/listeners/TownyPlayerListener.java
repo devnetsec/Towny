@@ -603,8 +603,8 @@ public class TownyPlayerListener implements Listener {
 					isOwner = townblock.isOwner(resident);
 					isInnPlot = townblock.getType() == TownBlockType.INN;
 					
-					//Prevent enemies and outlaws using the Inn plots.
-					if (CombatUtil.isEnemyTownBlock(player, townblock.getWorldCoord()) || town.hasOutlaw(resident)) {
+					//Prevent outlaws using the Inn plots.
+					if (town.hasOutlaw(resident)) {
 						isEnemy = true;
 						denialMessage = Translatable.of("msg_err_no_sleep_in_enemy_inn");
 					}
@@ -1085,9 +1085,6 @@ public class TownyPlayerListener implements Listener {
 			// Sometimes we keep the inventory only when they are in their own town.
 			if (TownySettings.getKeepInventoryInOwnTown() && tbTown.equals(town))
 				keepInventory = true;
-			// Sometimes we keep the inventory only when they are in a Town that considers them an ally.
-			if (TownySettings.getKeepInventoryInAlliedTowns() && !keepInventory && tbTown.isAlliedWith(town))
-				keepInventory = true;
 		}
 
 		// Sometimes we keep the inventory when they are in an Arena plot.
@@ -1340,11 +1337,10 @@ public class TownyPlayerListener implements Listener {
 			if (town == null)
 				return false;
 
-			// Allow own town & let globally welcomed players run commands, also potentially allow trusted and allied residents.
+			// Allow own town & let globally welcomed players run commands, also potentially allow trusted residents.
 			if (town.hasResident(resident) 
 				|| resident.hasPermissionNode(PermissionNodes.TOWNY_ADMIN_TOURIST_COMMAND_LIMITATION_BYPASS.getNode())
-				|| TownySettings.doTrustedResidentsBypassTownBlockedCommands() && town.hasTrustedResident(resident)
-				|| (resident.hasTown() && TownySettings.doAlliesBypassTownBlockedCommands() && CombatUtil.isAlly(town, resident.getTownOrNull())))
+				|| TownySettings.doTrustedResidentsBypassTownBlockedCommands() && town.hasTrustedResident(resident))
 				return false;
 
 			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_command_outsider_blocked", town.getName()));

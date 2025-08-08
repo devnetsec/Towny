@@ -74,8 +74,6 @@ public class Town extends Government implements TownBlockOwner {
 
 	private final List<Resident> residents = new ArrayList<>();
 	private final List<Resident> outlaws = new ArrayList<>();
-	private Map<UUID, Town> allies = new LinkedHashMap<>();
-	private Map<UUID, Town> enemies = new LinkedHashMap<>();
 	private final Set<Resident> trustedResidents = new HashSet<>();
 	private final Map<UUID, Town> trustedTowns = new LinkedHashMap<>();
 	private final List<Position> outpostSpawns = new ArrayList<>();
@@ -332,10 +330,6 @@ public class Town extends Government implements TownBlockOwner {
 
 		if (nation == null) {
 			this.nation = null;
-			if (isConquered()) {
-				setConquered(false);
-				setConqueredDays(0);
-			}
 			return;
 		}
 
@@ -1283,10 +1277,6 @@ public class Town extends Government implements TownBlockOwner {
 			addOutpostSpawn(location);
 	}
 
-	public boolean isAlliedWith(Town othertown) {
-		return CombatUtil.isAlly(this, othertown);
-	}
-
 	public int getOutpostLimit() {
 		return TownySettings.getMaxOutposts(this);
 	}
@@ -1321,40 +1311,6 @@ public class Town extends Government implements TownBlockOwner {
 	@Override
 	public void removeMetaData(@NotNull CustomDataField<?> md) {
 		this.removeMetaData(md, true);
-	}
-
-	public void setConquered(boolean conquered) {
-		setConquered(conquered, true);
-	}
-	
-	public void setConquered(boolean conquered, boolean callEvent) {
-		if (conquered == this.isConquered)
-			return;
-
-		this.isConquered = conquered;
-
-		if (!callEvent)
-			return;
-
-		if (TownyPerms.hasConqueredNodes())
-			TownyPerms.updateTownPerms(this);
-
-		if (this.isConquered)
-			BukkitTools.fireEvent(new TownConqueredEvent(this));
-		else
-			BukkitTools.fireEvent(new TownUnconquerEvent(this));
-	}
-	
-	public boolean isConquered() {
-		return this.isConquered;
-	}
-	
-	public void setConqueredDays(int conqueredDays) {
-		this.conqueredDays = conqueredDays;
-	}
-	
-	public int getConqueredDays() {
-		return this.conqueredDays;
 	}
 	
 	public void addJail(Jail jail) {
@@ -1703,49 +1659,6 @@ public class Town extends Government implements TownBlockOwner {
 
 	/**
 	 * Only to be used when loading the database.
-	 * @param towns List&lt;Town&gt; which will be loaded in as allies.
-	 */
-	public void loadAllies(List<Town> towns) {
-		for (Town town : towns)
-			allies.put(town.getUUID(), town);
-	}
-	
-	public void addAlly(Town town) {
-		TownAddAlliedTownEvent taate = new TownAddAlliedTownEvent(this, town);
-		if (BukkitTools.isEventCancelled(taate)) {
-			TownyMessaging.sendMsg(taate.getCancelMessage());
-			return;
-		}
-		enemies.remove(town.getUUID());
-		allies.put(town.getUUID(), town);
-	}
-
-	public void removeAlly(Town town) {
-		TownRemoveAlliedTownEvent trate = new TownRemoveAlliedTownEvent(this, town);
-		if (BukkitTools.isEventCancelled(trate)) {
-			TownyMessaging.sendMsg(trate.getCancelMessage());
-			return;
-		}
-		allies.remove(town.getUUID());
-	}
-
-	public boolean removeAllAllies() {
-		for (Town ally : new ArrayList<>(getAllies())) {
-			removeAlly(ally);
-			ally.removeAlly(this);
-		}
-		return getAllies().isEmpty();
-	}
-
-	public boolean hasAlly(Town town) {
-		return allies.containsKey(town.getUUID());
-	}
-
-	public boolean hasMutualAlly(Town town) {
-		return hasAlly(town) && town.hasAlly(this);
-	}
-	/**
-	 * Only to be used when loading the database.
 	 * @param towns List&lt;Town&gt; which will be loaded in as trusted towns.
 	 */
 	public void loadTrustedTowns(List<Town> towns) {
@@ -1772,75 +1685,9 @@ public class Town extends Government implements TownBlockOwner {
 	public boolean hasTrustedTown(Town town) {
 		return trustedTowns.containsKey(town.getUUID());
 	}
-	
-	/**
-	 * Only to be used when loading the database.
-	 * @param towns List&lt;Town&gt; which will be loaded in as enemies.
-	 */
-	public void loadEnemies(List<Town> towns) {
-		for (Town town : towns)
-			enemies.put(town.getUUID(), town);
-	}
-
-	
-	public void addEnemy(Town town) {
-		TownAddEnemiedTownEvent taete = new TownAddEnemiedTownEvent(this, town);
-		if (BukkitTools.isEventCancelled(taete)) {
-			TownyMessaging.sendMsg(taete.getCancelMessage());
-			return;
-		}
-		allies.remove(town.getUUID());
-		enemies.put(town.getUUID(), town);
-	}
-
-	public void removeEnemy(Town town) {
-		TownRemoveEnemiedTownEvent trete = new TownRemoveEnemiedTownEvent(this, town);
-		if (BukkitTools.isEventCancelled(trete)) {
-			TownyMessaging.sendMsg(trete.getCancelMessage());
-			return;
-		}
-		enemies.remove(town.getUUID());
-	}
-
-	public boolean removeAllEnemies() {
-		for (Town enemy : new ArrayList<>(getEnemies())) {
-			removeEnemy(enemy);
-			enemy.removeEnemy(this);
-		}
-		return getEnemies().isEmpty();
-	}
-
-	public boolean hasEnemy(Town town) {
-		return enemies.containsKey(town.getUUID());
-	}
-
-	public List<Town> getEnemies() {
-		return Collections.unmodifiableList(enemies.values().stream().collect(Collectors.toList()));
-	}
-
-	public List<Town> getAllies() {
-		return Collections.unmodifiableList(allies.values().stream().collect(Collectors.toList()));
-	}
 
 	public List<Town> getTrustedTowns() {
 		return Collections.unmodifiableList(trustedTowns.values().stream().collect(Collectors.toList()));
-	}
-	
-	public List<Town> getMutualAllies() {
-		List<Town> result = new ArrayList<>();
-		for(Town ally: getAllies()) {
-			if(ally.hasAlly(this))
-				result.add(ally);
-		}
-		return result;
-	}
-
-	public List<UUID> getAlliesUUIDs() {
-		return Collections.unmodifiableList(allies.keySet().stream().collect(Collectors.toList()));
-	}
-
-	public List<UUID> getEnemiesUUIDs() {
-		return Collections.unmodifiableList(enemies.keySet().stream().collect(Collectors.toList()));
 	}
 	
 	public List<UUID> getTrustedTownsUUIDS() {

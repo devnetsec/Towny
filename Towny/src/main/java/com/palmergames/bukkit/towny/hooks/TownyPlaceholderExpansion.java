@@ -137,11 +137,7 @@ public class TownyPlaceholderExpansion extends PlaceholderExpansion implements R
 		else if (CombatUtil.isSameTown(res, res2))
 			return TownySettings.getPAPIRelationSameTown();
 		else if (CombatUtil.isSameNation(res, res2))
-			return res2.getTownOrNull().isConquered() || res.getTownOrNull().isConquered() ? TownySettings.getPAPIRelationConqueredTown() : TownySettings.getPAPIRelationSameNation();
-		else if (CombatUtil.isAlly(res, res2))
-			return TownySettings.getPAPIRelationAlly();
-		else if (CombatUtil.isEnemy(res, res2))
-			return TownySettings.getPAPIRelationEnemy();
+			return TownySettings.getPAPIRelationSameNation();
 		else
 			return TownySettings.getPAPIRelationNone();
 	}

@@ -705,10 +705,6 @@ public class Resident extends TownyObject implements InviteReceiver, EconomyHand
 		return TownyPerms.getHighestPriorityRank(this, getNationRanks(), r->TownyPerms.getNationRankPermissions(r));
 	}
 
-	public boolean isAlliedWith(Resident otherresident) {
-		return CombatUtil.isAlly(this, otherresident);
-	}
-
 	@Override
 	public List<Invite> getReceivedInvites() {
 		return Collections.unmodifiableList(receivedInvites);

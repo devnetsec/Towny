@@ -74,15 +74,9 @@ public class InviteHandler {
 		final long time = TownySettings.getInviteExpirationTime() * 1000;
 		for (Invite activeInvite : new ArrayList<>(getActiveInvites())) {
 			if (getInviteTime(activeInvite) + time < System.currentTimeMillis()) {
-				// This is a nation to nation ally invite.
-				if (activeInvite.getReceiver() instanceof Nation receiver && activeInvite.getSender() instanceof Nation sender) {
-					receiver.deleteReceivedInvite(activeInvite);
-					sender.deleteSentAllyInvite(activeInvite);
 				// This is a town to resident or nation to town invite.
-				} else {
-					activeInvite.getReceiver().deleteReceivedInvite(activeInvite);
-					activeInvite.getSender().deleteSentInvite(activeInvite);
-				}
+				activeInvite.getReceiver().deleteReceivedInvite(activeInvite);
+				activeInvite.getSender().deleteSentInvite(activeInvite);
 				removeInvite(activeInvite);
 			}
 		}

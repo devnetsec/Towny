@@ -846,16 +846,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 						town.setForSalePrice(Double.parseDouble(line));
 					} catch (Exception ignored) {
 					}
-				line = keys.get("conquered");
-				if (line != null)
-					try {
-						town.setConquered(Boolean.parseBoolean(line), false);
-					} catch (Exception ignored) {
-					}
-				line = keys.get("conqueredDays");
-				if (line != null)
-					town.setConqueredDays(Integer.parseInt(line));
-				
 				line = keys.get("joinedNationAt");
 				if (line != null)
 					try {
@@ -1055,22 +1045,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				if (line != null)
 					town.setNationZoneEnabled(Boolean.parseBoolean(line));
 				
-				line = keys.get("allies");
-				if (line != null && !line.isEmpty()) {
-					List<UUID> uuids = Arrays.stream(line.split(","))
-							.map(uuid -> UUID.fromString(uuid))
-							.collect(Collectors.toList());
-					town.loadAllies(TownyAPI.getInstance().getTowns(uuids));
-				}
-				
-				line = keys.get("enemies");
-				if (line != null && !line.isEmpty()) {
-					List<UUID> uuids = Arrays.stream(line.split(","))
-						.map(uuid -> UUID.fromString(uuid))
-						.collect(Collectors.toList());
-					town.loadEnemies(TownyAPI.getInstance().getTowns(uuids));
-				}
-				
 			} catch (Exception e) {
 				plugin.getLogger().log(Level.WARNING, Translation.of("flatfile_err_reading_town_file_at_line", town.getName(), line, town.getName()), e);
 				return false;
@@ -1148,22 +1122,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				line = keys.get("tag");
 				if (line != null)
 					nation.setTag(line);
-				
-				line = keys.get("allies");
-				if (line != null) {
-					List<Nation> allies = TownyAPI.getInstance().getNations(line.split(","));
-					for (Nation ally : allies) {
-						nation.addAlly(ally);
-					}
-				}
-				
-				line = keys.get("enemies");
-				if (line != null) {
-					List<Nation> enemies = TownyAPI.getInstance().getNations(line.split(","));
-					for (Nation enemy : enemies) {
-						nation.addEnemy(enemy);
-					}
-				}
 				
 				line = keys.get("spawnCost");
 				if (line != null)
@@ -1243,10 +1201,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				line = keys.get("metadata");
 				if (line != null && !line.isEmpty())
 					MetadataLoader.getInstance().deserializeMetadata(nation, line.trim());
-
-				line = keys.get("conqueredTax");
-				if (line != null && !line.isEmpty())
-					nation.setConqueredTax(Double.parseDouble(line));
 
 				line = keys.get("sanctionedTowns");
 				if (line != null) {
@@ -2131,9 +2085,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("allowedToWar=" + town.isAllowedToWar());
 		// Public
 		list.add("public=" + town.isPublic());
-		// Conquered towns setting + date
-		list.add("conquered=" + town.isConquered());
-		list.add("conqueredDays=" + town.getConqueredDays());
 		if (town.hasValidUUID()){
 			list.add("uuid=" + town.getUUID());
 		} else {
@@ -2194,8 +2145,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("mapColorHexCode=" + town.getMapColorHexCode());
 		list.add("nationZoneOverride=" + town.getNationZoneOverride());
 		list.add("nationZoneEnabled=" + town.isNationZoneEnabled());
-		list.add("allies=" + StringMgmt.join(town.getAlliesUUIDs(), ","));
-		list.add("enemies=" + StringMgmt.join(town.getEnemiesUUIDs(), ","));
 		
 		/*
 		 *  Make sure we only save in async
@@ -2259,10 +2208,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		if (nation.hasTag())
 			list.add("tag=" + nation.getTag());
 
-		list.add("allies=" + StringMgmt.join(nation.getAllies(), ","));
-
-		list.add("enemies=" + StringMgmt.join(nation.getEnemies(), ","));
-
         // Taxpercent
 		list.add("taxpercent=" + nation.isTaxPercentage());
 		// Taxpercent Cap
@@ -2292,8 +2237,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 
 		// Metadata
 		list.add("metadata=" + serializeMetadata(nation));
-		
-		list.add("conqueredTax=" + nation.getConqueredTax());
 
 		// SanctionedTowns
 		list.add("sanctionedTowns=" + StringMgmt.join(nation.getSanctionedTownsForSaving(), "#"));

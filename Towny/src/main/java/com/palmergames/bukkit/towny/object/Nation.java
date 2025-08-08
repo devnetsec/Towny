@@ -44,13 +44,9 @@ public class Nation extends Government {
 
 	private final List<Town> towns = new ArrayList<>();
 	private final List<Town> sanctionedTowns = new ArrayList<>();
-	private List<Nation> allies = new ArrayList<>();
-	private List<Nation> enemies = new ArrayList<>();
 	private Town capital;
-	private final List<Invite> sentAllyInvites = new ArrayList<>();
 	private boolean isTaxPercentage = TownySettings.getNationDefaultTaxPercentage();
 	private double maxPercentTaxAmount = TownySettings.getMaxNationTaxPercentAmount();
-	private double conqueredTax = TownySettings.getDefaultNationConqueredTaxAmount();
 
 	public Nation(String name) {
 		super(name);
@@ -73,72 +69,6 @@ public class Nation extends Government {
 	@Override
 	public int hashCode() {
 		return Objects.hash(getUUID(), getName());
-	}
-
-	public void addAlly(Nation nation) {
-
-		if (!hasAlly(nation)) {
-			removeEnemy(nation);
-			getAllies().add(nation);
-		}
-	}
-
-	public boolean removeAlly(Nation nation) {
-
-		if (!hasAlly(nation))
-			return false;
-		else
-			return getAllies().remove(nation);
-	}
-
-	public boolean removeAllAllies() {
-
-		for (Nation ally : new ArrayList<>(getAllies())) {
-			removeAlly(ally);
-			ally.removeAlly(this);
-		}
-		return getAllies().isEmpty();
-	}
-
-	public boolean hasAlly(Nation nation) {
-
-		return getAllies().contains(nation);
-	}
-
-	public boolean hasMutualAlly(Nation nation) {
-		
-		return getAllies().contains(nation) && nation.getAllies().contains(this);
-	}
-
-	public void addEnemy(Nation nation) {
-
-		if (!hasEnemy(nation)) {
-			removeAlly(nation);
-			getEnemies().add(nation);
-		}
-
-	}
-
-	public boolean removeEnemy(Nation nation) {
-
-		if (!hasEnemy(nation))
-			return false;
-		else
-			return getEnemies().remove(nation);
-	}
-
-	public boolean removeAllEnemies() {
-
-		for (Nation enemy : new ArrayList<>(getEnemies())) {
-			removeEnemy(enemy);
-			enemy.removeEnemy(this);
-		}
-		return getEnemies().isEmpty();
-	}
-
-	public boolean hasEnemy(Nation nation) {
-
-		return getEnemies().contains(nation);
 	}
 
 	public List<Town> getTowns() {
@@ -285,38 +215,6 @@ public class Nation extends Government {
 		return this.getResidents().stream().filter(assistant -> assistant.hasNationRank("assistant")).collect(Collectors.toList());
 	}
 
-	public void setEnemies(List<Nation> enemies) {
-
-		this.enemies = enemies;
-	}
-
-	public List<Nation> getEnemies() {
-
-		return enemies;
-	}
-
-	public void setAllies(List<Nation> allies) {
-
-		this.allies = allies;
-	}
-
-	public List<Nation> getAllies() {
-
-		return allies;
-	}
-
-	public boolean hasReachedMaximumAllies() {
-		return NationUtil.hasReachedMaximumAllies(this);
-	}
-	public List<Nation> getMutualAllies() {
-		List<Nation> result = new ArrayList<>();
-		for(Nation ally: getAllies()) {
-			if(ally.hasAlly(this))
-				result.add(ally);
-		}
-		return result;
-	}
-
 	public int getNumTowns() {
 
 		return towns.size();
@@ -404,9 +302,6 @@ public class Nation extends Government {
 	}
 
 	public void clear() {
-
-		removeAllAllies();
-		removeAllEnemies();
 		removeAllTowns();
 		capital = null;
 	}
@@ -490,15 +385,6 @@ public class Nation extends Government {
 		if (!assistants.isEmpty())
 			out.add(String.format("%sAssistants (%s): %s", 
 				getTreeDepth(depth + 1), assistants.size(), Arrays.toString(assistants.toArray(new Resident[0]))));
-		
-		if (!getAllies().isEmpty())
-			out.add(String.format("%sAllies (%s): %s", 
-				getTreeDepth(depth + 1), getAllies().size(), Arrays.toString(getAllies().toArray(new Nation[0]))));
-		
-		if (!getEnemies().isEmpty())
-			out.add(String.format("%sEnemies (%s): %s", 
-				getTreeDepth(depth + 1), getEnemies().size(), Arrays.toString(getEnemies().toArray(new Nation[0]))));
-		
 		out.add(String.format("%sTowns (%s):", getTreeDepth(depth + 1), getTowns().size()));
 		for (Town town : getTowns())
 			out.addAll(town.getTreeString(depth + 2));
@@ -524,22 +410,6 @@ public class Nation extends Government {
 
 	public boolean hasValidUUID() {
 		return uuid != null;
-	}
-	
-	public void newSentAllyInvite(Invite invite) throws TooManyInvitesException {
-		if (sentAllyInvites.size() <= InviteHandler.getSentAllyRequestsMaxAmount(this) -1) {
-			sentAllyInvites.add(invite);
-		} else {
-			throw new TooManyInvitesException(Translation.of("msg_err_nation_sent_too_many_requests"));
-		}
-	}
-	
-	public void deleteSentAllyInvite(Invite invite) {
-		sentAllyInvites.remove(invite);
-	}
-	
-	public List<Invite> getSentAllyInvites() {
-		return Collections.unmodifiableList(sentAllyInvites);
 	}
 	
 	public Collection<TownBlock> getTownBlocks() {
@@ -599,16 +469,6 @@ public class Nation extends Government {
 	public double getBankCap() {
 		return TownySettings.getNationBankCap(this);
 	}
-
-	/**
-	 * Shows if the nation is allied with the specified nation.
-	 * 
-	 * @param nation The nation that is allied.
-	 * @return true if it is allied, false otherwise.
-	 */
-	public boolean isAlliedWith(Nation nation) {
-		return allies.contains(nation);
-	}
 	
 	@Override
 	public void save() {
@@ -658,14 +518,6 @@ public class Nation extends Government {
 	@Override
 	public @NotNull Iterable<? extends Audience> audiences() {
 		return TownyAPI.getInstance().getOnlinePlayers(this).stream().map(player -> Towny.getAdventure().player(player)).collect(Collectors.toSet());
-	}
-
-	public double getConqueredTax() {
-		return Math.min(conqueredTax, TownySettings.getMaxNationConqueredTaxAmount());
-	}
-
-	public void setConqueredTax(double conqueredTax) {
-		this.conqueredTax = Math.min(conqueredTax, TownySettings.getMaxNationConqueredTaxAmount());
 	}
 
 	@ApiStatus.Internal

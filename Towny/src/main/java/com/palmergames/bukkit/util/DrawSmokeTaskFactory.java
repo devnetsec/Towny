@@ -39,13 +39,8 @@ public class DrawSmokeTaskFactory {
 		Town residentTown = resident.getTownOrNull();
 		Town town = coord.getTownOrNull();
 
-		if (residentTown == null || town == null)
-			return Color.GRAY;
-
-		if (CombatUtil.isAlly(residentTown, town))
+		if (residentTown == town)
 			return Color.GREEN;
-		else if (CombatUtil.isEnemy(residentTown, town))
-			return Color.RED;
 		else
 			return Color.GRAY;
 	}

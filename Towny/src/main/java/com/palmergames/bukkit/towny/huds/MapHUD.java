@@ -222,13 +222,8 @@ public class MapHUD {
 		if (!townAtTownBlock.hasNation())
 			return Colors.White;
 
-		Nation townBlockNation = townAtTownBlock.getNationOrNull();
-		if (resNation.hasAlly(townBlockNation))
-			return Colors.Green;
-		else if (resNation.hasEnemy(townBlockNation))
-			return Colors.Red;
-		else 
-			return Colors.White;
+		// TODO: What should the map look like without allies or enemies?
+		return Colors.Gray;
 	}
 
 	private static boolean playerLocatedAtThisCoord(int x, int y) {

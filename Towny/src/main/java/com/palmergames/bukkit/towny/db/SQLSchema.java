@@ -237,8 +237,6 @@ public class SQLSchema {
 		columns.add("`spawnCost` float NOT NULL");
 		columns.add("`mapColorHexCode` mediumtext DEFAULT NULL");
 		columns.add("`metadata` text DEFAULT NULL");
-		columns.add("`conqueredDays` mediumint");
-		columns.add("`conquered` bool NOT NULL DEFAULT '0'");
 		columns.add("`ruined` bool NOT NULL DEFAULT '0'");
 		columns.add("`ruinedTime` BIGINT DEFAULT '0'");
 		columns.add("`neutral` bool NOT NULL DEFAULT '0'");
@@ -250,8 +248,6 @@ public class SQLSchema {
 		columns.add("`trustedTowns` mediumtext NOT NULL");
 		columns.add("`nationZoneOverride` int(11) DEFAULT 0");
 		columns.add("`nationZoneEnabled` bool NOT NULL DEFAULT '1'");
-		columns.add("`allies` mediumtext NOT NULL");
-		columns.add("`enemies` mediumtext NOT NULL");
 		columns.add("`hasUnlimitedClaims` bool NOT NULL DEFAULT '0'");
 		columns.add("`manualTownLevel` BIGINT DEFAULT '-1'");
 		columns.add("`forSale` bool NOT NULL DEFAULT '0'");
@@ -265,8 +261,6 @@ public class SQLSchema {
 		List<String> columns = new ArrayList<>();
 		columns.add("`capital` mediumtext NOT NULL");
 		columns.add("`tag` mediumtext NOT NULL");
-		columns.add("`allies` mediumtext NOT NULL");
-		columns.add("`enemies` mediumtext NOT NULL");
 		columns.add("`taxes` float NOT NULL");
 		columns.add("`taxpercent` bool NOT NULL DEFAULT '0'");
 		columns.add("`maxPercentTaxAmount` float DEFAULT NULL");
@@ -280,7 +274,6 @@ public class SQLSchema {
 		columns.add("`isPublic` bool NOT NULL DEFAULT '1'");
 		columns.add("`isOpen` bool NOT NULL DEFAULT '1'");
 		columns.add("`metadata` text DEFAULT NULL");
-		columns.add("`conqueredTax` float NOT NULL");
 		columns.add("`sanctionedTowns` mediumtext DEFAULT NULL");
 		return columns;
 	}

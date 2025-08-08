@@ -496,30 +496,6 @@ public class TownyFormatter {
 					.append(translator.component("status_hover_click_for_more"))),
 			ClickEvent.runCommand("/towny:nation townlist " + nation.getName()));
 		
-		// Allies [4]: James Nation, Carry Territory, Mason Country
-		List<String> allies = getFormattedNames(nation.getAllies());
-		if (allies.size() > 10)
-			shortenOverLengthList(allies, 11, translator);
-		
-		if (allies.size() > 0)
-			screen.addComponentOf("allies", colourHoverKey(translator.of("status_nation_allies")),
-				HoverEvent.showText(TownyComponents.miniMessage(getFormattedStrings(translator.of("status_nation_allies"), allies, nation.getAllies().size()))
-						.append(Component.newline())
-						.append(translator.component("status_hover_click_for_more"))),
-				ClickEvent.runCommand("/towny:nation allylist " + nation.getName()));
-
-		// Enemies [4]: James Nation, Carry Territory, Mason Country
-		List<String> enemies = getFormattedNames(nation.getEnemies());
-		if (enemies.size() > 10)
-			shortenOverLengthList(enemies, 11, translator);
-		
-		if (enemies.size() > 0)
-			screen.addComponentOf("enemies", colourHoverKey(translator.of("status_nation_enemies")),
-				HoverEvent.showText(TownyComponents.miniMessage(getFormattedStrings(translator.of("status_nation_enemies"), enemies, nation.getEnemies().size()))
-						.append(Component.newline())
-						.append(translator.component("status_hover_click_for_more"))),
-				ClickEvent.runCommand("/towny:nation enemylist " + nation.getName()));
-		
 		// [Sanctioned Towns] with hover showing Sanctioned Towns [3]: Prague, Berlin, Vienna
 		List<String> sanctionedTowns = getFormattedNames(nation.getSanctionedTowns());
 		if (sanctionedTowns.size() > 10)
@@ -765,8 +741,6 @@ public class TownyFormatter {
 			sub.add(translator.of("status_public"));
 		if (town.isNeutral())
 			sub.add(translator.of("status_town_title_peaceful"));
-		if (town.isConquered())
-			sub.add(translator.of("msg_conquered"));
 		if (town.isForSale())
 			sub.add(translator.of("status_forsale", formatMoney(town.getForSalePrice())));
 		return sub;

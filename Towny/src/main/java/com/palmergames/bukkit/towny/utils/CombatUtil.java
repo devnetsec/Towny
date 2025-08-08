@@ -389,7 +389,7 @@ public class CombatUtil {
 			return false;
 
 		if ((attacker != null) && (defender != null))
-			if (!world.isFriendlyFireEnabled() && CombatUtil.isAlly(attacker.getName(), defender.getName())) {
+			if (!world.isFriendlyFireEnabled()) {
 				if (isArenaPlot(attacker, defender))
 					return false;
 
@@ -451,77 +451,6 @@ public class CombatUtil {
 			return true;
 		return false;
 	}
-	
-	/**
-	 * Is the defending resident an ally of the attacking resident?
-	 * 
-	 * @param attackingResident - Attacking Resident (String)
-	 * @param defendingResident - Defending Resident (Receiving Damage; String)
-	 * @return true if the defender is an ally of the attacker.
-	 */
-	public static boolean isAlly(String attackingResident, String defendingResident) {
-		TownyUniverse townyUniverse = TownyUniverse.getInstance();
-
-		Resident residentA = townyUniverse.getResident(attackingResident);
-		Resident residentB = townyUniverse.getResident(defendingResident);
-		
-		// Fast-fail
-		if (residentA == null || residentB == null || !residentA.hasTown() || !residentB.hasTown())
-			return false;
-		
-		return isAlly(residentA.getTownOrNull(), residentB.getTownOrNull());
-	}
-
-	/**
-	 * Is the resident B an ally of resident A?
-	 *
-	 * @param a - Resident A in comparison
-	 * @param b - Resident B in comparison
-	 * @return true if they are allies.
-	 */
-	public static boolean isAlly(Resident a, Resident b) {
-		// Fast-fail
-		if (a == null || b == null || !a.hasTown() || !b.hasTown())
-			return false;
-
-		return isAlly(a.getTownOrNull(), b.getTownOrNull());
-	}
-
-	/**
-	 * Is town b an ally of town a?
-	 * 
-	 * @param a - Town A in comparison
-	 * @param b - Town B in comparison
-	 * @return true if they are allies.
-	 */
-	public static boolean isAlly(Town a, Town b) {
-
-		if (isSameTown(a, b))
-			return true;
-		if (a.hasAlly(b))
-			return true;
-		if (isSameNation(a, b))
-			if (conqueredTownsArentConsideredAllies(a, b)) {
-				TownyMessaging.sendDebugMsg(String.format("The isAlly test between %s and %s was overridden because one of the two towns is conquered by the other.", a.getName(), b.getName()));
-				return false;
-			} else
-				return true;
-
-		if (a.hasNation() && b.hasNation() && a.getNationOrNull().hasAlly(b.getNationOrNull()))
-			return true;
-		return false;
-	}
-
-	/**
-	 * Towny can be configured to not consider conquered towns proper nation members.
-	 * 
-	 * @param a Town one.
-	 * @param b Town two.
-	 * @return true when we are configured to not considers conquered towns allies, and one of the towns is conquered by the other.
-	 */
-	private static boolean conqueredTownsArentConsideredAllies(Town a, Town b) {
-		return !TownySettings.areConqueredTownsConsideredAllied() && ((a.isConquered() && !b.isConquered()) || (!a.isConquered() && b.isConquered()));
-	}
 
 	/**
 	 * Is town b in a nation with town a?
@@ -581,24 +510,6 @@ public class CombatUtil {
 
 		return isSameTown(a.getTownOrNull(), b.getTownOrNull());
 	}
-
-	/**
-	 * Test if all the listed nations are allies
-	 * 
-	 * @param possibleAllies - List of Nations (List&lt;Nation&gt;)
-	 * @return true if they are all allies
-	 */
-	public static boolean areAllAllies(List<Nation> possibleAllies) {
-
-		if (possibleAllies.size() <= 1)
-			return true;
-		else {
-			for (int i = 0; i < possibleAllies.size() - 1; i++)
-				if (!possibleAllies.get(i).hasAlly(possibleAllies.get(i + 1)))
-					return false;
-			return true;
-		}
-	}
 	
 	/**
 	 * Test if all the listed residents are friends
@@ -616,75 +527,6 @@ public class CombatUtil {
 					return false;
 			return true;
 		}
-	}
-
-	/**
-	 * Is resident b an enemy of resident a?
-	 * 
-	 * @param a - Resident A in comparison (String)
-	 * @param b - Resident B in comparison (String)
-	 * @return true if b is an enemy.
-	 */
-	public static boolean isEnemy(String a, String b) {
-		Resident residentA = TownyUniverse.getInstance().getResident(a);
-		Resident residentB = TownyUniverse.getInstance().getResident(b);
-		
-		// Fast fail.
-		if (residentA == null || residentB == null || !residentA.hasTown() || !residentB.hasTown())
-			return false;
-
-		if (isEnemy(residentA.getTownOrNull(), residentB.getTownOrNull()))
-			return true;
-		return false;
-	}
-
-	/**
-	 * Is the resident B an enemy of resident A?
-	 *
-	 * @param a - Resident A in comparison
-	 * @param b - Resident B in comparison
-	 * @return true if B is an enemy.
-	 */
-	public static boolean isEnemy(Resident a, Resident b) {
-		// Fast-fail
-		if (a == null || b == null || !a.hasTown() || !b.hasTown())
-			return false;
-
-		return isEnemy(a.getTownOrNull(), b.getTownOrNull());
-	}
-
-	/**
-	 * Is town b an enemy of town a?
-	 * 
-	 * @param a - Town A in comparison
-	 * @param b - Town B in comparison
-	 * @return true if b is an enemy.
-	 */
-	public static boolean isEnemy(Town a, Town b) {
-
-		if (a.hasEnemy(b))
-			return true;
-		if (!a.hasNation() || !b.hasNation())
-			return false;
-		if (isSameTown(a, b) || isSameNation(a, b))
-			return false;
-		if (a.getNationOrNull().hasEnemy(b.getNationOrNull()))
-			return true;
-		return false;
-	}
-
-	/**
-	 * Does this WorldCoord fall within a plot owned by an enemy town?
-	 * 
-	 * @param player - Player
-	 * @param worldCoord - Location
-	 * @return true if it is an enemy plot.
-	 */
-	public static boolean isEnemyTownBlock(Player player, WorldCoord worldCoord) {
-		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
-		if (resident != null && resident.hasTown() && worldCoord.hasTownBlock())
-			return CombatUtil.isEnemy(worldCoord.getTownOrNull(), resident.getTownOrNull());
-		return false;
 	}
 	
 	/**

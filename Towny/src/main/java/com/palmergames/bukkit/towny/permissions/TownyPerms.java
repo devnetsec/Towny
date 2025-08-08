@@ -308,10 +308,6 @@ public class TownyPerms {
 			if (isPeaceful(town))
 				permList.addAll(getList("peaceful"));
 
-			if (town.isConquered())
-				permList.addAll(getList("conquered"));
-			else
-				permList.addAll(getList("unconquered"));
 		} else {
 			permList.add("towny.townless");
 			permList.add("towny.nationless");

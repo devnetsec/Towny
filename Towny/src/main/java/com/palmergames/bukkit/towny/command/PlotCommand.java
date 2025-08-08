@@ -2098,9 +2098,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 			if (townBlock.getTownOrNull().hasOutlaw(trustedResident))
 				throw new TownyException(Translatable.of("msg_err_you_cannot_add_trust_on_outlaw"));
 
-			if (trustedResident.hasNation() && townBlock.getTownOrNull().hasNation() && townBlock.getTownOrNull().getNationOrNull().hasEnemy(trustedResident.getNationOrNull()))
-				throw new TownyException(Translatable.of("msg_err_you_cannot_add_trust_on_enemy"));
-
 			BukkitTools.ifCancelledThenThrow(new PlotTrustAddEvent(new ArrayList<>(group.getTownBlocks()), trustedResident, player));
 
 			group.addTrustedResident(trustedResident);
@@ -2158,9 +2155,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 
 			if (townBlock.getTownOrNull().hasOutlaw(resident))
 				throw new TownyException(Translatable.of("msg_err_you_cannot_add_trust_on_outlaw"));
-
-			if (resident.hasNation() && townBlock.getTownOrNull().hasNation() && townBlock.getTownOrNull().getNationOrNull().hasEnemy(resident.getNationOrNull()))
-				throw new TownyException(Translatable.of("msg_err_you_cannot_add_trust_on_enemy"));
 
 			BukkitTools.ifCancelledThenThrow(new PlotTrustAddEvent(townBlock, resident, player));
 

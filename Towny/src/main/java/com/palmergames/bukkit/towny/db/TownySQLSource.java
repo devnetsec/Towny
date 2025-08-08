@@ -998,7 +998,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			town.setSpawnCost(rs.getFloat("spawnCost"));
 			town.setOpen(rs.getBoolean("open"));
 			town.setPublic(rs.getBoolean("public"));
-			town.setConquered(rs.getBoolean("conquered"), false);
 			town.setAdminDisabledPVP(rs.getBoolean("admindisabledpvp"));
 			town.setAdminEnabledPVP(rs.getBoolean("adminenabledpvp"));
 			town.setAdminEnabledMobs(rs.getBoolean("adminEnabledMobs"));
@@ -1126,9 +1125,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			}
 			universe.registerTownUUID(town);
 
-			int conqueredDays = rs.getInt("conqueredDays");
-			town.setConqueredDays(conqueredDays);
-
 			try {
 				long registered = rs.getLong("registered");
 				town.setRegistered(registered);
@@ -1189,24 +1185,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 				town.setMapColorHexCode(line);
 			else
 				town.setMapColorHexCode(MapUtil.generateRandomTownColourAsHexCode());
-
-			line = rs.getString("allies");
-			if (line != null && !line.isEmpty()) {
-				search = (line.contains("#")) ? "#" : ",";
-				List<UUID> uuids = Arrays.stream(line.split(search))
-						.map(uuid -> UUID.fromString(uuid))
-						.collect(Collectors.toList());
-				town.loadAllies(TownyAPI.getInstance().getTowns(uuids));
-			}
-
-			line = rs.getString("enemies");
-			if (line != null && !line.isEmpty()) {
-				search = (line.contains("#")) ? "#" : ",";
-				List<UUID> uuids = Arrays.stream(line.split(search))
-						.map(uuid -> UUID.fromString(uuid))
-						.collect(Collectors.toList());
-				town.loadEnemies(TownyAPI.getInstance().getTowns(uuids));
-			}
 			
 			line = rs.getString("visibleOnTopLists");
 			if (line != null && !line.isEmpty())
@@ -1315,22 +1293,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 
 			nation.setTag(rs.getString("tag"));
 
-			line = rs.getString("allies");
-			if (line != null) {
-				search = (line.contains("#")) ? "#" : ",";
-				List<Nation> allies = TownyAPI.getInstance().getNations(line.split(search));
-				for (Nation ally : allies)
-					nation.addAlly(ally);
-			}
-
-			line = rs.getString("enemies");
-			if (line != null) {
-				search = (line.contains("#")) ? "#" : ",";
-				List<Nation> enemies = TownyAPI.getInstance().getNations(line.split(search));
-				for (Nation enemy : enemies) 
-					nation.addEnemy(enemy);
-			}
-
 			nation.setSpawnCost(rs.getFloat("spawnCost"));
 			nation.setNeutral(rs.getBoolean("neutral"));
 			try {
@@ -1381,14 +1343,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 				line = rs.getString("metadata");
 				if (line != null && !line.isEmpty()) {
 					MetadataLoader.getInstance().deserializeMetadata(nation, line);
-				}
-			} catch (SQLException ignored) {
-			}
-
-			try {
-				line = rs.getString("conqueredTax");
-				if (line != null && !line.isEmpty()) {
-					nation.setConqueredTax(Double.parseDouble(line));
 				}
 			} catch (SQLException ignored) {
 			}
@@ -2388,8 +2342,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			twn_hm.put("maxPercentTaxAmount", town.getMaxPercentTaxAmount());
 			twn_hm.put("open", town.isOpen());
 			twn_hm.put("public", town.isPublic());
-			twn_hm.put("conquered", town.isConquered());
-			twn_hm.put("conqueredDays", town.getConqueredDays());
 			twn_hm.put("admindisabledpvp", town.isAdminDisabledPVP());
 			twn_hm.put("adminenabledpvp", town.isAdminEnabledPVP());
 			twn_hm.put("adminEnabledMobs", town.isAdminEnabledMobs());
@@ -2437,10 +2389,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			
 			twn_hm.put("trustedResidents", StringMgmt.join(toUUIDList(town.getTrustedResidents()), "#"));
 			twn_hm.put("trustedTowns", StringMgmt.join(town.getTrustedTownsUUIDS(), "#"));
-			
-			twn_hm.put("allies", StringMgmt.join(town.getAlliesUUIDs(), "#"));
-			
-			twn_hm.put("enemies", StringMgmt.join(town.getEnemiesUUIDs(), "#"));
 			
 			updateDB("TOWNS", twn_hm, Collections.singletonList("name"));
 			return true;
@@ -2499,8 +2447,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			nat_hm.put("nationBoard", nation.getBoard());
 			nat_hm.put("mapColorHexCode", nation.getMapColorHexCode());
 			nat_hm.put("tag", nation.hasTag() ? nation.getTag() : "");
-			nat_hm.put("allies", StringMgmt.join(nation.getAllies(), "#"));
-			nat_hm.put("enemies", StringMgmt.join(nation.getEnemies(), "#"));
 			nat_hm.put("taxes", nation.getTaxes());
             nat_hm.put("taxpercent", nation.isTaxPercentage());
 			nat_hm.put("maxPercentTaxAmount", nation.getMaxPercentTaxAmount());
@@ -2523,7 +2469,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			else
 				nat_hm.put("metadata", "");
 
-			nat_hm.put("conqueredTax", nation.getConqueredTax());
 			nat_hm.put("sanctionedTowns", StringMgmt.join(nation.getSanctionedTownsForSaving(), "#"));
 			updateDB("NATIONS", nat_hm, Collections.singletonList("name"));
 

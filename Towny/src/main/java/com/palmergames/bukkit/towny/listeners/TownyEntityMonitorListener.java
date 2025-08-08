@@ -135,7 +135,6 @@ public class TownyEntityMonitorListener implements Listener {
 			|| !TownySettings.isChargingDeath()                    // No Death Costs.
 			|| defenderResident.isJailed()                         // Dead resident was jailed.
 			|| hasBypassNode(defenderResident)                     // Permission node bypassing death costs.
-			|| residentsAllied(defenderResident, attackerResident) // Allied players killed each other.
 			|| killedInInvalidTownBlockType(defenderPlayer)        // Player killed in Arena or Jail.
 			)
 			return;
@@ -234,10 +233,6 @@ public class TownyEntityMonitorListener implements Listener {
 
 	private boolean hasBypassNode(Resident defenderResident) {
 		return defenderResident.hasPermissionNode(PermissionNodes.TOWNY_BYPASS_DEATH_COSTS.getNode());
-	}
-
-	private boolean residentsAllied(Resident defenderResident, Resident attackerResident) {
-		return attackerResident != null && CombatUtil.isAlly(attackerResident, defenderResident);
 	}
 
 	private boolean killedInInvalidTownBlockType(Player defenderPlayer) {

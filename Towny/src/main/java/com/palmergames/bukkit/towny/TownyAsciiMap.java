@@ -150,10 +150,6 @@ public class TownyAsciiMap {
 								townyMap[y][x] = townyMap[y][x].color(NamedTextColor.DARK_GREEN);
 							else if (town.hasNation()) {
 								Nation townBlockNation = town.getNationOrNull();
-								if (resNation.hasAlly(townBlockNation))
-									townyMap[y][x] = townyMap[y][x].color(NamedTextColor.GREEN);
-								else if (resNation.hasEnemy(townBlockNation))
-									townyMap[y][x] = townyMap[y][x].color(NamedTextColor.DARK_RED);
 							}
 						}
 

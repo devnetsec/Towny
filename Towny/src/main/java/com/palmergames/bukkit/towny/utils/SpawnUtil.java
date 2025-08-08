@@ -304,19 +304,6 @@ public class SpawnUtil {
 						throw new TownyException(Translatable.of("msg_err_ally_isnt_public", town));
 					else
 						townSpawnLevel = TownSpawnLevel.PART_OF_NATION;
-				} else if (targetNation.hasEnemy(playerNation)) {
-					if (town.isNeutral() && TownySettings.areEnemiesAllowedToSpawnToPeacefulTowns())
-						// Let enemies spawn to peaceful towns.
-						townSpawnLevel = TownSpawnLevel.TOWN_RESIDENT;
-					else 
-						// Prevent enemies from using spawn travel.
-						throw new TownyException(Translatable.of("msg_err_public_spawn_enemy"));
-				} else if (targetNation.hasAlly(playerNation)) {
-					if (!town.isPublic() && 
-						(TownySettings.isAllySpawningRequiringPublicStatus() && !resident.hasPermissionNode(PermissionNodes.TOWNY_SPAWN_ALLY_BYPASS_PUBLIC.getNode())))
-						throw new TownyException(Translatable.of("msg_err_ally_isnt_public", town));
-					else
-						townSpawnLevel = TownSpawnLevel.NATION_ALLY;
 				} else {
 					townSpawnLevel = TownSpawnLevel.UNAFFILIATED;
 				}
@@ -383,11 +370,6 @@ public class SpawnUtil {
 
 				if (playerNation == nation) {
 					nationSpawnLevel = NationSpawnLevel.PART_OF_NATION;
-				} else if (nation.hasEnemy(playerNation)) {
-					// Prevent enemies from using spawn travel.
-					throw new TownyException(Translatable.of("msg_err_public_spawn_enemy"));
-				} else if (nation.hasAlly(playerNation)) {
-					nationSpawnLevel = NationSpawnLevel.NATION_ALLY;
 				} else {
 					nationSpawnLevel = NationSpawnLevel.UNAFFILIATED;
 				}
@@ -666,14 +648,6 @@ public class SpawnUtil {
 					Nation townLocNation = townAtPlayerLoc.getNationOrNull();
 					if (townLocNation.hasSanctionedTown(resident.getTownOrNull()))
 						throw new TownyException(Translatable.of("msg_err_cannot_nation_spawn_your_town_is_sanctioned", townLocNation.getName()));
-				}
-				if (resident.hasNation() && townAtPlayerLoc.hasNation()) {
-					if (CombatUtil.isEnemy(resident.getTownOrNull(), townAtPlayerLoc) && disallowedZones.contains("enemy"))
-						throw new TownyException(Translatable.of("msg_err_x_spawn_disallowed_from_x", spawnType.typeName(), Translatable.of("msg_enemy_areas")));
-					Nation townLocNation = townAtPlayerLoc.getNationOrNull();
-					Nation resNation = resident.getNationOrNull();
-					if (!townLocNation.hasAlly(resNation) && !townLocNation.hasEnemy(resNation) && disallowedZones.contains("neutral"))
-						throw new TownyException(Translatable.of("msg_err_x_spawn_disallowed_from_x", spawnType.typeName(), Translatable.of("msg_neutral_towns")));
 				}
 			}
 		}

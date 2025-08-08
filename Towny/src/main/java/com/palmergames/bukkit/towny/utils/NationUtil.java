@@ -57,10 +57,6 @@ public class NationUtil {
 				town.getJoinedNationAt() > 0 ? TownyFormatter.lastOnlineFormatIncludeYear.format(town.getJoinedNationAt()) : translator.of("status_unknown"));
 	}
 
-	public static boolean hasReachedMaximumAllies(Nation nation) {
-		return TownySettings.getMaxNationAllies() >= 0 && nation.getAllies().size() >= TownySettings.getMaxNationAllies();
-	}
-
 	public static boolean hasReachedMaximumResidents(Nation nation) {
 		int maxResidentsPerNation = TownySettings.getMaxResidentsPerNation();
 		return maxResidentsPerNation > 0 && nation.getResidents().size() >= maxResidentsPerNation;
