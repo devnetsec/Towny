@@ -341,9 +341,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 		if (townBlock == null && !plotCommandAllowedInWilderness(split[0]))
 			throw new TownyException(Translatable.of("msg_not_claimed_1"));
 
-		if (townBlock != null && townBlock.getTownOrNull().isRuined())
-			throw new TownyException(Translatable.of("msg_err_cannot_use_command_because_town_ruined"));
-
 		switch(split[0].toLowerCase(Locale.ROOT)) {
 		case "claim" -> parsePlotClaim(player, StringMgmt.remFirstArg(split), resident, townBlock);
 		case "clear" -> parsePlotClear(resident, townBlock);
@@ -680,13 +677,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 
 		// Test we are allowed to work on this plot
 		TownyAPI.getInstance().testPlotOwnerOrThrow(resident, townBlock);
-
-		if (TownBlockType.ARENA.equals(townBlockType) && TownySettings.getOutsidersPreventPVPToggle()) {
-			for (Player target : Bukkit.getOnlinePlayers()) {
-				if (!townBlock.getTownOrNull().hasResident(target) && !player.getName().equals(target.getName()) && townBlock.getWorldCoord().equals(WorldCoord.parseWorldCoord(target)))
-					throw new TownyException(Translatable.of("msg_cant_toggle_pvp_outsider_in_plot"));
-			}
-		}
 
 		BukkitTools.ifCancelledThenThrow(new PlotPreChangeTypeEvent(townBlockType, townBlock, resident));
 
@@ -1142,11 +1132,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 			choice = BaseCommand.parseToggleChoice(split[1]);
 
 		switch(split[0].toLowerCase(Locale.ROOT)) {
-		case "pvp":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_PLOT_TOGGLE_PVP.getNode());
-			tryToggleTownBlockPVP(player, resident, townBlock, split, town, choice);
-			TownyMessaging.sendMsg(player, Translatable.of("msg_changed_pvp", "Plot", townBlock.getPermissions().pvp ? Translatable.of("enabled") : Translatable.of("disabled")));
-			break;
 		case "explosion":
 			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_PLOT_TOGGLE_EXPLOSION.getNode());
 			tryToggleTownBlockExplosion(player, townBlock, split, choice);
@@ -1181,36 +1166,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 		//Change settings event
 		BukkitTools.fireEvent(new TownBlockSettingsChangedEvent(townBlock));
 		townBlock.save();
-	}
-
-	private void tryToggleTownBlockPVP(Player player, Resident resident, TownBlock townBlock, String[] split, Town town, Optional<Boolean> choice) throws TownyException {
-		// Make sure we are allowed to set these permissions.
-		toggleTest(player, townBlock, StringMgmt.join(split, " "));
-
-		if (TownySettings.getPVPCoolDownTime() > 0 && !resident.isAdmin()) {
-			// Test to see if the pvp cooldown timer is active for the town this plot belongs to.
-			if (CooldownTimerTask.hasCooldown(town.getUUID().toString(), CooldownType.PVP))
-				throw new TownyException(Translatable.of("msg_err_cannot_toggle_pvp_x_seconds_remaining", CooldownTimerTask.getCooldownRemaining(town.getUUID().toString(), CooldownType.PVP)));
-
-			// Test to see if the pvp cooldown timer is active for this plot.
-			if (CooldownTimerTask.hasCooldown(townBlock.getWorldCoord().toString(), CooldownType.PVP))
-				throw new TownyException(Translatable.of("msg_err_cannot_toggle_pvp_x_seconds_remaining", CooldownTimerTask.getCooldownRemaining(townBlock.getWorldCoord().toString(), CooldownType.PVP)));
-		}
-
-		if (TownySettings.getOutsidersPreventPVPToggle() && choice.orElse(!townBlock.getPermissions().pvp)) {
-			for (Player target : Bukkit.getOnlinePlayers()) {
-				if (!town.hasResident(target) && !player.getName().equals(target.getName()) && townBlock.getWorldCoord().equals(WorldCoord.parseWorldCoord(target)))
-					throw new TownyException(Translatable.of("msg_cant_toggle_pvp_outsider_in_plot"));
-			}
-		}
-
-		// Fire cancellable event directly before setting the toggle.
-		BukkitTools.ifCancelledThenThrow(new PlotTogglePvpEvent(townBlock, player, choice.orElse(!townBlock.getPermissions().pvp)));
-
-		townBlock.getPermissions().pvp = choice.orElse(!townBlock.getPermissions().pvp);
-		// Add a cooldown timer for this plot.
-		if (TownySettings.getPVPCoolDownTime() > 0 && !resident.isAdmin())
-			CooldownTimerTask.addCooldownTimer(townBlock.getWorldCoord().toString(), CooldownType.PVP);
 	}
 
 	private void tryToggleTownBlockExplosion(Player player, TownBlock townBlock, String[] split, Optional<Boolean> choice) throws TownyException {
@@ -1277,15 +1232,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 		if (split.contains("explosion")) {
 			if (townBlock.getWorld().isForceExpl())
 				throw new TownyException(Translatable.of("msg_world_expl"));
-		}
-
-		if (split.contains("pvp")) {
-			if (townBlock.getWorld().isForcePVP())
-				throw new TownyException(Translatable.of("msg_world_pvp"));
-		}
-		if ((split.contains("pvp")) || (split.trim().equalsIgnoreCase("off"))) {
-			if (townBlock.getType().equals(TownBlockType.ARENA))
-				throw new TownyException(Translatable.of("msg_plot_pvp"));
 		}
 	}
 
@@ -1909,13 +1855,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 			// Test we are allowed to work on this plot
 			TownyAPI.getInstance().testPlotOwnerOrThrow(resident, tb); // ignore the return as we
 
-			if (TownBlockType.ARENA.equals(type) && TownySettings.getOutsidersPreventPVPToggle()) {
-				for (Player target : Bukkit.getOnlinePlayers()) {
-					if (!town.hasResident(target) && !player.getName().equals(target.getName()) && tb.getWorldCoord().equals(WorldCoord.parseWorldCoord(target)))
-						throw new TownyException(Translatable.of("msg_cant_toggle_pvp_outsider_in_plot"));
-				}
-			}
-
 			// Allow for PlotPreChangeTypeEvent to trigger
 			// If any one of the townblocks is not allowed to be set, cancel setting all of them.
 			BukkitTools.ifCancelledThenThrow(new PlotPreChangeTypeEvent(type, tb, resident));
@@ -2025,10 +1964,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 
 			try {
 				switch(split[0].toLowerCase(Locale.ROOT)) {
-				case "pvp":
-					tryToggleTownBlockPVP(player, resident, groupBlock, split, town, choice);
-					endingMessage = Translatable.of("msg_changed_pvp", Translatable.of("msg_the_plot_group"), groupBlock.getPermissions().pvp ? Translatable.of("enabled") : Translatable.of("disabled"));
-					break;
 				case "explosion":
 					tryToggleTownBlockExplosion(player, groupBlock, split, choice);
 					endingMessage = Translatable.of("msg_changed_expl", Translatable.of("msg_the_plot_group"), groupBlock.getPermissions().explosion ? Translatable.of("enabled") : Translatable.of("disabled"));

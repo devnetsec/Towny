@@ -382,20 +382,7 @@ public class TownBlock extends TownyObject {
 			setJail(null);
 		}
 
-		if (TownBlockType.ARENA.equals(this.type) || TownBlockType.ARENA.equals(type)
-			&& TownySettings.getPVPCoolDownTime() > 0
-			&& !TownyUniverse.getInstance().getPermissionSource().isTownyAdmin(resident.getPlayer())) {
-			// Test to see if this town is on pvp cooldown.
-			if (CooldownTimerTask.hasCooldown(town.getUUID().toString(), CooldownType.PVP))
-				throw new TownyException(Translatable.of("msg_err_cannot_toggle_pvp_x_seconds_remaining", CooldownTimerTask.getCooldownRemaining(town.getUUID().toString(), CooldownType.PVP)));
-			// Test to see if the pvp cooldown timer is active for this plot.
-			if (CooldownTimerTask.hasCooldown(getWorldCoord().toString(), CooldownType.PVP))
-				throw new TownyException(Translation.of("msg_err_cannot_toggle_pvp_x_seconds_remaining", CooldownTimerTask.getCooldownRemaining(getWorldCoord().toString(), CooldownType.PVP)));
-
-			setType(type);
-			CooldownTimerTask.addCooldownTimer(getWorldCoord().toString(), CooldownType.PVP);
-		} else
-			setType(type);
+		setType(type);
 
 		if (this.isJail() && resident.getPlayer() != null)
 			JailUtil.createJailPlot(this, getTown(), resident.getPlayer().getLocation());

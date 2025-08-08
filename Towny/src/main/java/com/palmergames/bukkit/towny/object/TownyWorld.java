@@ -65,10 +65,6 @@ public class TownyWorld extends TownyObject {
 
 	private boolean isUsingTowny = TownySettings.isUsingTowny();
 	private boolean isClaimable = TownySettings.isNewWorldClaimable();
-	private boolean isWarAllowed = TownySettings.isWarAllowed();
-	private boolean isPVP = TownySettings.isPvP();
-	private boolean isForcePVP = TownySettings.isForcingPvP();
-	private boolean isFriendlyFire = TownySettings.isFriendlyFireEnabled();
 	private boolean isFire = TownySettings.isFire();
 	private boolean isForceFire = TownySettings.isForcingFire();
 	private boolean hasWorldMobs = TownySettings.isWorldMonstersOn();
@@ -219,36 +215,6 @@ public class TownyWorld extends TownyObject {
 		return out;
 	}
 
-	public void setWarAllowed(boolean isWarAllowed) {
-
-		this.isWarAllowed = isWarAllowed;
-	}
-
-	public boolean isWarAllowed() {
-
-		return this.isWarAllowed;
-	}
-
-	public void setPVP(boolean isPVP) {
-
-		this.isPVP = isPVP;
-	}
-
-	public boolean isPVP() {
-
-		return this.isPVP;
-	}
-
-	public void setForcePVP(boolean isPVP) {
-
-		this.isForcePVP = isPVP;
-	}
-
-	public boolean isForcePVP() {
-
-		return this.isForcePVP;
-	}
-
 	public void setExpl(boolean isExpl) {
 
 		this.isExplosion = isExpl;
@@ -362,10 +328,6 @@ public class TownyWorld extends TownyObject {
 		setUnclaimedZoneName(null);
 		setUsingTowny(TownySettings.isUsingTowny());
 		setClaimable(TownySettings.isNewWorldClaimable());
-		setWarAllowed(TownySettings.isWarAllowed());
-		setPVP(TownySettings.isPvP());
-		setForcePVP(TownySettings.isForcingPvP());
-		setFriendlyFire(TownySettings.isFriendlyFireEnabled());
 		setFire(TownySettings.isFire());
 		setForceFire(TownySettings.isForcingFire());
 		setWorldMobs(TownySettings.isWorldMonstersOn());
@@ -1025,15 +987,6 @@ public class TownyWorld extends TownyObject {
 	@ApiStatus.Internal
 	public void removeTridentStrike(UUID uuid) {
 		tridentStrikeList.remove(uuid);
-	}
-
-	public void setFriendlyFire(boolean parseBoolean) {
-		isFriendlyFire = parseBoolean;
-		
-	}
-	
-	public boolean isFriendlyFireEnabled( ) {
-		return isFriendlyFire;
 	}
 
 	public void setJailingEnabled(boolean parseBoolean) {

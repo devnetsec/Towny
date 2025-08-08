@@ -345,13 +345,10 @@ public class TownySettings {
 	 * </p>
 	 * @param threshold Number of residents used to calculate the level.
 	 * @param town the Town from which to get a TownLevel.
-	 * @return The calculated Town Level. 0, if the town is ruined, or the method otherwise fails through.
+	 * @return The calculated Town Level. 0, if method fails through.
 	 */
 	@ApiStatus.Internal
 	public static int getTownLevelFromGivenInt(int threshold, Town town) {
-		if (town.isRuined())
-			return 0;
-
 		for (int level : configTownLevel.keySet())
 			if (threshold >= level)
 				return level;
@@ -379,12 +376,9 @@ public class TownySettings {
 	 * SortedMap which corresponds with the given number of residents.
 	 * 
 	 * @param residents The number used to get the key from the keySet array.
-	 * @param town The town being checked, in case it is ruined.
 	 * @return the number of the TownLevel.
 	 */
-	public static int getTownLevelWhichIsNotManuallySet(int residents, Town town) {
-		if (town.isRuined())
-			return 0;
+	public static int getTownLevelWhichIsNotManuallySet(int residents) {
 
 		int i = TownySettings.getTownLevelMax() - 1; // Remove one in order to get the index of an array.
 		for (int level : configTownLevel.keySet()) {
@@ -1458,10 +1452,6 @@ public class TownySettings {
 		
 		return getBoolean(ConfigNodes.GNATION_SETTINGS_DISPLAY_NATIONBOARD_ONLOGIN);
 	}
-	
-	public static boolean nationCapitalsCantBeNeutral() {
-		return getBoolean(ConfigNodes.GNATION_SETTINGS_CAPITAL_CANNOT_BE_NEUTRAL);
-	}
 
 	public static String getUnclaimedZoneName() {
 
@@ -1600,11 +1590,6 @@ public class TownySettings {
 
 		return getBoolean(ConfigNodes.TOWN_DEF_OPEN);
 	}
-	
-	public static boolean getTownDefaultNeutral() {
-
-		return getBoolean(ConfigNodes.TOWN_DEF_NEUTRAL); 
-	}
 
 	public static String getTownDefaultBoard() {
 
@@ -1656,10 +1641,6 @@ public class TownySettings {
 	public static double getTownDefaultTaxMinimumTax() {
 		
 		return getDouble(ConfigNodes.TOWN_DEF_TAXES_MINIMUMTAX);
-	}
-	
-	public static boolean getTownDefaultAllowedToWar() {
-		return getBoolean(ConfigNodes.TOWN_DEF_ALLOWED_TO_WAR);
 	}
 	
 	public static boolean hasTownLimit() {
@@ -1733,10 +1714,6 @@ public class TownySettings {
 		return (int) getSeconds(ConfigNodes.CLAIMING_OVERCLAIMING_COMMAND_COOLDOWN);
 	}
 
-	public static boolean isOverclaimingWithNationsRequiringEnemy() {
-		return getBoolean(ConfigNodes.CLAIMING_OVERCLAIMING_REQUIRES_NATIONS_TO_BE_ENEMIES);
-	}
-
 	public static boolean isSellingBonusBlocks(Town town) {
 
 		return getMaxPurchasedBlocks(town) != 0;
@@ -1765,34 +1742,6 @@ public class TownySettings {
 	public static boolean isTownSpawnPaidToTown() {
 		
 		return getBoolean(ConfigNodes.ECO_PRICE_TOWN_SPAWN_PAID_TO_TOWN);
-	}
-
-	public static double getNationNeutralityCost(Nation nation) {
-		double cost = nation.getNationLevel().peacefulCostMultiplier() * getNationNeutralityCost();
-		return isNationNeutralityCostMultipliedByNationTownAmount() ? cost * nation.getTowns().size() : cost;
-	}
-
-	public static double getNationNeutralityCost() {
-
-		return getDouble(ConfigNodes.ECO_PRICE_NATION_NEUTRALITY);
-	}
-
-	public static boolean isNationNeutralityCostMultipliedByNationTownAmount() {
-		return getBoolean(ConfigNodes.ECO_PRICE_NATION_NEUTRALITY_CHARGES_PER_TOWN);
-	}
-
-	public static double getTownNeutralityCost(Town town) {
-		double cost = town.getTownLevel().peacefulCostMultiplier() * getTownNeutralityCost();
-		return isTownNeutralityCostMultipliedByTownClaimsSize() ? cost * town.getTownBlocks().size() : cost;
-	}
-
-	public static double getTownNeutralityCost() {
-		
-		return getDouble(ConfigNodes.ECO_PRICE_TOWN_NEUTRALITY);
-	}
-
-	public static boolean isTownNeutralityCostMultipliedByTownClaimsSize() {
-		return getBoolean(ConfigNodes.ECO_PRICE_TOWN_NEUTRALITY_CHARGES_PER_PLOT);
 	}
 
 	public static boolean isAllowingOutposts() {
@@ -1984,20 +1933,12 @@ public class TownySettings {
 		return getBoolean(ConfigNodes.SPAWNING_ALLOW_TOWN_SPAWN_TRAVEL_NATION);
 	}
 
-	public static boolean isConfigAllowingTownSpawnNationAllyTravel() {
-		return getBoolean(ConfigNodes.SPAWNING_ALLOW_TOWN_SPAWN_TRAVEL_ALLY);
-	}
-
 	public static boolean isConfigAllowingNationSpawn() {
 		return getBoolean(ConfigNodes.SPAWNING_ALLOW_NATION_SPAWN);
 	}
 
 	public static boolean isConfigAllowingPublicNationSpawnTravel() {
 		return getBoolean(ConfigNodes.SPAWNING_ALLOW_NATION_SPAWN_TRAVEL);
-	}
-
-	public static boolean isConfigAllowingNationSpawnAllyTravel() {
-		return getBoolean(ConfigNodes.SPAWNING_ALLOW_NATION_SPAWN_TRAVEL_ALLY);
 	}
 
 	public static List<String> getDisallowedTownSpawnZones() {
@@ -2746,25 +2687,6 @@ public class TownySettings {
 
 		return getBoolean(ConfigNodes.FLAGS_RES_TOWN_SWITCH);
 	}
-	public static boolean getPermFlag_Resident_Ally_Build() {
-
-		return getBoolean(ConfigNodes.FLAGS_RES_ALLY_BUILD);
-	}
-
-	public static boolean getPermFlag_Resident_Ally_Destroy() {
-
-		return getBoolean(ConfigNodes.FLAGS_RES_ALLY_DESTROY);
-	}
-
-	public static boolean getPermFlag_Resident_Ally_ItemUse() {
-
-		return getBoolean(ConfigNodes.FLAGS_RES_ALLY_ITEM_USE);
-	}
-
-	public static boolean getPermFlag_Resident_Ally_Switch() {
-
-		return getBoolean(ConfigNodes.FLAGS_RES_ALLY_SWITCH);
-	}
 
 	public static boolean getPermFlag_Resident_Outsider_Build() {
 
@@ -2845,26 +2767,6 @@ public class TownySettings {
 
 		return getBoolean(ConfigNodes.FLAGS_TOWN_NATION_SWITCH);
 	}
-	
-	public static boolean getPermFlag_Town_Ally_Build() {
-
-		return getBoolean(ConfigNodes.FLAGS_TOWN_ALLY_BUILD);
-	}
-
-	public static boolean getPermFlag_Town_Ally_Destroy() {
-
-		return getBoolean(ConfigNodes.FLAGS_TOWN_ALLY_DESTROY);
-	}
-
-	public static boolean getPermFlag_Town_Ally_ItemUse() {
-
-		return getBoolean(ConfigNodes.FLAGS_TOWN_ALLY_ITEM_USE);
-	}
-
-	public static boolean getPermFlag_Town_Ally_Switch() {
-
-		return getBoolean(ConfigNodes.FLAGS_TOWN_ALLY_SWITCH);
-	}
 
 	public static boolean getPermFlag_Town_Outsider_Build() {
 
@@ -2925,26 +2827,6 @@ public class TownySettings {
 		else
 			throw new UnsupportedOperationException();
 	}
-	
-	public static boolean getDefaultAllyPermission(TownBlockOwner owner, ActionType type) {
-
-		if (owner instanceof Resident)
-			return switch (type) {
-				case BUILD -> getPermFlag_Resident_Ally_Build();
-				case DESTROY -> getPermFlag_Resident_Ally_Destroy();
-				case SWITCH -> getPermFlag_Resident_Ally_Switch();
-				case ITEM_USE -> getPermFlag_Resident_Ally_ItemUse();
-			};
-		else if (owner instanceof Town)
-			return switch (type) {
-				case BUILD -> getPermFlag_Town_Ally_Build();
-				case DESTROY -> getPermFlag_Town_Ally_Destroy();
-				case SWITCH -> getPermFlag_Town_Ally_Switch();
-				case ITEM_USE -> getPermFlag_Town_Ally_ItemUse();
-			};
-		else
-			throw new UnsupportedOperationException();
-	}
 
 	public static boolean getDefaultOutsiderPermission(TownBlockOwner owner, ActionType type) {
 
@@ -2971,7 +2853,6 @@ public class TownySettings {
 		return switch (level) {
 			case RESIDENT -> getDefaultResidentPermission(owner, type);
 			case NATION -> getDefaultNationPermission(owner, type);
-			case ALLY -> getDefaultAllyPermission(owner, type);
 			case OUTSIDER -> getDefaultOutsiderPermission(owner, type);
 		};
 	}
@@ -3094,11 +2975,6 @@ public class TownySettings {
 	public static int getPVPCoolDownTime() {
 
 		return getInt(ConfigNodes.GTOWN_SETTINGS_PVP_COOLDOWN_TIMER);
-	}
-
-	public static int getPeacefulCoolDownTime() {
-
-		return getInt(ConfigNodes.GTOWN_SETTINGS_NEUTRAL_COOLDOWN_TIMER);
 	}
 	
 	public static int getTownDeleteCoolDownTime() {
@@ -3298,10 +3174,6 @@ public class TownySettings {
 		return getBoolean(ConfigNodes.GNATION_SETTINGS_NATIONZONE_ONLY_CAPITALS);
 	}
 	
-	public static boolean getNationZonesWarDisables() {
-		return getBoolean(ConfigNodes.GNATION_SETTINGS_NATIONZONE_WAR_DISABLES);
-	}
-	
 	public static boolean getNationZonesShowNotifications() {
 		return getBoolean(ConfigNodes.GNATION_SETTINGS_NATIONZONE_SHOW_NOTIFICATIONS);
 	}
@@ -3336,10 +3208,6 @@ public class TownySettings {
 	
 	public static boolean isPublicSpawnCostAffectedByTownSpawncost() {
 		return getBoolean(ConfigNodes.ECO_PRICE_ALLOW_MAYORS_TO_OVERRIDE_PUBLIC_SPAWN_COST);
-	}
-	
-	public static boolean isAllySpawningRequiringPublicStatus() {
-		return getBoolean(ConfigNodes.SPAWNING_IS_ALLY_TOWN_SPAWNING_REQUIRING_PUBLIC_STATUS);
 	}
 	
 	public static boolean trustedResidentsGetToSpawnToTown() {
@@ -3453,18 +3321,6 @@ public class TownySettings {
 		return getString(ConfigNodes.FILTERS_PAPI_REL_FORMATTING_SAME_NATION);
 	}
 	
-	public static String getPAPIRelationConqueredTown() {
-		return getString(ConfigNodes.FILTERS_PAPI_REL_FORMATTING_CONQUERED_TOWN);
-	}
-	
-	public static String getPAPIRelationAlly() {
-		return getString(ConfigNodes.FILTERS_PAPI_REL_FORMATTING_ALLY);
-	}
-	
-	public static String getPAPIRelationEnemy() {
-		return getString(ConfigNodes.FILTERS_PAPI_REL_FORMATTING_ENEMY);
-	}
-	
 	public static int getMaxDistanceFromTownSpawnForInvite() {
 		return getInt(ConfigNodes.INVITE_SYSTEM_MAX_DISTANCE_FROM_TOWN_SPAWN);
 	}
@@ -3479,10 +3335,6 @@ public class TownySettings {
 
 	public static List<String> getOrderOfMayoralSuccession() {
 		return getStrArr(ConfigNodes.GTOWN_ORDER_OF_MAYORAL_SUCCESSION);
-	}
-
-	public static boolean isWarAllowed() {
-		return getBoolean(ConfigNodes.NWS_WAR_ALLOWED);
 	}
 	
 	public static boolean isNotificationsTownNamesVerbose() {
@@ -3553,10 +3405,6 @@ public class TownySettings {
 		return getBoolean(ConfigNodes.ECO_BANKRUPTCY_UPKEEP_DELETE_TOWNS_THAT_REACH_DEBT_CAP);
 	}
 	
-	public static boolean canBankruptTownsPayForNeutrality() {
-		return getBoolean(ConfigNodes.ECO_BANKRUPTCY_NEUTRALITY_CAN_BANKRUPT_TOWNS_PAY_NEUTRALITY);
-	}
-	
 	public static boolean isNationTaxKickingTownsThatReachDebtCap() {
 		return getBoolean(ConfigNodes.ECO_BANKRUPTCY_NATION_KICKS_TOWNS_THAT_REACH_DEBT_CAP);
 	}
@@ -3610,10 +3458,6 @@ public class TownySettings {
 
 	public static List<String> getOutlawBlacklistedCommands() {
 		return getStrArr(ConfigNodes.GTOWN_SETTINGS_OUTLAW_BLACKLISTED_COMMANDS);
-	}
-
-	public static List<String> getWarBlacklistedCommands() {
-		return getStrArr(ConfigNodes.GTOWN_SETTINGS_WAR_BLACKLISTED_COMMANDS);
 	}
 
 	public static boolean getVisualizedSpawnPointsEnabled() {
@@ -3698,42 +3542,6 @@ public class TownySettings {
 	
 	public static String getBankHistoryBookFormat() {
 		return getString(ConfigNodes.BANKHISTORY_BOOK);
-	}
-	
-	public static boolean getTownRuinsEnabled() {
-		return getBoolean(ConfigNodes.TOWN_RUINING_TOWN_RUINS_ENABLED);
-	}
-
-	public static int getTownRuinsMaxDurationHours() {
-		return Math.min(getInt(ConfigNodes.TOWN_RUINING_TOWN_RUINS_MAX_DURATION_HOURS), 8760);
-	}
-
-	public static int getTownRuinsMinDurationHours() {
-		return getInt(ConfigNodes.TOWN_RUINING_TOWN_RUINS_MIN_DURATION_HOURS);
-	}
-
-	public static boolean getTownRuinsReclaimEnabled() {
-		return getBoolean(ConfigNodes.TOWN_RUINING_TOWN_RUINS_RECLAIM_ENABLED);
-	}
-
-	public static double getEcoPriceReclaimTown() {
-		return getDouble(ConfigNodes.ECO_PRICE_RECLAIM_RUINED_TOWN);
-	}
-	
-	public static boolean areRuinsMadePublic() {
-		return getBoolean(ConfigNodes.TOWN_RUINING_TOWNS_BECOME_PUBLIC);
-	}
-
-	public static boolean areRuinsMadeOpen() {
-		return getBoolean(ConfigNodes.TOWN_RUINING_TOWNS_BECOME_OPEN);
-	}
-
-	public static boolean areRuinedTownsBanksPaidToNation() {
-		return getBoolean(ConfigNodes.TOWN_RUINING_TOWN_DEPOSITS_BANK_TO_NATION);
-	}
-
-	public static boolean doRuinsPlotPermissionsProgressivelyAllowAll() {
-		return getBoolean(ConfigNodes.TOWN_RUINING_TOWN_PLOTS_PERMISSIONS_OPEN_UP_PROGRESSIVELY);
 	}
 
 	public static void saveConfig() {

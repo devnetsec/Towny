@@ -13,8 +13,6 @@ public class CooldownTimerTask extends TownyTimerTask {
 	private static final Map<String, Long> COOLDOWNS = new ConcurrentHashMap<>();
 
 	public enum CooldownType{
-		PVP(TownySettings.getPVPCoolDownTime()),
-		NEUTRALITY(TownySettings.getPeacefulCoolDownTime()),
 		TELEPORT(TownySettings.getSpawnCooldownTime()),
 		TOWN_RENAME(60),
 		TOWN_DELETE(TownySettings.getTownDeleteCoolDownTime()),

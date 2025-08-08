@@ -1087,17 +1087,11 @@ public class TownyPlayerListener implements Listener {
 				keepInventory = true;
 		}
 
-		// Sometimes we keep the inventory when they are in an Arena plot.
-		if (TownySettings.getKeepInventoryInArenas() && !keepInventory && tb.getType() == TownBlockType.ARENA)
-			keepInventory = true;
-
 		return keepInventory;
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void onArmourDamageEvent(PlayerItemDamageEvent event) {
-		if (!TownySettings.arenaPlotPreventArmourDegrade())
-			return;
 
 		if (plugin.isError()) {
 			event.setCancelled(true);
@@ -1108,7 +1102,7 @@ public class TownyPlayerListener implements Listener {
 			return;
 
 		TownBlock tb = TownyAPI.getInstance().getTownBlock(event.getPlayer());
-		if (tb == null || !tb.getType().equals(TownBlockType.ARENA))
+		if (tb == null)
 			return;
 
 		if (!ItemLists.ARMOURS.contains(event.getItem()) && !ItemLists.WEAPONS.contains(event.getItem()))
@@ -1137,8 +1131,7 @@ public class TownyPlayerListener implements Listener {
 		if (TownySettings.getKeepExperienceInTowns())
 			return true;
 
-		// We sometimes keep experience in Arena Plots.
-		return type != null && type == TownBlockType.ARENA && TownySettings.getKeepExperienceInArenas();
+		return true;
 	}
 
 	/**
@@ -1236,12 +1229,6 @@ public class TownyPlayerListener implements Listener {
 			return;
 		}
 		
-		// Potentially blocks players with a war from using the command.
-		if (blockWarPlayerCommand(event.getPlayer(), resident, command)) {
-			event.setCancelled(true);
-			return;
-		}
-		
 		// Location-dependent blocked commands
 		final TownBlock townBlock = TownyAPI.getInstance().getTownBlock(event.getPlayer());
 		if (blockOutlawedPlayerCommand(event.getPlayer(), resident, townBlock, command) || blockCommandInsideTown(event.getPlayer(), resident, townBlock, command))
@@ -1271,14 +1258,6 @@ public class TownyPlayerListener implements Listener {
 		// Delete the online player's cache because they have been op'd or deop'd.
 		Towny plugin = Towny.getPlugin();
 		plugin.getScheduler().runLater(target, () -> plugin.deleteCache(target), 1L);
-	}
-
-	public boolean blockWarPlayerCommand(Player player, Resident resident, String command) {
-		if (resident.hasTown() && resident.getTownOrNull().hasActiveWar() && blockedWarCommands.containsCommand(command)) {
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_command_war_blocked"));
-			return true;
-		}
-		return false;
 	}
 	
 	/**
@@ -1325,10 +1304,6 @@ public class TownyPlayerListener implements Listener {
 		
 		final Town town = townBlock == null ? null : townBlock.getTownOrNull();
 
-		if (town != null && town.hasActiveWar() && blockedWarCommands.containsCommand(command)) {
-			TownyMessaging.sendErrorMsg(player, Translatable.of("msg_command_war_blocked"));
-			return true;
-		}
 		/*
 		 * Commands are sometimes blocked from being run by outsiders on an town. 
 		 */
@@ -1521,7 +1496,6 @@ public class TownyPlayerListener implements Listener {
 		this.blockedTouristCommands = new CommandList(TownySettings.getTouristBlockedCommands());
 		this.blockedTownCommands = new CommandList(TownySettings.getTownBlacklistedCommands());
 		this.blockedOutlawCommands = new CommandList(TownySettings.getOutlawBlacklistedCommands());
-		this.blockedWarCommands = new CommandList(TownySettings.getWarBlacklistedCommands());
 		this.ownPlotLimitedCommands = new CommandList(TownySettings.getPlayerOwnedPlotLimitedCommands());
 	}
 	

@@ -21,7 +21,6 @@ public class TownBlockType {
 			return town.getCommercialPlotTax() + town.getPlotTax();
 		}
 	}); // Just like residential but has additional tax
-	public static final TownBlockType ARENA = new TownBlockType("Arena"); //Always PVP enabled.
 	public static final TownBlockType EMBASSY = new TownBlockType("Embassy", new TownBlockData() {
 		@Override
 		public double getTax(Town town) {
@@ -84,7 +83,6 @@ public class TownBlockType {
 	static {
 		legacyLookupMap.put(0, "default");
 		legacyLookupMap.put(1, "shop");
-		legacyLookupMap.put(2, "arena");
 		legacyLookupMap.put(3, "embassy");
 		legacyLookupMap.put(4, "wilds");
 		legacyLookupMap.put(6, "inn");

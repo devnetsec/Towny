@@ -299,11 +299,7 @@ public class SpawnUtil {
 				Nation targetNation = town.getNationOrNull();
 
 				if (playerNation == targetNation) {
-					if (!town.isPublic() && 
-						(TownySettings.isAllySpawningRequiringPublicStatus() && !resident.hasPermissionNode(PermissionNodes.TOWNY_SPAWN_NATION_BYPASS_PUBLIC.getNode())))
-						throw new TownyException(Translatable.of("msg_err_ally_isnt_public", town));
-					else
-						townSpawnLevel = TownSpawnLevel.PART_OF_NATION;
+					townSpawnLevel = TownSpawnLevel.PART_OF_NATION;
 				} else {
 					townSpawnLevel = TownSpawnLevel.UNAFFILIATED;
 				}
@@ -385,10 +381,6 @@ public class SpawnUtil {
 			}
 				
 		}
-
-		// Check if the player has the permission/config allows for this type of spawning.
-		// Throws exception if unallowed.
-		nationSpawnLevel.checkIfAllowed(player, nation);
 
 		return nationSpawnLevel;
 	}

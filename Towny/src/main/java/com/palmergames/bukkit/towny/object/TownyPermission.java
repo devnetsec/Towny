@@ -39,7 +39,7 @@ public class TownyPermission {
 	}
 
 	public enum PermLevel {
-		RESIDENT (0, 'f'), NATION (1, 'n'), ALLY (2, 'a'), OUTSIDER (3, 'o');
+		RESIDENT (0, 'f'), NATION (1, 'n'), OUTSIDER (3, 'o');
 		
 		private static final PermLevel[] values = PermLevel.values();
 		
@@ -170,21 +170,6 @@ public class TownyPermission {
 			case "nationitemuse":
 				perms[PermLevel.NATION.getIndex()][ActionType.ITEM_USE.getIndex()] = b;
 				break;
-			case "allybuild":
-				perms[PermLevel.ALLY.getIndex()][ActionType.BUILD.getIndex()] = b;
-				break;
-			case "allydestroy":
-				perms[PermLevel.ALLY.getIndex()][ActionType.DESTROY.getIndex()] = b;
-				break;
-			case "allyswitch":
-				perms[PermLevel.ALLY.getIndex()][ActionType.SWITCH.getIndex()] = b;
-				break;
-			case "allyitemuse":
-				perms[PermLevel.ALLY.getIndex()][ActionType.ITEM_USE.getIndex()] = b;
-				break;
-			case "pvp":
-				pvp = b;
-				break;
 			case "fire":
 				fire = b;
 				break;
@@ -252,10 +237,6 @@ public class TownyPermission {
 
 	public boolean getOutsiderPerm(ActionType type) {
 		return getPerm(PermLevel.OUTSIDER, type);
-	}
-
-	public boolean getAllyPerm(ActionType type) {
-		return getPerm(PermLevel.ALLY, type);
 	}
 
 	public boolean getNationPerm(ActionType type) {

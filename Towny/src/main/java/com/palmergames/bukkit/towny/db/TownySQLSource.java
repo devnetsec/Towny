@@ -1148,10 +1148,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			} catch (SQLException ignored) {
 			}
 
-			town.setRuined(rs.getBoolean("ruined"));
-			town.setRuinedTime(rs.getLong("ruinedTime"));
-			town.setNeutral(rs.getBoolean("neutral"));
-
 			town.setDebtBalance(rs.getFloat("debtBalance"));
 			
 			line = rs.getString("primaryJail");
@@ -1291,7 +1287,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			nation.setTag(rs.getString("tag"));
 
 			nation.setSpawnCost(rs.getFloat("spawnCost"));
-			nation.setNeutral(rs.getBoolean("neutral"));
 			try {
 				nation.setUUID(UUID.fromString(rs.getString("uuid")));
 			} catch (IllegalArgumentException | NullPointerException ee) {
@@ -1439,24 +1434,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			result = rs.getBoolean("claimable");
 			try {
 				world.setClaimable(result);
-			} catch (Exception ignored) {
-			}
-
-			result = rs.getBoolean("pvp");
-			try {
-				world.setPVP(result);
-			} catch (Exception ignored) {
-			}
-
-			result = rs.getBoolean("forcepvp");
-			try {
-				world.setForcePVP(result);
-			} catch (Exception ignored) {
-			}
-			
-			result = rs.getBoolean("friendlyFire");
-			try {
-				world.setFriendlyFire(result);
 			} catch (Exception ignored) {
 			}
 
@@ -1730,12 +1707,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			result = rs.getBoolean("usingTowny");
 			try {
 				world.setUsingTowny(result);
-			} catch (Exception ignored) {
-			}
-
-			result = rs.getBoolean("warAllowed");
-			try {
-				world.setWarAllowed(result);
 			} catch (Exception ignored) {
 			}
 
@@ -2371,10 +2342,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 				twn_hm.put("uuid", UUID.randomUUID());
 			}
 			twn_hm.put("registered", town.getRegistered());
-
-			twn_hm.put("ruined", town.isRuined());
-			twn_hm.put("ruinedTime", town.getRuinedTime());
-			twn_hm.put("neutral", town.isNeutral());
 			
 			twn_hm.put("debtBalance", town.getDebtBalance());
 
@@ -2445,7 +2412,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
             nat_hm.put("taxpercent", nation.isTaxPercentage());
 			nat_hm.put("maxPercentTaxAmount", nation.getMaxPercentTaxAmount());
 			nat_hm.put("spawnCost", nation.getSpawnCost());
-			nat_hm.put("neutral", nation.isNeutral());
 			
 			final Position spawnPos = nation.spawnPosition();
 			nat_hm.put("nationSpawn", spawnPos != null ? String.join("#", spawnPos.serialize()) : "");
@@ -2483,12 +2449,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			
 			nat_hm.put("uuid", world.getUUID());
 
-			// PvP
-			nat_hm.put("pvp", world.isPVP());
-			// Force PvP
-			nat_hm.put("forcepvp", world.isForcePVP());
-			// Friendly Fire
-			nat_hm.put("friendlyFire", world.isFriendlyFireEnabled());
 			// Claimable
 			nat_hm.put("claimable", world.isClaimable());
 			// has monster spawns
@@ -2582,9 +2542,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 
 			// Using Towny
 			nat_hm.put("usingTowny", world.isUsingTowny());
-
-			// War allowed in this world.
-			nat_hm.put("warAllowed", world.isWarAllowed());
 
 			nat_hm.put("jailing", world.isJailingEnabled());
 

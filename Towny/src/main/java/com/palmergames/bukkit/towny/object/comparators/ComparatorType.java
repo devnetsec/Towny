@@ -13,7 +13,6 @@ public enum ComparatorType {
 	NAME("msg_comptype_name", GovernmentComparators.BY_NAME, "by name"),
 	OPEN("msg_comptype_open", GovernmentComparators.BY_OPEN, "by open"),
 	PUBLIC("msg_comptype_public", GovernmentComparators.BY_PUBLIC, "by public"),
-	RUINED("msg_comptype_ruined", TownComparators.BY_RUINED, "by ruined"),
 	BANKRUPT("msg_comptype_bankrupt", TownComparators.BY_BANKRUPT, "by bankrupt"),
 	UPKEEP("msg_comptype_upkeep", GovernmentComparators.BY_UPKEEP, "by upkeep");
 

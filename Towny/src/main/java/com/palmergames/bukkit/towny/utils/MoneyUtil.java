@@ -162,9 +162,6 @@ public class MoneyUtil {
 		if (!withdraw && !resident.getAccount().canPayFromHoldings(amount))
 			throw new TownyException(Translatable.of("msg_insuf_funds"));
 		
-		if (!nation && town.isRuined())
-			throw new TownyException(Translatable.of("msg_err_cannot_use_command_because_town_ruined"));
-		
 		if (withdraw && ((nation && !TownySettings.getNationBankAllowWithdrawls()) || (!nation && !TownySettings.getTownBankAllowWithdrawls())))
 			throw new TownyException(Translatable.of("msg_err_withdraw_disabled"));
 		
@@ -313,13 +310,6 @@ public class MoneyUtil {
 			screen.addComponentOf("upkeepPenalty", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_bank_town_penalty_upkeep")) +
 					" " + TownyFormatter.colourKeyImportant(formatMoney(TownySettings.getTownPenaltyUpkeepCost(town))));
 
-		if (town.isNeutral()) {
-			double neutralCost = TownySettings.getTownNeutralityCost(town);
-			if (neutralCost > 0)
-				screen.addComponentOf("neutralityCost", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_neutrality_cost") +
-						" " + TownyFormatter.colourKeyImportant(formatMoney(neutralCost))));
-		}
-
 		screen.addComponentOf("towntax", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_bank_town3")) +
 				" " + TownyFormatter.colourKeyImportant(town.isTaxPercentage() ? town.getTaxes() + "%" : formatMoney(town.getTaxes())));
 	}
@@ -340,12 +330,6 @@ public class MoneyUtil {
 		if (TownySettings.getNationUpkeepCost(nation) > 0)
 			screen.addComponentOf("nationupkeep", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_bank_town2") +
 					" " + TownyFormatter.colourKeyImportant(formatMoney(TownySettings.getNationUpkeepCost(nation)))));
-		if (nation.isNeutral()) {
-			double neutralCost = TownySettings.getNationNeutralityCost(nation);
-			if (neutralCost > 0)
-				screen.addComponentOf("neutralityCost", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_neutrality_cost") +
-						" " + TownyFormatter.colourKeyImportant(formatMoney(neutralCost))));
-		}
 
 		screen.addComponentOf("nationtax", translator.of("status_splitter") + TownyFormatter.colourKey(translator.of("status_nation_tax")) +
 				" " + TownyFormatter.colourKeyImportant(nation.isTaxPercentage() ? nation.getTaxes() + "%" : formatMoney(nation.getTaxes())));

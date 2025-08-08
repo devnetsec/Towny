@@ -14,18 +14,12 @@ import com.palmergames.bukkit.towny.event.NationRemoveTownEvent;
 import com.palmergames.bukkit.towny.event.BonusBlockPurchaseCostCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownBlockClaimCostCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownyObjectFormattedNameEvent;
-import com.palmergames.bukkit.towny.event.town.TownAddAlliedTownEvent;
-import com.palmergames.bukkit.towny.event.town.TownAddEnemiedTownEvent;
 import com.palmergames.bukkit.towny.event.town.TownCalculateTownLevelNumberEvent;
-import com.palmergames.bukkit.towny.event.town.TownConqueredEvent;
 import com.palmergames.bukkit.towny.event.town.TownIsTownOverClaimedEvent;
 import com.palmergames.bukkit.towny.event.town.TownMapColourLocalCalculationEvent;
 import com.palmergames.bukkit.towny.event.town.TownMapColourNationalCalculationEvent;
 import com.palmergames.bukkit.towny.event.town.TownMayorChangedEvent;
 import com.palmergames.bukkit.towny.event.town.TownMayorChosenBySuccessionEvent;
-import com.palmergames.bukkit.towny.event.town.TownRemoveAlliedTownEvent;
-import com.palmergames.bukkit.towny.event.town.TownRemoveEnemiedTownEvent;
-import com.palmergames.bukkit.towny.event.town.TownUnconquerEvent;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.EmptyNationException;
 import com.palmergames.bukkit.towny.exceptions.EmptyTownException;
@@ -107,8 +101,6 @@ public class Town extends Government implements TownBlockOwner {
 	private boolean nationZoneEnabled = true;
 	private final ConcurrentHashMap<WorldCoord, TownBlock> townBlocks = new ConcurrentHashMap<>();
 	private final TownyPermission permissions = new TownyPermission();
-	private boolean ruined = false;
-	private long ruinedTime;
 	private long joinedNationAt;
 	private long movedHomeBlockAt;
 	private Jail primaryJail;
@@ -1481,22 +1473,6 @@ public class Town extends Government implements TownBlockOwner {
 		this.debtBalance = balance;
 	}
 
-	public boolean isRuined() {
-		return ruined;
-	}
-	
-	public void setRuined(boolean b) {
-		ruined = b;
-	}
-	
-	public void setRuinedTime(long time) {
-		this.ruinedTime = time;
-	}
-	
-	public long getRuinedTime() {
-		return ruinedTime;
-	}
-
 	/**
 	 * Used by Dynmap-Towny to get the town's *local* map-colour.
 	 * 
@@ -1685,7 +1661,7 @@ public class Town extends Government implements TownBlockOwner {
 	public int getLevelNumber() {
 		int townLevelNumber = getManualTownLevel() > -1
 				? Math.min(getManualTownLevel(), TownySettings.getTownLevelMax())
-				: TownySettings.getTownLevelWhichIsNotManuallySet(getNumResidents(), this);
+				: TownySettings.getTownLevelWhichIsNotManuallySet(getNumResidents());
 
 		TownCalculateTownLevelNumberEvent tctle = new TownCalculateTownLevelNumberEvent(this, townLevelNumber);
 		BukkitTools.fireEvent(tctle);

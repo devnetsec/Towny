@@ -146,7 +146,7 @@ public class PermHUD {
 		String v = residentOwned ? "f" : "r";
 		String u = residentOwned ? "t" : "n";
 		return (tp.getResidentPerm(actionType) ? v : "-") + (tp.getNationPerm(actionType) ? u : "-") +
-				(tp.getAllyPerm(actionType) ? "a" : "-") + (tp.getOutsiderPerm(actionType) ? "o" : "-");
+			(tp.getOutsiderPerm(actionType) ? "o" : "-");
 	}
 
 	private static String getTranslatedOnOrOff(boolean test, Translator translator) {

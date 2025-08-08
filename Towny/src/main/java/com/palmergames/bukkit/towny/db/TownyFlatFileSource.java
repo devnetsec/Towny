@@ -952,26 +952,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 					if (nation != null)
 						town.setNation(nation, false);
 				}
-					
-				line = keys.get("ruined");
-				if (line != null)
-					try {
-						town.setRuined(Boolean.parseBoolean(line));
-					} catch (Exception e) {
-						town.setRuined(false);
-					}
-				
-				line = keys.get("ruinedTime");
-				if (line != null)
-					try {
-						town.setRuinedTime(Long.parseLong(line));
-					} catch (Exception ee) {
-						town.setRuinedTime(0);
-					}
-				
-				line = keys.get("neutral");
-				if (line != null)
-					town.setNeutral(Boolean.parseBoolean(line));
 				
 				line = keys.get("debtBalance");
 				if (line != null)
@@ -1110,10 +1090,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 						nation.setSpawnCost(TownySettings.getSpawnTravelCost());
 					}
 				
-				line = keys.get("neutral");
-				if (line != null)
-					nation.setNeutral(Boolean.parseBoolean(line));
-				
 				line = keys.get("uuid");
 				if (line != null) {
 					try {
@@ -1228,27 +1204,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				if (line != null)
 					try {
 						world.setClaimable(Boolean.parseBoolean(line));
-					} catch (Exception ignored) {
-					}
-				
-				line = keys.get("pvp");
-				if (line != null)
-					try {
-						world.setPVP(Boolean.parseBoolean(line));
-					} catch (Exception ignored) {
-					}
-				
-				line = keys.get("forcepvp");
-				if (line != null)
-					try {
-						world.setForcePVP(Boolean.parseBoolean(line));
-					} catch (Exception ignored) {
-					}
-				
-				line = keys.get("friendlyFire");
-				if (line != null)
-					try {
-						world.setFriendlyFire(Boolean.parseBoolean(line));
 					} catch (Exception ignored) {
 					}
 				
@@ -1527,13 +1482,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				if (line != null)
 					try {
 						world.setUsingTowny(Boolean.parseBoolean(line));
-					} catch (Exception ignored) {
-					}
-				
-				line = keys.get("warAllowed");
-				if (line != null)
-					try {
-						world.setWarAllowed(Boolean.parseBoolean(line));
 					} catch (Exception ignored) {
 					}
 
@@ -2101,11 +2049,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		// ManualTownLevel
 		list.add("manualTownLevel=" + town.getManualTownLevel());
 		
-		list.add("ruined=" + town.isRuined());
-		list.add("ruinedTime=" + town.getRuinedTime());
-		// Peaceful
-		list.add("neutral=" + town.isNeutral());
-		
 		// Debt balance
 		list.add("debtBalance=" + town.getDebtBalance());
 
@@ -2190,8 +2133,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("taxes=" + nation.getTaxes());
 		// Nation Spawn Cost
 		list.add("spawnCost=" + nation.getSpawnCost());
-		// Peaceful
-		list.add("neutral=" + nation.isNeutral());
 		if (nation.hasValidUUID()){
 			list.add("uuid=" + nation.getUUID());
 		} else {
@@ -2232,13 +2173,7 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		
 		if (world.getUUID() != null)
 			list.add("uuid=" + world.getUUID());
-
-		// PvP
-		list.add("pvp=" + world.isPVP());
-		// Force PvP
-		list.add("forcepvp=" + world.isForcePVP());
-		// FriendlyFire 
-		list.add("friendlyFire=" + world.isFriendlyFireEnabled());		
+		
 		// Claimable
 		list.add("# Can players found towns and claim plots in this world?");
 		list.add("claimable=" + world.isClaimable());
@@ -2368,11 +2303,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("# This setting is used to enable or disable Towny in this world.");
 		// Using Towny
 		list.add("usingTowny=" + world.isUsingTowny());
-
-		// is War allowed
-		list.add("");
-		list.add("# This setting is used to enable or disable Event war in this world.");
-		list.add("warAllowed=" + world.isWarAllowed());
 
 		// jailing
 		list.add("jailing=" + world.isJailingEnabled());		

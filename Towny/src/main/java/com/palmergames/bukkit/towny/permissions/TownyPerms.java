@@ -304,9 +304,6 @@ public class TownyPerms {
 			} else {
 				permList.add("towny.nationless");
 			}
-			
-			if (isPeaceful(town))
-				permList.addAll(getList("peaceful"));
 
 		} else {
 			permList.add("towny.townless");
@@ -509,10 +506,6 @@ public class TownyPerms {
 				return townRank;
 		}
 		return null;
-	}
-
-	private static boolean isPeaceful(Town town) {
-		return town.isNeutral() || (town.hasNation() && town.getNationOrNull().isNeutral()); 
 	}
 
 	public static boolean hasPeacefulNodes() {

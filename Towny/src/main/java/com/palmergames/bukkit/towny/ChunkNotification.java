@@ -151,11 +151,6 @@ public class ChunkNotification {
 		if (output != null && output.length() > 0)
 			out.add(output);
 		
-		// Only adds this if entering the wilderness
-		output = getAreaPvPNotification(resident);
-		if (output != null && output.length() > 0)
-			out.add(output);
-		
 		// Only show the owner of individual plots if they do not have this mode applied		
 		if (!resident.hasMode("ignoreplots")) {
 			output = getOwnerOrPlotNameNotification(resident);
@@ -208,15 +203,6 @@ public class ChunkNotification {
 			}
 		return null;
 	}
-	
-	public String getAreaPvPNotification(Resident resident) {
-
-		if (fromWild ^ toWild || !fromWild && !toWild && fromTown != null && toTown != null && fromTown != toTown) {
-			if (toWild)
-				return String.format(areaWildernessPvPNotificationFormat, (to.getTownyWorld().isPVP() && testWorldPVP()) ? Translatable.of("status_title_pvp").forLocale(resident) : "");
-		}
-		return null;
-	}
 
 	public String getOwnerOrPlotNameNotification(Resident resident) {
 
@@ -234,11 +220,6 @@ public class ChunkNotification {
 
 		}
 		return null;
-	}
-
-	private boolean testWorldPVP() {
-
-		return to.getTownyWorld().isPVP();
 	}
 
 	public String getPlotNotification() {

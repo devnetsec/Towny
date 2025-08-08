@@ -47,11 +47,8 @@ public class TownyWorldCommand extends BaseCommand implements CommandExecutor {
 	private static final List<String> townyWorldToggleTabCompletes = Arrays.asList(
 		"claimable",
 		"usingtowny",
-		"pvp",
-		"forcepvp",
 		"explosion",
 		"forceexplosion",
-		"friendlyfire",
 		"fire",
 		"forcefire",
 		"townmobs",
@@ -60,7 +57,6 @@ public class TownyWorldCommand extends BaseCommand implements CommandExecutor {
 		"revertunclaim",
 		"revertentityexpl",
 		"revertblockexpl",
-		"warallowed",
 		"unclaimblockdelete",
 		"unclaimentitydelete",
 		"plotcleardelete",
@@ -220,10 +216,6 @@ public class TownyWorldCommand extends BaseCommand implements CommandExecutor {
 		switch (split[0].toLowerCase(Locale.ROOT)) {
 		case "claimable" -> toggleClaimable(sender, world, choice);
 		case "usingtowny" -> toggleUsingTowny(sender, world, choice);
-		case "warallowed" -> toggleWarAllowed(sender, world, choice);
-		case "pvp" -> togglePVP(sender, world, choice);
-		case "forcepvp" -> toggleForcePVP(sender, world, choice);
-		case "friendlyfire" -> toggleFriendlyFire(sender, world, choice);
 		case "explosion" -> toggleExplosion(sender, world, choice);
 		case "forceexplosion" -> toggleForceExplosion(sender, world, choice);
 		case "fire" -> toggleFire(sender, world, choice);
@@ -269,31 +261,6 @@ public class TownyWorldCommand extends BaseCommand implements CommandExecutor {
 		// Towny might be getting shut off in a world in order to stop the revert-on-unclaim feature, here we stop any active reverts.
 		if (!world.isUsingTowny() && world.isUsingPlotManagementRevert())
 			TownyRegenAPI.turnOffRevertOnUnclaimForWorld(world);
-	}
-
-	private void toggleWarAllowed(CommandSender sender, TownyWorld world, Optional<Boolean> choice) throws NoPermissionException {
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYWORLD_TOGGLE_WARALLOWED.getNode());
-		world.setWarAllowed(choice.orElse(!world.isWarAllowed()));
-		plugin.resetCache();
-		TownyMessaging.sendMsg(sender, world.isWarAllowed() ? Translatable.of("msg_set_war_allowed_on") : Translatable.of("msg_set_war_allowed_off"));
-	}
-
-	private void togglePVP(CommandSender sender, TownyWorld world, Optional<Boolean> choice) throws NoPermissionException {
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYWORLD_TOGGLE_PVP.getNode());
-		world.setPVP(choice.orElse(!world.isPVP()));
-		TownyMessaging.sendMsg(sender, Translatable.of("msg_changed_world_setting", "Global PVP", world.getName(), formatBool(world.isPVP())));
-	}
-
-	private void toggleForcePVP(CommandSender sender, TownyWorld world, Optional<Boolean> choice) throws NoPermissionException {
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYWORLD_TOGGLE_FORCEPVP.getNode());
-		world.setForcePVP(choice.orElse(!world.isForcePVP()));
-		TownyMessaging.sendMsg(sender, Translatable.of("msg_changed_world_setting", "Force town PVP", world.getName(), formatBool(world.isForcePVP(), "forced", "adjustable")));
-	}
-
-	private void toggleFriendlyFire(CommandSender sender, TownyWorld world, Optional<Boolean> choice) throws NoPermissionException {
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYWORLD_TOGGLE_FRIENDLYFIRE.getNode());
-		world.setFriendlyFire(choice.orElse(!world.isFriendlyFireEnabled()));
-		TownyMessaging.sendMsg(sender, Translatable.of("msg_changed_world_setting", "Friendly Fire", world.getName(), formatBool(world.isFriendlyFireEnabled())));
 	}
 
 	private void toggleExplosion(CommandSender sender, TownyWorld world, Optional<Boolean> choice) throws NoPermissionException {

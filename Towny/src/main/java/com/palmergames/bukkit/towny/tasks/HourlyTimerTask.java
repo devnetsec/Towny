@@ -14,7 +14,6 @@ import com.palmergames.bukkit.towny.invites.InviteHandler;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.jail.UnJailReason;
 import com.palmergames.bukkit.towny.utils.JailUtil;
-import com.palmergames.bukkit.towny.utils.TownRuinUtil;
 import com.palmergames.bukkit.util.BukkitTools;
 
 /**
@@ -32,9 +31,6 @@ public class HourlyTimerTask extends TownyTimerTask {
 
 	@Override
 	public void run() {
-		if (TownySettings.getTownRuinsEnabled()) {
-			TownRuinUtil.evaluateRuinedTownRemovals();
-		}
 		
 		if (TownySettings.getInviteExpirationTime() > 0)
 			InviteHandler.searchForExpiredInvites();

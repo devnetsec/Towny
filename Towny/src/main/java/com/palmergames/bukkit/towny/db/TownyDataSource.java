@@ -360,7 +360,7 @@ public abstract class TownyDataSource {
 	}
 
 	public boolean removeTown(@NotNull Town town, @NotNull DeleteTownEvent.Cause cause, @Nullable CommandSender sender) {
-		return removeTown(town, cause, sender, TownySettings.getTownRuinsEnabled() && !town.isRuined());
+		return removeTown(town, cause, sender);
 	}
 
 	abstract public boolean removeTown(@NotNull Town town, @NotNull DeleteTownEvent.Cause cause, @Nullable CommandSender sender, boolean delayFullRemoval);

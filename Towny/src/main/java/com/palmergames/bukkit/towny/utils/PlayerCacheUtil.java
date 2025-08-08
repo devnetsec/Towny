@@ -264,8 +264,7 @@ public class PlayerCacheUtil {
 		if(targetTown != null 
 			&& TownySettings.isTownBankruptcyEnabled() 
 			&& action == ActionType.BUILD
-			&& targetTown.isBankrupt() 
-			&& !targetTown.isRuined()) {
+			&& targetTown.isBankrupt() ) {
 				cacheBlockErrMsg(player, Translatable.of("msg_err_bankrupt_town_cannot_build").forLocale(player));
 				return false;
 		}
@@ -418,23 +417,6 @@ public class PlayerCacheUtil {
 				return true;
 
 			cacheBlockErrMsg(player, Translatable.of("msg_cache_block_error_town_nation", Translatable.of(action.toString())).forLocale(player));
-			return false;
-		}
-		
-		/*
-		 * Handle both personally-owned and town-owned Ally permissions.
-		 */
-		if (status == TownBlockStatus.PLOT_ALLY || status == TownBlockStatus.TOWN_ALLY) {
-
-			// Plot allows Ally perms and we aren't stopped by a TownBlockType overriding things.
-			if (townBlock.getPermissions().getAllyPerm(action) && isAllowedMaterial(townBlock, material, action))
-				return true;
-
-			// Choose which error message will be shown.
-			if (status == TownBlockStatus.PLOT_ALLY) 
-				cacheBlockErrMsg(player, Translatable.of("msg_cache_block_error_plot", Translatable.of("msg_cache_block_error_plot_allies"), Translatable.of(action.toString())).forLocale(player));
-			else 
-				cacheBlockErrMsg(player, Translatable.of("msg_cache_block_error_town_allies", Translatable.of(action.toString())).forLocale(player));
 			return false;
 		}
 		

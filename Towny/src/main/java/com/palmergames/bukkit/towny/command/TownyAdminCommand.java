@@ -65,7 +65,6 @@ import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.towny.utils.ProximityUtil;
 import com.palmergames.bukkit.towny.utils.ResidentUtil;
 import com.palmergames.bukkit.towny.utils.SpawnUtil;
-import com.palmergames.bukkit.towny.utils.TownRuinUtil;
 import com.palmergames.bukkit.util.BukkitTools;
 import com.palmergames.bukkit.util.ChatTools;
 import com.palmergames.bukkit.util.Colors;
@@ -1459,12 +1458,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 
 			TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_town_left", StringMgmt.remUnderscore(town.getName())));
 			TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_left_nation", StringMgmt.remUnderscore(nation.getName())));
-			break;
-		case "unruin":
-			// Sets the town to unruined with the existing NPC mayor still in place.
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_TOWN_UNRUIN.getNode());
-			TownRuinUtil.reclaimTown(town.getMayor(), town);
-			town.save();
 			break;
 		case "checkoutposts":
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_TOWN_CHECKOUTPOSTS.getNode());

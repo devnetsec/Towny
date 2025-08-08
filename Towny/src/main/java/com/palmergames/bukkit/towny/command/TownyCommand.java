@@ -424,7 +424,6 @@ public class TownyCommand extends BaseCommand implements CommandExecutor {
 
 		output.add(ChatTools.formatTitle(translator.of("towny_prices_title")));
 		output.add(translator.of("towny_prices_town_nation", prettyMoney(TownySettings.getNewTownPrice()), prettyMoney(TownySettings.getNewNationPrice())));
-		output.add(translator.of("towny_prices_reclaim", prettyMoney(TownySettings.getEcoPriceReclaimTown())));
 		if (town != null) {
 			output.add(translator.of("towny_prices_upkeep", prettyMoney(TownySettings.getTownUpkeepCost(town)), prettyMoney(TownySettings.getNationUpkeepCost(nation))));
 			output.add(translator.of("towny_prices_upkeep_based_on", (TownySettings.isUpkeepByPlot() ? translator.of("towny_prices_upkeep_num_plots") : translator.of("towny_prices_upkeep_town_level"))));
@@ -458,7 +457,6 @@ public class TownyCommand extends BaseCommand implements CommandExecutor {
 
 			output.add(translator.of("towny_prices_taxes_plot", (town.isTaxPercentage()? town.getTaxes() + "%" : prettyMoney(town.getTaxes())), prettyMoney(town.getPlotTax())));
 			output.add(translator.of("towny_prices_taxes_shop", prettyMoney(town.getCommercialPlotTax()), prettyMoney(town.getEmbassyPlotTax())));
-			output.add(translator.of("towny_prices_town_neutral_tax", prettyMoney(TownySettings.getTownNeutralityCost(town))));
 			
 			output.add(translator.of("towny_prices_plots"));
 			List<TownBlockType> townBlockTypes = new ArrayList<>(TownBlockTypeHandler.getTypes().values());
@@ -477,7 +475,7 @@ public class TownyCommand extends BaseCommand implements CommandExecutor {
 
 			if (nation != null) {
 				output.add(translator.of("towny_prices_nationname", nation.getFormattedName()));
-				output.add(translator.of("towny_prices_nation_tax", (nation.isTaxPercentage() ? nation.getTaxes() + "%" : prettyMoney(nation.getTaxes())), prettyMoney(TownySettings.getNationNeutralityCost(nation))));
+				output.add(translator.of("towny_prices_nation_tax", (nation.isTaxPercentage() ? nation.getTaxes() + "%" : prettyMoney(nation.getTaxes()))));
 			}
 		}
 		return output;

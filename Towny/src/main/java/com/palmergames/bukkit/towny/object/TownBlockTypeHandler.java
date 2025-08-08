@@ -211,7 +211,6 @@ public final class TownBlockTypeHandler {
 			String farmPlotBlocks = config.getString("global_town_settings.farm_plot_allow_blocks", TownySettings.getDefaultFarmblocks());
 			
 			migrations.add(new Migration("shop", "cost", shopCost));
-			migrations.add(new Migration("arena", "cost", arenaCost));
 			migrations.add(new Migration("embassy", "cost", embassyCost));
 			migrations.add(new Migration("wilds", "cost", wildsCost));
 			migrations.add(new Migration("inn", "cost", innCost));

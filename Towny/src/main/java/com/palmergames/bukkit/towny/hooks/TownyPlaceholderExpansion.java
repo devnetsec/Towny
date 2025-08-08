@@ -535,12 +535,6 @@ public class TownyPlaceholderExpansion extends PlaceholderExpansion implements R
 			return getMoney(TownySettings.getBaseCostForTownMerge());
 		case "town_merge_per_plot_percentage": // %townyadvanced_town_merge_per_plot_percentage%
 			return String.valueOf(TownySettings.getPercentageCostPerPlot());
-		case "town_reclaim_cost": // %townyadvanced_town_reclaim_cost%
-			return getMoney(TownySettings.getEcoPriceReclaimTown());
-		case "town_reclaim_max_duration_hours": // %townyadvanced_town_reclaim_max_duration_hours%
-			return String.valueOf(TownySettings.getTownRuinsMaxDurationHours());
-		case "town_reclaim_min_duration_hours": // %townyadvanced_town_reclaim_max_duration_hours%
-			return String.valueOf(TownySettings.getTownRuinsMinDurationHours());
 		case "townblock_buy_bonus_price": // %townyadvanced_townblock_buy_bonus_price%
 			return getMoney(TownySettings.getPurchasedBonusBlocksCost());
 		case "townblock_claim_price": // %townyadvanced_townblock_claim_price%
@@ -645,10 +639,6 @@ public class TownyPlaceholderExpansion extends PlaceholderExpansion implements R
 			return resident.hasNation() ? TownySettings.getNationPostfix(resident.getNationOrNull()) : "";
 		case "player_jailed": // %townyadvanced_player_jailed%
 			return String.valueOf(resident.isJailed());
-		case "is_nation_peaceful": // %townyadvanced_is_nation_peaceful%	
-			return resident.hasNation() ? (resident.getNationOrNull().isNeutral() ? Translation.of("status_town_title_peaceful"): "") : "";
-		case "is_town_peaceful": // %townyadvanced_is_town_peaceful%	
-			return resident.hasTown() ? (resident.getTownOrNull().isNeutral() ? Translation.of("status_town_title_peaceful"): "") : "";
 		case "is_town_public": // %townyadvanced_is_town_public%
 			return resident.hasTown() ? (resident.getTownOrNull().isPublic() ? Translation.of("status_public") : "") : "";
 		case "is_town_open": // %townyadvanced_is_town_open%
@@ -675,8 +665,6 @@ public class TownyPlaceholderExpansion extends PlaceholderExpansion implements R
 			return TimeMgmt.countdownTimeSecondsRaw(TimeMgmt.townyTime(true));
 		case "number_of_towns_in_server": // %townyadvanced_number_of_towns_in_server%
 			return String.valueOf(TownyUniverse.getInstance().getTowns().size());
-		case "number_of_neutral_towns_in_server": // %townyadvanced_number_of_neutral_towns_in_server%
-			return String.valueOf(TownyUniverse.getInstance().getTowns().stream().filter(Town::isNeutral).count());
 		case "nation_or_town_name":	// %townyadvanced_nation_or_town_name%
 			return !resident.hasTown() 
 				? ""
@@ -785,8 +773,6 @@ public class TownyPlaceholderExpansion extends PlaceholderExpansion implements R
 				return townblock != null ? townblock.getTownOrNull().getPrefix(): "";
 			case "player_location_town_postfix": // %townyadvanced_player_location_town_postfix%
 				return townblock != null ? townblock.getTownOrNull().getPostfix(): "";
-			case "player_location_pvp": // %townyadvanced_player_location_pvp%
-				return townblock != null ? (townblock.getPermissions().pvp ? Translation.of("status_title_pvp"): Translation.of("status_title_nopvp")) : (TownyAPI.getInstance().getTownyWorld(player.getWorld()).isPVP() ? Translation.of("status_title_pvp"):"");
 			case "player_location_town_resident_count": // %townyadvanced_player_location_town_resident_count%
 				return townblock != null ? Integer.toString(townblock.getTownOrNull().getResidents().size()) : "";
 			case "player_location_town_mayor_name": // %townyadvanced_player_location_town_mayor_name%
@@ -801,11 +787,6 @@ public class TownyPlaceholderExpansion extends PlaceholderExpansion implements R
                 return townblock != null ? String.valueOf(townblock.getTownOrNull().hasTrustedResident(resident)) : "";
 			case "number_of_towns_in_world": // %townyadvanced_number_of_towns_in_world%
 				return String.valueOf(TownyUniverse.getInstance().getTowns().stream()
-						.filter(t -> t.getHomeblockWorld().equals(townblock.getWorld()))
-						.count());
-			case "number_of_neutral_towns_in_world": // %townyadvanced_number_of_neutral_towns_in_world%
-				return String.valueOf(TownyUniverse.getInstance().getTowns().stream()
-						.filter(t -> t.isNeutral())
 						.filter(t -> t.getHomeblockWorld().equals(townblock.getWorld()))
 						.count());
 			case "player_location_town_forsale_cost": // %townyadvanced_player_location_town_forsale_cost%

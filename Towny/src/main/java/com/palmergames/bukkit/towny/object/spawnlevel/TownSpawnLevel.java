@@ -78,14 +78,7 @@ public enum TownSpawnLevel {
 	public void checkIfAllowed(Player player, Town town) throws TownyException {
 
 		if (!isAllowed(player, town)) {
-			boolean war = town.hasActiveWar();
 			SpawnLevel level = TownySettings.getSpawnLevel(this.isAllowingConfigNode);
-			if(level == SpawnLevel.WAR && !war) {
-				throw new TownyException(Translation.of(notAllowedLangNodeWar));
-			}
-			else if(level == SpawnLevel.PEACE && war) {
-				throw new TownyException(Translation.of(notAllowedLangNodePeace));
-			}
 			throw new TownyException(Translation.of(notAllowedLangNode));
 		}
 	}
@@ -96,9 +89,8 @@ public enum TownSpawnLevel {
 	}
 
 	private boolean isAllowedTown(Town town) {
-		boolean war = town.hasActiveWar();
 		SpawnLevel level = TownySettings.getSpawnLevel(this.isAllowingConfigNode);
-		return level == SpawnLevel.TRUE || (level != SpawnLevel.FALSE && ((level == SpawnLevel.WAR) == war));
+		return level == SpawnLevel.TRUE;
 	}
 	
 	public double getCost() {

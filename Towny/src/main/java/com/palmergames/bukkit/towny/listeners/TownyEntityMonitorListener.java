@@ -135,7 +135,6 @@ public class TownyEntityMonitorListener implements Listener {
 			|| !TownySettings.isChargingDeath()                    // No Death Costs.
 			|| defenderResident.isJailed()                         // Dead resident was jailed.
 			|| hasBypassNode(defenderResident)                     // Permission node bypassing death costs.
-			|| killedInInvalidTownBlockType(defenderPlayer)        // Player killed in Arena or Jail.
 			)
 			return;
 
@@ -235,11 +234,6 @@ public class TownyEntityMonitorListener implements Listener {
 		return defenderResident.hasPermissionNode(PermissionNodes.TOWNY_BYPASS_DEATH_COSTS.getNode());
 	}
 
-	private boolean killedInInvalidTownBlockType(Player defenderPlayer) {
-		TownBlock townBlock = TownyAPI.getInstance().getTownBlock(defenderPlayer);
-		return townBlock != null && (townBlock.getType().equals(TownBlockType.ARENA) || townBlock.getType().equals(TownBlockType.JAIL));
-	}
-
 	private void isJailingAttackers(Player defenderPlayer, Resident attackerResident, Resident defenderResident) {
 		if (!TownySettings.isJailingAttackingOutlaws())
 			return;
@@ -247,7 +241,6 @@ public class TownyEntityMonitorListener implements Listener {
 		TownBlock townBlock = TownyAPI.getInstance().getTownBlock(defenderPlayer.getLocation());
 		Town attackerTown = attackerResident.getTownOrNull();
 		if (townBlock == null                              // Player died in the Wilderness.
-			|| townBlock.getType() == TownBlockType.ARENA  // Player died in an Arena plot.
 			|| !attackerResident.hasTown()                 // Attacker has no town.
 			|| alreadyJailed(defenderResident, townBlock)  // Player was already jailed.
 			|| !hasJailingNode(attackerResident)           // Attacker doesn't have permission to jail.

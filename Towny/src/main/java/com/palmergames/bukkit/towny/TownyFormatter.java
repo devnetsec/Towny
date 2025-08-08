@@ -28,7 +28,6 @@ import com.palmergames.bukkit.towny.utils.MoneyUtil;
 import com.palmergames.bukkit.towny.utils.NationUtil;
 import com.palmergames.bukkit.towny.utils.OutpostUtil;
 import com.palmergames.bukkit.towny.utils.ResidentUtil;
-import com.palmergames.bukkit.towny.utils.TownRuinUtil;
 import com.palmergames.bukkit.towny.utils.TownyComponents;
 import com.palmergames.bukkit.util.BukkitTools;
 import com.palmergames.bukkit.util.ChatTools;
@@ -332,63 +331,57 @@ public class TownyFormatter {
 		screen.addComponentOf("firespread", colourKeyValue(translator.of("firespread"), (town.isFire() || world.isForceFire()) ? translator.of("status_on"): translator.of("status_off"))); 
 		screen.addComponentOf("mobspawns", colourKeyValue(translator.of("mobspawns"), (town.hasMobs() || town.isAdminEnabledMobs() || world.isForceTownMobs()) ? translator.of("status_on"): translator.of("status_off")));
 
-		if (TownySettings.getTownRuinsEnabled() && town.isRuined()) {
-			TownRuinUtil.addRuinedComponents(town, screen, translator);
+		// | Bank: 534 coins
+		if (TownyEconomyHandler.isActive())
+			MoneyUtil.addTownMoneyComponents(town, translator, screen);
 
-		// Only display the remaining fields if town is not ruined
-		} else {
-			// | Bank: 534 coins
-			if (TownyEconomyHandler.isActive())
-				MoneyUtil.addTownMoneyComponents(town, translator, screen);
-
-			// Mayor: MrSand
-			if (town.getMayor() != null) {
-				screen.addComponentOf("mayor", colourKeyValue(translator.of("rank_list_mayor"), town.getMayor().getFormattedName()),
-					HoverEvent.showText(translator.component("registered_last_online", registeredFormat.format(town.getMayor().getRegistered()), lastOnlineFormatIncludeYear.format(town.getMayor().getLastOnline()))
-						.append(Component.newline())
-						.append(translator.component("status_hover_click_for_more"))),
-					ClickEvent.runCommand("/towny:resident " + town.getMayor().getName())
-				);
-			} else
-				screen.addComponentOf("mayor", colourKeyValue(translator.of("rank_list_mayor"), translator.of("status_no_town")));
-
-			// Nation: Azur Empire
-			if (town.hasNation())
-				NationUtil.addNationComponenents(town, screen, translator);
-
-			screen.addComponentOf("newline", Component.newline());
-			// [Rank List] with hover including ranks and their residents.
-			List<String> ranklist = getRanks(town, translator);
-			if (ranklist.size() > 0)
-				screen.addComponentOf("townranks", colourHoverKey(translator.of("status_rank_list")),
-						HoverEvent.showText(TownyComponents.miniMessage(String.join("\n", ranklist))
-							.append(Component.newline())
-							.append(translator.component("status_hover_click_for_more"))),
-						ClickEvent.runCommand("/towny:town ranklist " + town.getName()));
-
-			// [Residents] with hover showing residents names.
-			List<String> residents = getFormattedNames(town.getResidents());
-			if (residents.size() > 34)
-				shortenOverLengthList(residents, 35, translator);
-			
-			screen.addComponentOf("residents", colourHoverKey(translator.of("res_list")),
-				HoverEvent.showText(TownyComponents.miniMessage(getFormattedStrings(translator.of("res_list"), residents, town.getResidents().size()))
+		// Mayor: MrSand
+		if (town.getMayor() != null) {
+			screen.addComponentOf("mayor", colourKeyValue(translator.of("rank_list_mayor"), town.getMayor().getFormattedName()),
+				HoverEvent.showText(translator.component("registered_last_online", registeredFormat.format(town.getMayor().getRegistered()), lastOnlineFormatIncludeYear.format(town.getMayor().getLastOnline()))
 					.append(Component.newline())
 					.append(translator.component("status_hover_click_for_more"))),
-				ClickEvent.runCommand("/towny:town reslist "+ town.getName()));
-			
-			// [Plots] with hover. 
-			TextComponent text = Component.empty();
-			Map<TownBlockType, Integer> cache = town.getTownBlockTypeCache().getCache(TownBlockTypeCache.CacheType.ALL);
-			for (TownBlockType type : TownBlockTypeHandler.getTypes().values()) {
-				int value = cache.getOrDefault(type, 0);
-				text = text.append(TownyComponents.miniMessage(colourKeyValue(translator.of("status_plot_hover", type.getFormattedName()), String.valueOf(value))).append(Component.newline()));
-			}
-			text = text.append(translator.component("status_hover_click_for_more"));
-			screen.addComponentOf("plots", colourHoverKey(translator.of("status_plot_string")), 
-				HoverEvent.showText(text), ClickEvent.runCommand("/towny:town plots " + town.getName()));
+				ClickEvent.runCommand("/towny:resident " + town.getMayor().getName())
+			);
+		} else
+			screen.addComponentOf("mayor", colourKeyValue(translator.of("rank_list_mayor"), translator.of("status_no_town")));
 
+		// Nation: Azur Empire
+		if (town.hasNation())
+			NationUtil.addNationComponenents(town, screen, translator);
+
+		screen.addComponentOf("newline", Component.newline());
+		// [Rank List] with hover including ranks and their residents.
+		List<String> ranklist = getRanks(town, translator);
+		if (ranklist.size() > 0)
+			screen.addComponentOf("townranks", colourHoverKey(translator.of("status_rank_list")),
+					HoverEvent.showText(TownyComponents.miniMessage(String.join("\n", ranklist))
+						.append(Component.newline())
+						.append(translator.component("status_hover_click_for_more"))),
+					ClickEvent.runCommand("/towny:town ranklist " + town.getName()));
+
+		// [Residents] with hover showing residents names.
+		List<String> residents = getFormattedNames(town.getResidents());
+		if (residents.size() > 34)
+			shortenOverLengthList(residents, 35, translator);
+		
+		screen.addComponentOf("residents", colourHoverKey(translator.of("res_list")),
+			HoverEvent.showText(TownyComponents.miniMessage(getFormattedStrings(translator.of("res_list"), residents, town.getResidents().size()))
+				.append(Component.newline())
+				.append(translator.component("status_hover_click_for_more"))),
+			ClickEvent.runCommand("/towny:town reslist "+ town.getName()));
+		
+		// [Plots] with hover. 
+		TextComponent text = Component.empty();
+		Map<TownBlockType, Integer> cache = town.getTownBlockTypeCache().getCache(TownBlockTypeCache.CacheType.ALL);
+		for (TownBlockType type : TownBlockTypeHandler.getTypes().values()) {
+			int value = cache.getOrDefault(type, 0);
+			text = text.append(TownyComponents.miniMessage(colourKeyValue(translator.of("status_plot_hover", type.getFormattedName()), String.valueOf(value))).append(Component.newline()));
 		}
+		text = text.append(translator.component("status_hover_click_for_more"));
+		screen.addComponentOf("plots", colourHoverKey(translator.of("status_plot_string")), 
+			HoverEvent.showText(text), ClickEvent.runCommand("/towny:town plots " + town.getName()));
+
 		
 		// Add any metadata which opt to be visible.
 		List<Component> fields = getExtraFields(town);
@@ -536,11 +529,6 @@ public class TownyFormatter {
 		if (!world.isUsingTowny()) {
 			screen.addComponentOf("not_using_towny", translator.of("msg_set_use_towny_off"));
 		} else {
-			// War will be allowed in this world.
-			screen.addComponentOf("war_allowed", colourKey(world.isWarAllowed() ? translator.of("msg_set_war_allowed_on") : translator.of("msg_set_war_allowed_off")));
-			// ForcePvP: ON | FriendlyFire: ON 
-			screen.addComponentOf("pvp", colourKeyValue(translator.of("status_world_forcepvp"), (world.isForcePVP() ? translator.of("status_on") : translator.of("status_off"))) + translator.of("status_splitter") + 
-					colourKeyValue(translator.of("status_world_friendlyfire"), (world.isFriendlyFireEnabled() ? translator.of("status_on") : translator.of("status_off"))));
 			// Fire: ON | ForceFire: ON
 			screen.addComponentOf("fire", colourKeyValue(translator.of("status_world_fire"), (world.isFire() ? translator.of("status_on") : translator.of("status_off"))) + translator.of("status_splitter") + 
 					colourKeyValue(translator.of("status_world_forcefire"), (world.isForceFire() ? translator.of("status_forced") : translator.of("status_adjustable"))));
@@ -735,8 +723,6 @@ public class TownyFormatter {
 			sub.add(translator.of("status_title_open"));
 		if (town.isPublic())
 			sub.add(translator.of("status_public"));
-		if (town.isNeutral())
-			sub.add(translator.of("status_town_title_peaceful"));
 		if (town.isForSale())
 			sub.add(translator.of("status_forsale", formatMoney(town.getForSalePrice())));
 		return sub;
@@ -754,8 +740,6 @@ public class TownyFormatter {
 			sub.add(translator.of("status_title_open"));
 		if (nation.isPublic())
 			sub.add(translator.of("status_public"));
-		if (nation.isNeutral())
-			sub.add(translator.of("status_town_title_peaceful"));
 		return sub;
 	}
 
@@ -767,8 +751,6 @@ public class TownyFormatter {
 	 */
 	private static List<String> getWorldSubtitle(TownyWorld world, Translator translator) {
 		List<String> sub = new ArrayList<>();
-		if (world.isPVP() || world.isForcePVP())
-			sub.add(translator.of("status_title_pvp"));
 		if (world.isClaimable())
 			sub.add(translator.of("status_world_claimable"));
 		else 

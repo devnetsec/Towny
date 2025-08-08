@@ -49,7 +49,6 @@ import com.palmergames.bukkit.towny.tasks.CooldownTimerTask;
 import com.palmergames.bukkit.towny.tasks.DeleteFileTask;
 import com.palmergames.bukkit.towny.tasks.CooldownTimerTask.CooldownType;
 import com.palmergames.bukkit.towny.utils.JailUtil;
-import com.palmergames.bukkit.towny.utils.TownRuinUtil;
 import com.palmergames.bukkit.util.BukkitTools;
 import com.palmergames.bukkit.util.NameValidation;
 import com.palmergames.util.FileMgmt;
@@ -393,19 +392,6 @@ public abstract class TownyDatabaseHandler extends TownyDataSource {
 
 	@Override
 	public boolean removeTown(@NotNull Town town, @NotNull DeleteTownEvent.Cause cause, @Nullable CommandSender sender, boolean delayFullRemoval) {
-		if (delayFullRemoval) {
-			/*
-			 * When Town ruining is active, send the Town into a ruined state, prior to real
-			 * removal, if the TownPreRuinedEvent is not cancelled.
-			 */
-			TownPreRuinedEvent tpre = new TownPreRuinedEvent(town, cause, sender);
-			if (!BukkitTools.isEventCancelled(tpre)) {
-				TownRuinUtil.putTownIntoRuinedState(town);
-				return false;
-			} else if (sender != null && !tpre.getCancelMessage().isEmpty()) {
-				TownyMessaging.sendErrorMsg(tpre.getCancelMessage());
-			}
-		}
 
 		PreDeleteTownEvent preEvent = new PreDeleteTownEvent(town, cause, sender);
 		if (!cause.ignoresPreEvent() && BukkitTools.isEventCancelled(preEvent)) {

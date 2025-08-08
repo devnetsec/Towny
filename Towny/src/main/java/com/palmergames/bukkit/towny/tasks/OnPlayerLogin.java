@@ -18,7 +18,6 @@ import com.palmergames.bukkit.towny.object.resident.mode.ResidentModeHandler;
 import com.palmergames.bukkit.towny.permissions.PermissionNodes;
 import com.palmergames.bukkit.towny.permissions.TownyPerms;
 import com.palmergames.bukkit.towny.utils.ResidentUtil;
-import com.palmergames.bukkit.towny.utils.TownRuinUtil;
 import com.palmergames.bukkit.util.BukkitTools;
 import com.palmergames.bukkit.util.Colors;
 
@@ -83,10 +82,6 @@ public class OnPlayerLogin implements Runnable {
 			// Send a message warning of being overclaimed while the takeoverclaims feature is enabled.
 			if (TownySettings.isOverClaimingAllowingStolenLand() && town.isOverClaimed())
 				TownyMessaging.sendMsg(resident, Translatable.literal(Colors.Red).append(Translatable.of("msg_warning_your_town_is_overclaimed")));
-
-			// Send a message warning of ruined status and time until deletion.
-			if (town.isRuined())
-				TownyMessaging.sendMsg(resident, Translatable.of("msg_warning_your_town_is_ruined_for_x_more_hours", TownySettings.getTownRuinsMaxDurationHours() - TownRuinUtil.getTimeSinceRuining(town)));
 
 			if (townHasPendingNationInvites(town))
 				plugin.getScheduler().runLater(player, ()-> TownyMessaging.sendMsg(player, Translatable.of("msg_your_town_has_pending_nation_invites")), inviteNotificationTicksDelay);

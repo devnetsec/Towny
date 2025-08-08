@@ -26,7 +26,6 @@ import com.palmergames.bukkit.towny.event.nation.NationPreMergeEvent;
 import com.palmergames.bukkit.towny.event.nation.NationPreTownKickEvent;
 import com.palmergames.bukkit.towny.event.nation.NationPreTownLeaveEvent;
 import com.palmergames.bukkit.towny.event.nation.PreNewNationEvent;
-import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleOpenEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationTogglePublicEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleTaxPercentEvent;
@@ -152,8 +151,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 	);
 	
 	static final List<String> nationToggleTabCompletes = Arrays.asList(
-		"neutral",
-		"peaceful",
 		"public",
 		"open",
 		"taxpercent"
@@ -1772,11 +1769,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			choice = BaseCommand.parseToggleChoice(split[1]);
 
 		switch (split[0].toLowerCase(Locale.ROOT)) {
-		case "peaceful":
-		case "neutral":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_TOGGLE_NEUTRAL.getNode());
-			nationTogglePeaceful(sender, nation, choice, admin);
-			break;
 		case "public":
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_TOGGLE_PUBLIC.getNode());
 			nationTogglePublic(sender, nation, choice, admin);
@@ -1800,53 +1792,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			return;
 		}
 		nation.save();
-	}
-
-	private static void nationTogglePeaceful(CommandSender sender, Nation nation, Optional<Boolean> choice, boolean admin) throws TownyException {
-		boolean peacefulState = choice.orElse(!nation.isNeutral());
-		double cost = TownySettings.getNationNeutralityCost(nation);
-
-		if (nation.isNeutral() && peacefulState)
-			throw new TownyException(Translatable.of("msg_nation_already_peaceful"));
-		else if (!nation.isNeutral() && !peacefulState)
-			throw new TownyException(Translatable.of("msg_nation_already_not_peaceful"));
-
-		if (peacefulState && TownyEconomyHandler.isActive() && !nation.getAccount().canPayFromHoldings(cost))
-			throw new TownyException(Translatable.of("msg_nation_cant_peaceful", TownyEconomyHandler.getFormattedBalance(cost)));
-		
-		String uuid = nation.getUUID().toString();
-		
-		if (TownySettings.getPeacefulCoolDownTime() > 0 && 
-			!admin && 
-			CooldownTimerTask.hasCooldown(uuid, CooldownType.NEUTRALITY) && 
-			!TownyUniverse.getInstance().getPermissionSource().isTownyAdmin(sender))
-			throw new TownyException(Translatable.of("msg_err_cannot_toggle_neutral_x_seconds_remaining",
-					CooldownTimerTask.getCooldownRemaining(uuid, CooldownType.NEUTRALITY)));
-
-		// Fire cancellable event directly before setting the toggle.
-		NationToggleNeutralEvent preEvent = new NationToggleNeutralEvent(sender, nation, admin, peacefulState);
-		if (BukkitTools.isEventCancelled(preEvent))
-			throw new TownyException(preEvent.getCancelMessage());
-
-		// If they setting neutral status on send a message confirming they paid
-		// something, if they did.
-		if (peacefulState && TownyEconomyHandler.isActive() && cost > 0) {
-			nation.getAccount().withdraw(cost, "Peaceful Nation Cost");
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_you_paid", TownyEconomyHandler.getFormattedBalance(cost)));
-		}
-
-		nation.setNeutral(peacefulState);
-
-		// Send message feedback to the whole nation.
-		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_peaceful").append(nation.isNeutral() ? Colors.Green : Colors.Red + " not").append(" peaceful."));
-		
-		// Add a cooldown to Public toggling.
-		if (TownySettings.getPeacefulCoolDownTime() > 0 && !admin && !TownyUniverse.getInstance().getPermissionSource().isTownyAdmin(sender))
-			CooldownTimerTask.addCooldownTimer(uuid, CooldownType.NEUTRALITY);
-
-		// Reassign permissions because neutrality can add/remove nodes.
-		if (TownyPerms.hasPeacefulNodes())
-			TownyPerms.updateNationPerms(nation);
 	}
 
 	private static void nationTogglePublic(CommandSender sender, Nation nation, Optional<Boolean> choice, boolean admin) throws TownyException {

@@ -81,7 +81,7 @@ public class ComparatorCaches {
 		towns.sort((Comparator<? super Town>) compType.getComparator());
 
 		boolean spawningFullyDisabled = !TownySettings.isConfigAllowingTownSpawn() && !TownySettings.isConfigAllowingPublicTownSpawnTravel()
-				&& !TownySettings.isConfigAllowingTownSpawnNationTravel() && !TownySettings.isConfigAllowingTownSpawnNationAllyTravel();
+				&& !TownySettings.isConfigAllowingTownSpawnNationTravel();
 
 		for (Town town : towns) {
 			Component townName = Component.text(StringMgmt.remUnderscore(town.getName()), NamedTextColor.AQUA);
@@ -93,9 +93,6 @@ public class ComparatorCaches {
 				break;
 			case TOWNBLOCKS:
 				slug = "(" + town.getTownBlocks().size() + ")";
-				break;
-			case RUINED:
-				slug = "(" + getResidentCount(town) + ") " + (town.isRuined() ? Translation.of("msg_ruined"):"");
 				break;
 			case BANKRUPT:
 				slug = "(" + getResidentCount(town) + ") " + (town.isBankrupt() ? Translation.of("msg_bankrupt"):"");
@@ -151,8 +148,7 @@ public class ComparatorCaches {
 		BukkitTools.fireEvent(nationListSortEvent);
 		nations = nationListSortEvent.getNations();
 
-		boolean spawningFullyDisabled = !TownySettings.isConfigAllowingNationSpawn() && !TownySettings.isConfigAllowingPublicNationSpawnTravel()
-				&& !TownySettings.isConfigAllowingNationSpawnAllyTravel();
+		boolean spawningFullyDisabled = !TownySettings.isConfigAllowingNationSpawn() && !TownySettings.isConfigAllowingPublicNationSpawnTravel();
 
 		for (Nation nation : nations) {
 			Component nationName = Component.text(StringMgmt.remUnderscore(nation.getName()), NamedTextColor.AQUA);

@@ -63,30 +63,14 @@ public enum NationSpawnLevel {
 		this.cooldown = cooldownConfigNode == null ? 0 : TownySettings.getInt(cooldownConfigNode);
 	}
 
-	public void checkIfAllowed(Player player, Nation nation) throws TownyException {
-
-		if (!isAllowed(player, nation)) {
-			boolean war = nation.hasActiveWar();
-			SpawnLevel level = TownySettings.getSpawnLevel(this.isAllowingConfigNode);
-			if(level == SpawnLevel.WAR && !war) {
-				throw new TownyException(Translation.of(notAllowedLangNodeWar));
-			}
-			else if(level == SpawnLevel.PEACE && war) {
-				throw new TownyException(Translation.of(notAllowedLangNodePeace));
-			}
-			throw new TownyException(Translation.of(notAllowedLangNode));
-		}
-	}
-
 	private boolean isAllowed(Player player, Nation nation) {
 
 		return this == NationSpawnLevel.ADMIN || (TownyUniverse.getInstance().getPermissionSource().testPermission(player, this.permissionNode)) && (isAllowedNation(nation));
 	}
 	
 	private boolean isAllowedNation(Nation nation) {
-		boolean war = nation.hasActiveWar();
 		SpawnLevel level = TownySettings.getSpawnLevel(this.isAllowingConfigNode);
-		return level == SpawnLevel.TRUE || (level != SpawnLevel.FALSE && ((level == SpawnLevel.WAR) == war));
+		return level == SpawnLevel.TRUE;
 	}
 
 	public double getCost() {
