@@ -916,7 +916,7 @@ public class TownyPlayerListener implements Listener {
 					return;
 
 				TownBlock tb = TownyAPI.getInstance().getTownBlock(event.getCaught().getLocation());
-				test = !CombatUtil.preventPvP(world, tb);
+				test = tb == null;
 			// Non-player catches are tested for destroy permissions.
 			} else {
 				//Make decision on whether this is allowed using the PlayerCache and then a cancellable event.

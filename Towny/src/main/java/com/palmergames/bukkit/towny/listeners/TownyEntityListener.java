@@ -145,13 +145,6 @@ public class TownyEntityListener implements Listener {
 				cancelExplosiveDamage = true;
 			
 			/*
-			 * Second we protect players from PVP-based explosions which 
-			 * aren't projectiles based on whether the location has PVP enabled.
-			 */
-			if (defender instanceof Player && EntityTypeUtil.isPVPExplosive(attacker.getType()))
-				cancelExplosiveDamage = CombatUtil.preventPvP(TownyAPI.getInstance().getTownyWorld(defender.getWorld()), TownyAPI.getInstance().getTownBlock(defender.getLocation()));
-			
-			/*
 			 * Cancel explosion damage accordingly.
 			 */
 			if (cancelExplosiveDamage) {
@@ -1011,7 +1004,7 @@ public class TownyEntityListener implements Listener {
 				final WorldCoord current = WorldCoord.parseWorldCoord(effectCloud.getWorld().getName(), x, z);
 				final TownBlock townBlock = current.getTownBlockOrNull();
 				
-				if (townyWorld != null && CombatUtil.preventPvP(townyWorld, townBlock))
+				if (townyWorld != null)
 					return true;
 				
 				lastChecked = current;
@@ -1036,7 +1029,7 @@ public class TownyEntityListener implements Listener {
 				final WorldCoord current = WorldCoord.parseWorldCoord(potion.getWorld().getName(), x, z);
 				final TownBlock townBlock = current.getTownBlockOrNull();
 
-				if (townyWorld != null && CombatUtil.preventPvP(townyWorld, townBlock))
+				if (townyWorld != null)
 					return true;
 				
 				lastChecked = current;

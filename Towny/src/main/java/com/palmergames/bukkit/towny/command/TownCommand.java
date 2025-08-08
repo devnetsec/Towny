@@ -46,7 +46,6 @@ import com.palmergames.bukkit.towny.event.town.toggle.TownToggleFireEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleMobsEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleNationZoneEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleOpenEvent;
-import com.palmergames.bukkit.towny.event.town.toggle.TownTogglePVPEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownTogglePublicEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleTaxPercentEvent;
 import com.palmergames.bukkit.towny.event.town.TownTrustTownAddEvent;
@@ -252,7 +251,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		"neutral",
 		"peaceful",
 		"public",
-		"pvp",
 		"taxpercent",
 		"open"
 	);
@@ -1234,7 +1232,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 
 		switch(split[0].toLowerCase(Locale.ROOT)) {
 		case "public" -> townTogglePublic(sender, admin, town, choice);
-		case "pvp" -> townTogglePVP(sender, split, admin, town, permSource, choice);
 		case "explosion" -> townToggleExplosion(sender, split, admin, town, choice);
 		case "fire" -> townToggleFire(sender, split, admin, town, choice);
 		case "mobs" -> townToggleMobs(sender, split, admin, town, choice);
@@ -1288,46 +1285,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_changed_public", town.isPublic() ? Translatable.of("enabled") : Translatable.of("disabled")));
 		if (admin)
 			TownyMessaging.sendMsg(sender, Translatable.of("msg_changed_public", town.isPublic() ? Translatable.of("enabled") : Translatable.of("disabled")));
-	}
-
-	private static void townTogglePVP(CommandSender sender, String[] split, boolean admin, Town town, TownyPermissionSource permSource, Optional<Boolean> choice) throws TownyException {
-		String uuid = town.getUUID().toString();
-		// If we aren't dealing with an admin using /t toggle pvp:
-		if (!admin) {
-			// Make sure we are allowed to set these permissions.
-			toggleTest(town, StringMgmt.join(split, " "));
-
-			// Test to see if the pvp cooldown timer is active for the town.
-			if (TownySettings.getPVPCoolDownTime() > 0 &&
-				CooldownTimerTask.hasCooldown(uuid, CooldownType.PVP) &&
-				!permSource.isTownyAdmin(sender))
-				throw new TownyException(Translatable.of("msg_err_cannot_toggle_pvp_x_seconds_remaining",
-						CooldownTimerTask.getCooldownRemaining(uuid, CooldownType.PVP)));
-
-			// Test to see if an outsider being inside of the Town would prevent toggling PVP.
-			if (TownySettings.getOutsidersPreventPVPToggle() && choice.orElse(!town.isPVP())) {
-				for (Player target : Bukkit.getOnlinePlayers()) {
-					if (!town.hasResident(target) && town.equals(TownyAPI.getInstance().getTown(target.getLocation())))
-						throw new TownyException(Translatable.of("msg_cant_toggle_pvp_outsider_in_town"));
-				}
-			}
-		}
-
-		// Fire cancellable event directly before setting the toggle.
-		TownTogglePVPEvent preEvent = new TownTogglePVPEvent(sender, town, admin, choice.orElse(!town.isPVP()));
-		BukkitTools.ifCancelledThenThrow(preEvent);
-
-		// Set the toggle setting.
-		town.setPVP(preEvent.getFutureState());
-
-		// Send message feedback.
-		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_changed_pvp", town.getName(), town.isPVP() ? Translatable.of("enabled") : Translatable.of("disabled")));
-		if (admin)
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_changed_pvp", town.getName(), town.isPVP() ? Translatable.of("enabled") : Translatable.of("disabled")));
-
-		// Add a cooldown to PVP toggling.
-		if (TownySettings.getPVPCoolDownTime() > 0 && !admin && !permSource.isTownyAdmin(sender))
-			CooldownTimerTask.addCooldownTimer(uuid, CooldownType.PVP);
 	}
 
 	private static void townToggleExplosion(CommandSender sender, String[] split, boolean admin, Town town, Optional<Boolean> choice) throws TownyException {
@@ -1741,9 +1698,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 
 		if (split.contains("explosion") && town.getHomeblockWorld().isForceExpl())
 			throw new TownyException(Translatable.of("msg_world_expl"));
-
-		if (split.contains("pvp") && town.getHomeblockWorld().isForcePVP())
-			throw new TownyException(Translatable.of("msg_world_pvp"));
 
 	}
 

@@ -105,7 +105,8 @@ public class PermHUD {
 		item = getPermLine(tp, ActionType.ITEM_USE, residentOwned);
 
 		TownyWorld world = townBlock.getWorld();
-		pvp = getTranslatedOnOrOff(!CombatUtil.preventPvP(world, townBlock), translator);
+		// TODO: Maybe have the pvp team show currently dueling players?
+		pvp = getTranslatedOnOrOff(false, translator);
 		explosions = getTranslatedOnOrOff(world.isForceExpl() || tp.explosion, translator);
 		firespread = getTranslatedOnOrOff(world.isForceFire() || tp.fire, translator);
 		mobspawn = getTranslatedOnOrOff(world.isForceTownMobs() || tp.mobs || townBlock.getTownOrNull().isAdminEnabledMobs(), translator);

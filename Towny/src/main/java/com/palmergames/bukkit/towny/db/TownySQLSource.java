@@ -998,10 +998,7 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			town.setSpawnCost(rs.getFloat("spawnCost"));
 			town.setOpen(rs.getBoolean("open"));
 			town.setPublic(rs.getBoolean("public"));
-			town.setAdminDisabledPVP(rs.getBoolean("admindisabledpvp"));
-			town.setAdminEnabledPVP(rs.getBoolean("adminenabledpvp"));
 			town.setAdminEnabledMobs(rs.getBoolean("adminEnabledMobs"));
-			town.setAllowedToWar(rs.getBoolean("allowedToWar"));
 			town.setJoinedNationAt(rs.getLong("joinedNationAt"));
 			town.setMovedHomeBlockAt(rs.getLong("movedHomeBlockAt"));
 			
@@ -2342,10 +2339,7 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			twn_hm.put("maxPercentTaxAmount", town.getMaxPercentTaxAmount());
 			twn_hm.put("open", town.isOpen());
 			twn_hm.put("public", town.isPublic());
-			twn_hm.put("admindisabledpvp", town.isAdminDisabledPVP());
-			twn_hm.put("adminenabledpvp", town.isAdminEnabledPVP());
 			twn_hm.put("adminEnabledMobs", town.isAdminEnabledMobs());
-			twn_hm.put("allowedToWar", town.isAllowedToWar());
 			twn_hm.put("joinedNationAt", town.getJoinedNationAt());
 			twn_hm.put("mapColorHexCode", town.getMapColorHexCode());
 			twn_hm.put("movedHomeBlockAt", town.getMovedHomeBlockAt());

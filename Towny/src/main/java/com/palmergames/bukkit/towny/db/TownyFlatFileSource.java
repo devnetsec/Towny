@@ -794,31 +794,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 						town.setSpawnCost(TownySettings.getSpawnTravelCost());
 					}
 				
-				line = keys.get("adminDisabledPvP");
-				if (line != null)
-					try {
-						town.setAdminDisabledPVP(Boolean.parseBoolean(line));
-					} catch (Exception ignored) {
-					}
-				
-				line = keys.get("adminEnabledPvP");
-				if (line != null)
-					try {
-						town.setAdminEnabledPVP(Boolean.parseBoolean(line));
-					} catch (Exception ignored) {
-					}
-				
 				line = keys.get("adminEnabledMobs");
 				if (line != null)
 					try {
 						town.setAdminEnabledMobs(Boolean.parseBoolean(line));
-					} catch (Exception ignored) {
-					}
-				
-				line = keys.get("allowedToWar");
-				if (line != null)
-					try {
-						town.setAllowedToWar(Boolean.parseBoolean(line));
 					} catch (Exception ignored) {
 					}
 				
@@ -2076,13 +2055,8 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("visibleOnTopLists=" + town.isVisibleOnTopLists());
 		// Open
 		list.add("open=" + town.isOpen());
-		// PVP
-		list.add("adminDisabledPvP=" + town.isAdminDisabledPVP());
-		list.add("adminEnabledPvP=" + town.isAdminEnabledPVP());
 		// Mobs override
 		list.add("adminEnabledMobs=" + town.isAdminEnabledMobs());
-		// Allowed to War
-		list.add("allowedToWar=" + town.isAllowedToWar());
 		// Public
 		list.add("public=" + town.isPublic());
 		if (town.hasValidUUID()){

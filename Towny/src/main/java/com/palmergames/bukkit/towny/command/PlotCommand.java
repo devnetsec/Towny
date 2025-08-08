@@ -1197,14 +1197,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 				throw new TownyException(Translatable.of("msg_err_cannot_toggle_pvp_x_seconds_remaining", CooldownTimerTask.getCooldownRemaining(townBlock.getWorldCoord().toString(), CooldownType.PVP)));
 		}
 
-		// Prevent plot pvp from being enabled if admin pvp is disabled
-		if (town.isAdminDisabledPVP() && !townBlock.getPermissions().pvp)
-			throw new TownyException(Translatable.of("msg_err_admin_controlled_pvp_prevents_you_from_changing_pvp", "adminDisabledPVP", "on"));
-		
-		// Prevent plot pvp from being disabled if admin pvp is enabled
-		if (town.isAdminEnabledPVP() && townBlock.getPermissions().pvp)
-			throw new TownyException(Translatable.of("msg_err_admin_controlled_pvp_prevents_you_from_changing_pvp", "adminEnabledPVP", "off"));
-
 		if (TownySettings.getOutsidersPreventPVPToggle() && choice.orElse(!townBlock.getPermissions().pvp)) {
 			for (Player target : Bukkit.getOnlinePlayers()) {
 				if (!town.hasResident(target) && !player.getName().equals(target.getName()) && townBlock.getWorldCoord().equals(WorldCoord.parseWorldCoord(target)))

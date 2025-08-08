@@ -103,11 +103,6 @@ public class Town extends Government implements TownBlockOwner {
 	private TownBlock homeBlock;
 	private TownyWorld world;
 	private boolean adminEnabledMobs = false;
-	private boolean adminDisabledPVP = false; // This is a special setting to make a town ignore All PVP settings and keep PVP disabled.
-	private boolean adminEnabledPVP = false; // This is a special setting to make a town ignore All PVP settings and keep PVP enabled. Overrides the admin disabled too.
-	private boolean allowedToWar = TownySettings.getTownDefaultAllowedToWar();
-	private boolean isConquered = false;
-	private int conqueredDays;
 	private int nationZoneOverride = 0;
 	private boolean nationZoneEnabled = true;
 	private final ConcurrentHashMap<WorldCoord, TownBlock> townBlocks = new ConcurrentHashMap<>();
@@ -128,7 +123,6 @@ public class Town extends Government implements TownBlockOwner {
 		setTaxes(TownySettings.getTownDefaultTax());
 		setOpen(TownySettings.getTownDefaultOpen());
 		setBoard(TownySettings.getTownDefaultBoard());
-		setNeutral(TownySettings.getTownDefaultNeutral());
 		setPublic(TownySettings.getTownDefaultPublic());
 	}
 	
@@ -306,10 +300,6 @@ public class Town extends Government implements TownBlockOwner {
 		} catch (AlreadyRegisteredException ignored) {
 			// Cannot occur when setting null
 		}
-		
-		//The town is no longer conquered/occupied because it has left the nation
-		this.isConquered = false;
-		this.conqueredDays = 0;
 
 		setJoinedNationAt(0);
 		
@@ -476,54 +466,6 @@ public class Town extends Government implements TownBlockOwner {
 
 	public boolean isAdminEnabledMobs() {
 		return this.adminEnabledMobs;
-	}
-
-	public void setPVP(boolean isPVP) {
-
-		this.permissions.pvp = isPVP;
-	}
-	
-	public void setAdminDisabledPVP(boolean isPVPDisabled) {
-
-		this.adminDisabledPVP = isPVPDisabled;
-	}
-	
-	public void setAdminEnabledPVP(boolean isPVPEnabled) {
-
-		this.adminEnabledPVP = isPVPEnabled;
-	}
-
-	public boolean isPVP() {
-
-		// Admin has enabled PvP for this town.
-		if (isAdminEnabledPVP()) 
-			return true;
-				
-		// Admin has disabled PvP for this town.
-		if (isAdminDisabledPVP()) 
-			return false;
-		
-		return this.permissions.pvp;
-	}
-	
-	public boolean isAdminDisabledPVP() {
-
-		// Admin has disabled PvP for this town.
-		return this.adminDisabledPVP;
-	}
-	
-	public boolean isAdminEnabledPVP() {
-
-		// Admin has enabled PvP for this town.
-		return this.adminEnabledPVP;
-	}
-
-	public boolean isAllowedToWar() {
-		return allowedToWar;
-	}
-
-	public void setAllowedToWar(boolean allowedToWar) {
-		this.allowedToWar = allowedToWar;
 	}
 
 	public void setExplosion(boolean isExplosion) {
@@ -1717,19 +1659,6 @@ public class Town extends Government implements TownBlockOwner {
 	 */
 	public boolean isInsideTown(@NotNull Position position) {
 		return this.equals(position.worldCoord().getTownOrNull());
-	}
-	
-	/**
-	 * Is the Town Neutral or Peaceful?
-	 * 
-	 * Tests against a config option that prevents a capital city from being neutral.
-	 * 
-	 * @since 0.96.5.4
-	 * @return true if the object is Neutral or Peaceful.
-	 */
-	@Override
-	public boolean isNeutral() {
-		return (!TownySettings.nationCapitalsCantBeNeutral() || !isCapital()) && isNeutral;
 	}
 
 	public TownLevel getTownLevel() {

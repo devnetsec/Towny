@@ -438,16 +438,6 @@ public class TownyAPI {
 
 		return townBlock == null || !townBlock.hasTown();
     }    
-    
-	/**
-	 * Answers whether Towny considers PVP enabled at a location.
-	 * 
-	 * @param location Location to check for PVP.
-	 * @return true if PVP is enabled or this isn't a world with Towny enabled.
-	 */
-	public boolean isPVP(Location location) {
-		return !isTownyWorld(location.getWorld()) || !CombatUtil.preventPvP(getTownyWorld(location.getWorld()), getTownBlock(location));
-	}
 
 	/**
 	 * Answers whether Towny has mobs enabled at a location.

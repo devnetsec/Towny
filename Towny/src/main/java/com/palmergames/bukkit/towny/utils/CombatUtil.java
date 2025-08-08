@@ -144,17 +144,13 @@ public class CombatUtil {
 				boolean cancelled = false;
 
 				/*
-				 * Both townblocks are not Arena plot and Player is not considered an Admin by Towny.
-				 * Arena plots never prevent pvp, admins can some times bypass pvp settings.
+				 * Player is not considered an Admin by Towny.
+				 * Admins can some times bypass pvp settings.
 				 */
-				if (!isArenaPlot(attackerTB, defenderTB) && !isOutlawInTown(defenderTB, attackingPlayer, defendingPlayer) && !isTownyAdminBypassingPVP(attackingPlayer)) {
-					/*
-					 * Check if we are preventing friendly fire between allies
-					 * Check the attackers TownBlock for its PvP status, else the world.
-					 * Check the defenders TownBlock for its PvP status, else the world.
-					 * Check whether this involves someone who is jailed and in a Jail plot. 
-					 */
-					cancelled = preventFriendlyFire(attackingPlayer, defendingPlayer, world) || preventPvP(world, attackerTB) || preventPvP(world, defenderTB) || preventJailedPVP(defendingPlayer, attackingPlayer);
+				if (!isTownyAdminBypassingPVP(attackingPlayer)) {
+					
+					// TODO: Allow duels if both players/teams agree to it
+					cancelled = true;
 				}
 
 				/*
@@ -206,13 +202,6 @@ public class CombatUtil {
 				}
 
 				/*
-				 * Special wolf scenario to prevent players sniping tamed wolves outside of town, while in non-pvp areas.
-				 */
-				if (defenderTB == null && defendingEntity instanceof Wolf wolf && wolf.isTamed() && !isOwner(wolf, attackingPlayer)) {
-					return preventPvP(world, attackerTB) || preventPvP(world, defenderTB);
-				}
-
-				/*
 				 * Protect specific entity interactions (faked with Materials).
 				 * Requires destroy permissions in either the Wilderness or in Town-Claimed land.
 				 */
@@ -237,20 +226,16 @@ public class CombatUtil {
 			if (defendingPlayer != null) {
 
 				/*
-				 * If attackingEntity is a tamed Wolf and...
-				 * Defender is a player and...
-				 * Either player or wolf is in a non-PVP area
-				 * 
+				 * If attackingEntity is a tamed Wolf...
 				 * Prevent pvp and remove Wolf targeting.
 				 */
-				if (attackingEntity instanceof Wolf wolf && (preventPvP(world, attackerTB) || preventPvP(world, defenderTB))) {
+				if (attackingEntity instanceof Wolf wolf) {
 					wolf.setAngry(false);
 					return true;
 				}
 				
 				if (attackingEntity instanceof LightningStrike 
-					&& world.hasTridentStrike(attackingEntity.getUniqueId())
-					&& preventPvP(world, defenderTB)) {
+					&& world.hasTridentStrike(attackingEntity.getUniqueId())) {
 					return true;
 				}
 				
@@ -298,135 +283,6 @@ public class CombatUtil {
 				}
 			}
 		}
-		return false;
-	}
-
-	private static boolean preventJailedPVP(Player defendingPlayer, Player attackingPlayer) {
-		if (TownySettings.doJailPlotsPreventPVP()) {
-			Resident defendingResident = TownyAPI.getInstance().getResident(defendingPlayer.getUniqueId());
-			Resident attackingResident = TownyAPI.getInstance().getResident(attackingPlayer.getUniqueId());
-			TownBlock defTB = TownyAPI.getInstance().getTownBlock(defendingPlayer);
-			TownBlock atkTB = TownyAPI.getInstance().getTownBlock(attackingPlayer);
-			if (defendingResident == null || attackingResident == null)
-				return false;
-			if (defendingResident.isJailed() && defTB != null && defTB.isJail() || attackingResident.isJailed() && atkTB != null && atkTB.isJail())
-				return true;
-		}
-		return false;
-			
-	}
-
-	/**
-	 * Is PvP disabled in this TownBlock?
-	 * 
-	 * @param townBlock - TownBlock to check
-	 * @param world - World to check if TownBlock is NULL
-	 * @return true if PvP is disallowed
-	 */
-	public static boolean preventPvP(TownyWorld world, TownBlock townBlock) {
-
-		if (townBlock != null) {
-
-			/*
-			 * Check the attackers TownBlock and it's Town for their PvP status.
-			 */
-			TownBlockPVPTestEvent event = new TownBlockPVPTestEvent(townBlock, isPvP(townBlock));
-			BukkitTools.fireEvent(event);
-			return !event.isPvp();
-
-		} else {
-
-			/*
-			 * Attacker isn't in a TownBlock so check the wilderness PvP status.
-			 */
-			WildernessPVPTestEvent event = new WildernessPVPTestEvent(world, isWorldPvP(world));
-			BukkitTools.fireEvent(event);
-			return !event.isPvp();
-		}
-	}
-	
-	private static boolean isPvP(@NotNull TownBlock townBlock) {
-		
-		if (townBlock.getTownOrNull().isAdminDisabledPVP())
-			return false;
-
-		// Checks PVP perm: 1. Plot PVP, 2. Town PVP, 3. World Force PVP 
-		if (!townBlock.getPermissions().pvp && !townBlock.getTownOrNull().isPVP() && !townBlock.getWorld().isForcePVP()) 
-			return false;
-		
-		if (townBlock.isHomeBlock() && townBlock.getWorld().isForcePVP() && TownySettings.isForcePvpNotAffectingHomeblocks())
-			return false;
-		
-		return true;
-	}
-
-	/**
-	 * Is PvP enabled in this world?
-	 * 
-	 * @param world - World to check
-	 * @return true if the world is PvP
-	 */
-	public static boolean isWorldPvP(TownyWorld world) {
-		return (world.isForcePVP() || world.isPVP());
-	}
-	
-	/**
-	 * Should we be preventing friendly fire?
-	 * 
-	 * @param attacker - Attacking Player
-	 * @param defender - Defending Player (receiving damage)
-	 * @param world - TownyWorld being tested.
-	 * @return true if we should cancel damage.
-	 */
-	public static boolean preventFriendlyFire(Player attacker, Player defender, TownyWorld world) {
-		if (!world.isUsingTowny())
-			return false;
-
-		/*
-		 * Don't block potion use (self damaging) on ourselves.
-		 */
-		if (attacker == defender)
-			return false;
-
-		if ((attacker != null) && (defender != null))
-			if (!world.isFriendlyFireEnabled()) {
-				if (isArenaPlot(attacker, defender))
-					return false;
-
-				TownyFriendlyFireTestEvent event = new TownyFriendlyFireTestEvent(attacker, defender, world);
-				BukkitTools.fireEvent(event);
-	
-				if (!event.isPVP() && !event.getCancelledMessage().isEmpty())
-					TownyMessaging.sendErrorMsg(attacker, event.getCancelledMessage());
-	
-				return !event.isPVP();
-			}
-		return false;
-	}
-
-	/**
-	 * Returns true if both players are in an arena townblock.
-	 * @param attacker Attacking Player
-	 * @param defender Defending Player
-	 * @return true if both player in an Arena plot.
-	 */
-	public static boolean isArenaPlot(Player attacker, Player defender) {
-		TownBlock attackerTB = TownyAPI.getInstance().getTownBlock(attacker);
-		TownBlock defenderTB = TownyAPI.getInstance().getTownBlock(defender);
-		return isArenaPlot(attackerTB, defenderTB);
-	}
-	
-	/**
-	 * Return true if both TownBlocks are Arena plots.
-	 * 
-	 * @param defenderTB TownBlock being tested.
-	 * @param attackerTB TownBlock being tested.
-	 * @return true if both TownBlocks are Arena plots.
-	 */
-	public static boolean isArenaPlot(TownBlock attackerTB, TownBlock defenderTB) {
-
-		if (defenderTB != null && attackerTB != null && defenderTB.getType() == TownBlockType.ARENA && attackerTB.getType() == TownBlockType.ARENA)
-			return true;
 		return false;
 	}
 
@@ -555,10 +411,8 @@ public class CombatUtil {
 		if (world == null || !world.isUsingTowny())
 			return false;
 		
-		boolean preventDamage = false;
-		
-		if (!isArenaPlot(dispenserTB, defenderTB))
-			preventDamage = preventPvP(world, dispenserTB) || preventPvP(world, defenderTB);
+		// Allow players and mobs to be damaged by dispensers in the wilderness
+		boolean preventDamage = dispenserTB != null || defenderTB != null;
 
 		return BukkitTools.isEventCancelled(new TownyDispenserDamageEntityEvent(entity.getLocation(), entity, cause, defenderTB, preventDamage, dispenser));
 	}

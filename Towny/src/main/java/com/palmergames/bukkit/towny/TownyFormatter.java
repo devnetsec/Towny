@@ -92,7 +92,6 @@ public class TownyFormatter {
 		TownyObject owner;
 		Town town = townBlock.getTownOrNull();
 		TownyWorld world = townBlock.getWorld();
-		boolean preventPVP = CombatUtil.preventPvP(world, townBlock);
 
 		if (townBlock.hasResident())
 			owner = townBlock.getResidentOrNull();
@@ -105,7 +104,6 @@ public class TownyFormatter {
 		if (!townBlock.getType().equals(TownBlockType.RESIDENTIAL))
 			screen.addComponentOf("townblock_plotType", colourKeyValue(translator.of("status_plot_type"), townBlock.getType().toString()));
 		screen.addComponentOf("perm", colourKeyValue(translator.of("status_perm"), ((owner instanceof Resident) ? townBlock.getPermissions().getColourString().replace("n", "t") : townBlock.getPermissions().getColourString().replace("f", "r"))));
-		screen.addComponentOf("pvp", colourKeyValue(translator.of("status_pvp"), ((!preventPVP) ? translator.of("status_on"): translator.of("status_off")))); 
 		screen.addComponentOf("explosion", colourKeyValue(translator.of("explosions"), ((world.isForceExpl() || townBlock.getPermissions().explosion) ? translator.of("status_on"): translator.of("status_off")))); 
 		screen.addComponentOf("firespread", colourKeyValue(translator.of("firespread"), ((world.isForceFire() || townBlock.getPermissions().fire) ? translator.of("status_on"):translator.of("status_off")))); 
 		screen.addComponentOf("mobspawns", colourKeyValue(translator.of("mobspawns"), ((world.isForceTownMobs() || townBlock.getPermissions().mobs || town.isAdminEnabledMobs()) ?  translator.of("status_on"): translator.of("status_off"))));
@@ -733,8 +731,6 @@ public class TownyFormatter {
 		List<String> sub = new ArrayList<>();
 		if (town.isCapital())
 			sub.add(translator.of("status_title_capital"));
-		if (!town.isAdminDisabledPVP() && (town.isPVP() || world.isForcePVP()))
-			sub.add(translator.of("status_title_pvp"));
 		if (town.isOpen())
 			sub.add(translator.of("status_title_open"));
 		if (town.isPublic())

@@ -1594,19 +1594,7 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 			choice = BaseCommand.parseToggleChoice(split[1]);
 		}
 		
-		if (split[0].equalsIgnoreCase("forcepvp")) {
-			
-			town.setAdminEnabledPVP(choice.orElse(!town.isAdminEnabledPVP()));
-			
-			town.save();
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_town_forcepvp_setting_set_to", town.getName(), town.isAdminEnabledPVP()));
-		} else if (split[0].equalsIgnoreCase("forcedisablepvp")) {
-			
-			town.setAdminDisabledPVP(choice.orElse(!town.isAdminDisabledPVP()));
-			
-			town.save();
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_town_forcedisabledpvp_setting_set_to", town.getName(), town.isAdminDisabledPVP()));
-		} else if (split[0].equalsIgnoreCase("forcemobs")) {
+		if (split[0].equalsIgnoreCase("forcemobs")) {
 
 			town.setAdminEnabledMobs(choice.orElse(!town.isAdminEnabledMobs()));
 			
@@ -1623,11 +1611,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 			town.setHasUpkeep(choice.orElse(!town.hasUpkeep()));
 			town.save();
 			TownyMessaging.sendMsg(sender, Translatable.of("msg_town_upkeep_setting_set_to", town.getName(), town.hasUpkeep()));
-		} else if (split[0].equalsIgnoreCase("allowedtowar")) {
-			
-			town.setAllowedToWar(choice.orElse(!town.isAllowedToWar()));
-			town.save();
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_town_allowedtowar_setting_set_to", town.getName(), town.isAllowedToWar()));
 		} else if (split[0].equalsIgnoreCase("visibleontoplists")) {
 
 			town.setVisibleOnTopLists(choice.orElse(!town.isVisibleOnTopLists()));

@@ -162,11 +162,6 @@ public class ChunkNotification {
 			if (output != null && output.length() > 0)
 				out.add(output);
 		}
-	
-		// Only adds this IF in town.
-		output = getTownPVPNotification(resident);
-		if (output != null && output.length() > 0)
-			out.add(output);
 
 		// Only show the names of plots if they do not have this mode applied
 		if (!resident.hasMode("ignoreplots")) {
@@ -237,14 +232,6 @@ public class ChunkNotification {
 			} else
 				return String.format(noOwnerNotificationFormat, (toTownBlock.getName().isEmpty()) ? Translatable.of("UNCLAIMED_PLOT_NAME").forLocale(resident) : Colors.translateColorCodes(StringMgmt.remUnderscore(toTownBlock.getName())));
 
-		}
-		return null;
-	}
-
-	public String getTownPVPNotification(Resident resident) {
-
-		if (!toWild && ((fromWild) || (toTownBlock.getPermissions().pvp != fromTownBlock.getPermissions().pvp))) {
-			return String.format(areaTownPvPNotificationFormat, !CombatUtil.preventPvP(to.getTownyWorld(), toTownBlock) ? Translatable.of("status_title_pvp").forLocale(resident) : Translatable.of("status_title_nopvp").forLocale(resident));
 		}
 		return null;
 	}
