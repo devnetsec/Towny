@@ -22,7 +22,6 @@ import com.palmergames.bukkit.towny.event.TownRemoveResidentEvent;
 import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 import com.palmergames.bukkit.towny.event.nation.NationLevelDecreaseEvent;
 import com.palmergames.bukkit.towny.event.nation.NationLevelIncreaseEvent;
-import com.palmergames.bukkit.towny.event.nation.NationPreTownLeaveEvent;
 import com.palmergames.bukkit.towny.event.town.TownLevelDecreaseEvent;
 import com.palmergames.bukkit.towny.event.town.TownLevelIncreaseEvent;
 import com.palmergames.bukkit.towny.event.town.TownOutlawAddEvent;
@@ -161,10 +160,6 @@ public class TownyCustomListener implements Listener {
 			world.removeBedExplosionAtBlock(event.getLocation());
 			world.removeBedExplosionAtBlock(event.getLocation2());
 		}, 20L);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST) 
-	public void onTownLeaveNation(NationPreTownLeaveEvent event ) {
 	}
 	
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) 

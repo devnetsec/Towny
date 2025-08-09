@@ -825,11 +825,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 						town.setForSalePrice(Double.parseDouble(line));
 					} catch (Exception ignored) {
 					}
-				line = keys.get("joinedNationAt");
-				if (line != null)
-					try {
-						town.setJoinedNationAt(Long.parseLong(line));
-					} catch (Exception ignored) {}
 
 				line = keys.get("movedHomeBlockAt");
 				if (line != null)
@@ -940,19 +935,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				if (line != null)
 					town.setManualTownLevel(Integer.parseInt(line));
 				
-				line = keys.get("nation");
-				if (line != null && !line.isEmpty()) {
-					Nation nation = null;
-					if (universe.hasNation(line))
-						nation = universe.getNation(line);
-					else if (universe.getReplacementNameMap().containsKey(line))
-						nation = universe.getNation(universe.getReplacementNameMap().get(line));
-
-					// Only set the nation if it exists
-					if (nation != null)
-						town.setNation(nation, false);
-				}
-				
 				line = keys.get("debtBalance");
 				if (line != null)
 					try {
@@ -992,17 +974,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				} else {
 					town.setMapColorHexCode(MapUtil.generateRandomTownColourAsHexCode());
 				}
-				
-				line = keys.get("nationZoneOverride");
-				if (line != null)
-					try {
-						town.setNationZoneOverride(Integer.parseInt(line));
-					} catch (Exception ignored) {
-					}
-				
-				line = keys.get("nationZoneEnabled");
-				if (line != null)
-					town.setNationZoneEnabled(Boolean.parseBoolean(line));
 				
 			} catch (Exception e) {
 				plugin.getLogger().log(Level.WARNING, Translation.of("flatfile_err_reading_town_file_at_line", town.getName(), line, town.getName()), e);
@@ -1492,6 +1463,19 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 					} catch (Exception ignored) {
 					}
 
+				line = keys.get("nation");
+				if (line != null && !line.isEmpty()) {
+					Nation nation = null;
+					if (universe.hasNation(line))
+						nation = universe.getNation(line);
+					else if (universe.getReplacementNameMap().containsKey(line))
+						nation = universe.getNation(universe.getReplacementNameMap().get(line));
+
+					// Only set the nation if it exists
+					if (nation != null)
+						world.setNation(nation);
+				}
+
 				line = keys.get("metadata");
 				if (line != null && !line.isEmpty())
 					MetadataLoader.getInstance().deserializeMetadata(world, line.trim());
@@ -1958,9 +1942,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		// Mayor
 		if (town.hasMayor())
 			list.add("mayor=" + town.getMayor().getName());
-		// Nation
-		if (town.hasNation())
-			list.add("nation=" + town.getNationOrNull().getName());
 
 		list.add(newLine);
 		// Town Board
@@ -2013,7 +1994,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 			list.add("uuid=" + UUID.randomUUID());
 		}
         list.add("registered=" + town.getRegistered());
-		list.add("joinedNationAt=" + town.getJoinedNationAt());
 		list.add("movedHomeBlockAt=" + town.getMovedHomeBlockAt());
 		// ForSale
 		list.add("forSale=" + town.isForSale());
@@ -2060,8 +2040,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("trustedTowns=" + StringMgmt.join(town.getTrustedTownsUUIDS(), ","));
 		
 		list.add("mapColorHexCode=" + town.getMapColorHexCode());
-		list.add("nationZoneOverride=" + town.getNationZoneOverride());
-		list.add("nationZoneEnabled=" + town.isNationZoneEnabled());
 		
 		/*
 		 *  Make sure we only save in async
@@ -2307,6 +2285,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		// jailing
 		list.add("jailing=" + world.isJailingEnabled());		
 		
+		// Nation
+		if (world.getNation() != null)
+			list.add("nation=" + world.getNation().getName());
+
 		// Metadata
 		list.add("");
 		list.add("metadata=" + serializeMetadata(world));

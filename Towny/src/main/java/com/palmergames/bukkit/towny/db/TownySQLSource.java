@@ -999,7 +999,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			town.setOpen(rs.getBoolean("open"));
 			town.setPublic(rs.getBoolean("public"));
 			town.setAdminEnabledMobs(rs.getBoolean("adminEnabledMobs"));
-			town.setJoinedNationAt(rs.getLong("joinedNationAt"));
 			town.setMovedHomeBlockAt(rs.getLong("movedHomeBlockAt"));
 			
 			line = rs.getString("forSale");
@@ -1011,8 +1010,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 				town.setForSalePrice(Double.parseDouble(line));
 
 			town.setPurchasedBlocks(rs.getInt("purchased"));
-			town.setNationZoneOverride(rs.getInt("nationZoneOverride"));
-			town.setNationZoneEnabled(rs.getBoolean("nationZoneEnabled"));
 			
 			line = rs.getString("maxPercentTaxAmount");
 			if (line != null)
@@ -1133,17 +1130,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 				line = rs.getString("metadata");
 				if (line != null && !line.isEmpty()) {
 					MetadataLoader.getInstance().deserializeMetadata(town, line);
-				}
-			} catch (SQLException ignored) {
-			}
-
-			try {
-				line = rs.getString("nation");
-				if (line != null && !line.isEmpty()) {
-					Nation nation = universe.getNation(line);
-					// Only set nation if it exists
-					if (nation != null)
-						town.setNation(nation, false);
 				}
 			} catch (SQLException ignored) {
 			}
@@ -1716,6 +1702,18 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			} catch (Exception ignored) {
 			}
 			
+
+			try {
+				line = rs.getString("nation");
+				if (line != null && !line.isEmpty()) {
+					Nation nation = universe.getNation(line);
+					// Only set nation if it exists
+					if (nation != null)
+						world.setNation(nation);
+				}
+			} catch (SQLException ignored) {
+			}
+			
 			try {
 				line = rs.getString("metadata");
 				if (line != null && !line.isEmpty()) {
@@ -2285,7 +2283,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			twn_hm.put("name", town.getName());
 			twn_hm.put("outlaws", StringMgmt.join(town.getOutlaws(), "#"));
 			twn_hm.put("mayor", town.hasMayor() ? town.getMayor().getName() : "");
-			twn_hm.put("nation", town.hasNation() ? town.getNationOrNull().getName() : "");
 			twn_hm.put("townBoard", town.getBoard());
 			twn_hm.put("tag", town.getTag());
 			twn_hm.put("founder", town.getFounder());
@@ -2293,8 +2290,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			twn_hm.put("bonus", town.getBonusBlocks());
 			twn_hm.put("manualTownLevel", town.getManualTownLevel());
 			twn_hm.put("purchased", town.getPurchasedBlocks());
-			twn_hm.put("nationZoneOverride", town.getNationZoneOverride());
-			twn_hm.put("nationZoneEnabled", town.isNationZoneEnabled());
 			twn_hm.put("commercialPlotPrice", town.getCommercialPlotPrice());
 			twn_hm.put("commercialPlotTax", town.getCommercialPlotTax());
 			twn_hm.put("embassyPlotPrice", town.getEmbassyPlotPrice());
@@ -2311,7 +2306,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			twn_hm.put("open", town.isOpen());
 			twn_hm.put("public", town.isPublic());
 			twn_hm.put("adminEnabledMobs", town.isAdminEnabledMobs());
-			twn_hm.put("joinedNationAt", town.getJoinedNationAt());
 			twn_hm.put("mapColorHexCode", town.getMapColorHexCode());
 			twn_hm.put("movedHomeBlockAt", town.getMovedHomeBlockAt());
 			twn_hm.put("forSale", town.isForSale());
@@ -2544,6 +2538,8 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			nat_hm.put("usingTowny", world.isUsingTowny());
 
 			nat_hm.put("jailing", world.isJailingEnabled());
+
+			nat_hm.put("nation", world.getNation().getName());
 
 			if (world.hasMeta())
 				nat_hm.put("metadata", serializeMetadata(world));

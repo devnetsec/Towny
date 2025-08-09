@@ -35,6 +35,9 @@ public class TownyWorld extends TownyObject {
 
 	private final HashMap<String, Town> towns = new HashMap<>();
 
+	// TODO: Don't hardcode this; use TownySettings instead
+	private Nation nation = new Nation("Test Nation");
+
 	private boolean isDeletingEntitiesOnUnclaim = TownySettings.isDeletingEntitiesOnUnclaim();
 	private Set<EntityType> unclaimDeleteEntityTypes = null;
 	
@@ -128,6 +131,10 @@ public class TownyWorld extends TownyObject {
 		return towns;
 	}
 
+	public Nation getNation() {
+		return nation;
+	}
+
 	public boolean hasTowns() {
 
 		return !towns.isEmpty();
@@ -147,6 +154,11 @@ public class TownyWorld extends TownyObject {
 
 		if (!hasTown(town))
 			towns.put(town.getName(), town);
+	}
+
+	public void setNation(Nation nation) {
+		// TODO: Input validation?
+		this.nation = nation;
 	}
 
 	public TownBlock getTownBlock(Coord coord) throws NotRegisteredException {

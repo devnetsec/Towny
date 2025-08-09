@@ -143,28 +143,6 @@ public class PopulationTests {
 	}
 
 	/*
-	 * Test nation-joining population requirements.
-	 */
-
-	@Test
-	void testSuccessTownJoiningNationWithFeatureDisabled() {
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_JOIN_NATION.getRoot(), 0);
-        assertTrue(town.hasEnoughResidentsToBeANationCapital());
-	}
-
-	@Test
-	void testSucceedTownPopAllowsJoiningNation() {
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_JOIN_NATION.getRoot(), 5);
-        assertTrue(town.hasEnoughResidentsToJoinANation());
-	}
-
-	@Test
-	void testFailTownPopAllowsJoiningNation() {
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_JOIN_NATION.getRoot(), 6);
-        assertFalse(town.hasEnoughResidentsToJoinANation());
-	}
-
-	/*
 	 * Test max residents per nation.
 	 */
 

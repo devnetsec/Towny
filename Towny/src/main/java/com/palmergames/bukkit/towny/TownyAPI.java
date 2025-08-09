@@ -740,37 +740,7 @@ public class TownyAPI {
      * @return returns either UNCLAIMED_ZONE or NATION_ZONE
      */
     public TownBlockStatus hasNationZone(WorldCoord worldCoord) {
-    	
-		final TownBlock nearestTownblock = Optional.ofNullable(worldCoord.getTownyWorld()).map(world -> world.getClosestTownblockWithNationFromCoord(worldCoord)).orElse(null);
-		
-		if (nearestTownblock == null)
-			return TownBlockStatus.UNCLAIMED_ZONE;
-		
-		Town nearestTown = nearestTownblock.getTownOrNull();
-		
-		// Safety validation, both these cases should never occur.
-		if (nearestTown == null || !nearestTown.hasNation())
-			return TownBlockStatus.UNCLAIMED_ZONE;
-
-		// It is possible to only have nation zones surrounding nation capitals. If this is true, we treat this like a normal wilderness.
-		if (!nearestTown.isCapital() && TownySettings.getNationZonesCapitalsOnly())
-			return TownBlockStatus.UNCLAIMED_ZONE;
-		
-		// Even after checking for having a nation, and whether it might need to be a capital,
-		// towns can disable their nation zone manually.
-		if (!nearestTown.isNationZoneEnabled())
-			return TownBlockStatus.UNCLAIMED_ZONE;
-		
-		int distance = (int) MathUtil.distance(worldCoord.getX(), nearestTownblock.getX(), worldCoord.getZ(), nearestTownblock.getZ());
-		int nationZoneRadius = nearestTown.getNationZoneSize();
-
-		if (distance <= nationZoneRadius) {
-			if (BukkitTools.isEventCancelled(new NationZoneTownBlockStatusEvent(nearestTown)))
-				return TownBlockStatus.UNCLAIMED_ZONE;
-			
-			return TownBlockStatus.NATION_ZONE;
-		}
-		
+		// TODO: Remove this method
 		return TownBlockStatus.UNCLAIMED_ZONE;
 	}
 

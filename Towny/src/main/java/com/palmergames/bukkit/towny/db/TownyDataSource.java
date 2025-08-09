@@ -376,8 +376,6 @@ public abstract class TownyDataSource {
 	abstract public void renameTown(Town town, String newName) throws AlreadyRegisteredException, NotRegisteredException;
 
 	abstract public void renameNation(Nation nation, String newName) throws AlreadyRegisteredException, NotRegisteredException;
-	
-	abstract public void mergeNation(Nation succumbingNation, Nation prevailingNation);
 
 	abstract public void mergeTown(Town mergeInto, Town mergeFrom);
 

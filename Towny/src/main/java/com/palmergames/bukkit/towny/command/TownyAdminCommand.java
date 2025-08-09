@@ -1448,17 +1448,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_TOWN_OUTLAW.getNode());
 			TownCommand.parseTownOutlawCommand(sender, StringMgmt.remArgs(split, 2), true, town);
 			break;
-		case "leavenation":
-			if (!town.hasNation())
-				throw new TownyException(Translatable.of("That town does not belong to a nation."));
-
-			Nation nation = town.getNationOrNull();
-			town.removeNation();
-			plugin.resetCache();
-
-			TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_town_left", StringMgmt.remUnderscore(town.getName())));
-			TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_left_nation", StringMgmt.remUnderscore(nation.getName())));
-			break;
 		case "checkoutposts":
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_TOWN_CHECKOUTPOSTS.getNode());
 			parseAdminCheckOutpostsCommand(sender, town);
@@ -1726,11 +1715,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 			HelpMenu.TA_NATION.send(sender);
 			return;
 		}
-		// Special case where we check for a new nation being made before we use split[0] to set the Nation.
-		if (split[0].equalsIgnoreCase("new")) {
-			parseAdminNewNationCommand(sender, split);
-			return;
-		}
 
 		Nation nation = getNationOrThrow(split[0]);
 		if (split.length == 1) {
@@ -1740,34 +1724,9 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		}
 
 		switch (split[1].toLowerCase(Locale.ROOT)) {
-		case "add":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_ADD.getNode());
-			if (split.length != 3)
-				throw new TownyException(Translatable.of("msg_err_not_enough_variables") + "/ta nation [nationname] add [townname]");
-			townyAdminNationAddTown(sender, nation, StringMgmt.remArgs(split, 2));
-			break;
-		case "transfer":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_TRANSFER.getNode());
-			if (split.length != 3)
-				throw new TownyException(Translatable.of("msg_err_not_enough_variables") + "/ta nation [nationname] transfer [townname]");
-			townyAdminNationTransfterTown(sender, nation, StringMgmt.remArgs(split, 2));
-			break;
-		case "kick":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_KICK.getNode());
-			NationCommand.nationKick(sender, nation, TownyAPI.getInstance().getTowns(StringMgmt.remArgs(split, 2)));
-			break;
 		case "sanctiontown":
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_SANCTIONTOWN.getNode());
 			NationCommand.nationSanctionTown(sender, nation, StringMgmt.remArgs(split, 2));
-			break;
-		case "delete":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_DELETE.getNode());
-			Confirmation.runOnAccept(() -> {
-				TownyUniverse.getInstance().getDataSource().removeNation(nation, DeleteNationEvent.Cause.ADMIN_COMMAND, sender);
-				TownyMessaging.sendGlobalMessage(Translatable.of("MSG_DEL_NATION", nation.getName()));
-				if (sender instanceof Player)
-					TownyMessaging.sendMsg(sender, Translatable.of("nation_deleted_by_admin", nation.getName()));
-			}).sendTo(sender);
 			break;
 		case "meta":
 			handleNationMetaCommand(sender, nation, split);
@@ -1786,20 +1745,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 			townyUniverse.getDataSource().renameNation(nation, name);
 			TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_set_name", getSenderFormatted(sender), nation.getName()));
 			TownyMessaging.sendMsg(sender, Translatable.of("msg_nation_set_name", getSenderFormatted(sender), nation.getName()));
-			break;
-		case "merge":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_MERGE.getNode());
-			NationCommand.mergeNation(sender, StringMgmt.remArgs(split, 2), nation, true);
-			break;
-		case "forcemerge":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_FORCEMERGE.getNode());
-			Nation remainingNation = getNationOrThrow(split[2]);
-			if (remainingNation.equals(nation))
-				throw new TownyException(Translatable.of("msg_err_invalid_name", split[2]));
-			Confirmation.runOnAccept(() -> {
-				townyUniverse.getDataSource().mergeNation(nation, remainingNation);
-				TownyMessaging.sendGlobalMessage(Translatable.of("nation1_has_merged_with_nation2", nation, remainingNation));
-			}).sendTo(sender);
 			break;
 		case "set":
 			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_SET.getNode());
@@ -1865,56 +1810,7 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 			HelpMenu.TA_NATION.send(sender);
 		}
 	}
-
-	private void parseAdminNewNationCommand(CommandSender sender, String[] split) throws TownyException {
-		if (split.length != 3)
-			throw new TownyException(Translatable.of("msg_err_not_enough_variables") + "/ta nation new [name] [capital]");
-
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_NATION_NEW.getNode());
-		
-		final Town capitalTown = getTownOrThrow(split[2]);
-		NationCommand.newNation(sender, split[1], capitalTown, true);
-	}
-
-	/**
-	 * Force-join command for admins which will bypass the invite system.
-	 * This also bypasses other limits Towny imposes on towns and nations
-	 * such as the max-towns-per-nation and nation-proximity, and doesn't
-	 * fire a cancellable pre-join event either. Any admin who runs this
-	 * can be assumed to know what they want. 
-	 * @param sender CommandSender
-	 * @param nation Nation which will have a town added.
-	 * @param townName Name of Town to add to Nation.
-	 * @throws TownyException when something has gone wrong.
-	 */
-	private void townyAdminNationAddTown(CommandSender sender, Nation nation, String[] townName) throws TownyException {
-
-		Town town = getTownOrThrow(townName[0]);
-		if (town.hasNation()) {
-			TownyMessaging.sendErrorMsg(sender, Translatable.of("msg_err_already_nation"));
-			TownyMessaging.sendMessage(sender, "Suggestion: /townyadmin town " + town + "leavenation, or /ta nation " + nation + " transfer " + town);
-			return;
-		}
-		town.setNation(nation);
-		town.save();
-		TownyMessaging.sendNationMessagePrefixed(nation, Translatable.of("msg_join_nation", town.getName()));
-		TownyMessaging.sendMsg(sender, Translatable.of("msg_join_nation", town.getName()));
-	}
 	
-	private void townyAdminNationTransfterTown(CommandSender sender, Nation nation, String[] townName) throws TownyException {
-		Town town = getTownOrThrow(townName[0]);
-		if (town.hasNation()) {
-			nation = town.getNationOrNull();
-			town.removeNation();
-			plugin.resetCache();
-			TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_town_left", StringMgmt.remUnderscore(town.getName())));
-			TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_left_nation", StringMgmt.remUnderscore(nation.getName())));
-		}
-		town.setNation(nation);
-		town.save();
-		TownyMessaging.sendNationMessagePrefixed(nation, Translatable.of("msg_join_nation", town.getName()));
-		TownyMessaging.sendMsg(sender, Translatable.of("msg_join_nation", town.getName()));
-	}
 	private void parseAdminNationSet(CommandSender sender, Nation nation, String[] split) throws TownyException {
 		if (split.length == 0 || split[0].equals("?")) {
 			// Empty Case: /townyadmin town [town] set
@@ -2020,9 +1916,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		case "mayor":
 			adminSetMayor(sender, split);
 			break;
-		case "nationzoneoverride":
-			adminSetNationZoneOverride(sender, split);
-			break;
 		case "plot":
 			adminSetPlot(sender, split);
 			break;
@@ -2110,23 +2003,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 
 		town.save();
 		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_new_mayor", newMayor));
-	}
-
-	private void adminSetNationZoneOverride(CommandSender sender, String[] split) throws TownyException {
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNYADMIN_SET_NATIONZONE.getNode());
-		
-		if (split.length < 2) {
-			HelpMenu.TA_SET_NATIONZONE.send(sender);
-			return;
-		}
-		Town town = getTownOrThrow(split[1]);
-		int size = MathUtil.getPositiveIntOrThrow(split[2]);
-		town.setNationZoneOverride(size);
-		town.save();
-		if (size == 0)
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_nationzone_override_removed", town.getName()));
-		else 
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_nationzone_override_set_to", town.getName(), size));
 	}
 
 	private void adminSetPlot(CommandSender sender, String[] split) throws TownyException {

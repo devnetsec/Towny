@@ -8,9 +8,6 @@ import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.TownySettings.TownLevel;
 import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.event.DeleteNationEvent;
-import com.palmergames.bukkit.towny.event.NationAddTownEvent;
-import com.palmergames.bukkit.towny.event.NationRemoveTownEvent;
 import com.palmergames.bukkit.towny.event.BonusBlockPurchaseCostCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownBlockClaimCostCalculationEvent;
 import com.palmergames.bukkit.towny.event.TownyObjectFormattedNameEvent;
@@ -88,7 +85,6 @@ public class Town extends Government implements TownBlockOwner {
 	private double commercialPlotPrice;
 	private double embassyPlotPrice;
 	private double debtBalance = 0.0;
-	private Nation nation;
 	private boolean hasUpkeep = true;
 	private boolean hasUnlimitedClaims = false;
 	private boolean isForSale = false;
@@ -97,11 +93,8 @@ public class Town extends Government implements TownBlockOwner {
 	private TownBlock homeBlock;
 	private TownyWorld world;
 	private boolean adminEnabledMobs = false;
-	private int nationZoneOverride = 0;
-	private boolean nationZoneEnabled = true;
 	private final ConcurrentHashMap<WorldCoord, TownBlock> townBlocks = new ConcurrentHashMap<>();
 	private final TownyPermission permissions = new TownyPermission();
-	private long joinedNationAt;
 	private long movedHomeBlockAt;
 	private Jail primaryJail;
 	private int manualTownLevel = -1;
@@ -248,8 +241,8 @@ public class Town extends Government implements TownBlockOwner {
 
 	public Nation getNation() throws NotRegisteredException {
 
-		if (hasNation())
-			return nation;
+		if (world.getNation() != null)
+			return world.getNation();
 		else
 			throw new NotRegisteredException(Translation.of("msg_err_town_doesnt_belong_to_any_nation"));
 	}
@@ -261,71 +254,7 @@ public class Town extends Government implements TownBlockOwner {
 	 */
 	@Nullable
 	public Nation getNationOrNull() {
-		return nation;
-	}
-
-	public void removeNation() {
-
-		if (!hasNation())
-			return;
-		
-		Nation oldNation = this.nation;
-				
-		for (Resident res : getResidents()) {
-			if (res.hasTitle() || res.hasSurname()) {
-				res.setTitle("");
-				res.setSurname("");
-			}
-			res.updatePermsForNationRemoval();
-			res.save();
-		}
-
-		try {
-			oldNation.removeTown(this);
-		} catch (EmptyNationException e) {
-			if (TownyUniverse.getInstance().getDataSource().removeNation(oldNation, DeleteNationEvent.Cause.NO_TOWNS))
-				TownyMessaging.sendGlobalMessage(Translatable.of("msg_del_nation", e.getNation().getName()));
-		}
-		
-		try {
-			setNation(null);
-		} catch (AlreadyRegisteredException ignored) {
-			// Cannot occur when setting null
-		}
-
-		setJoinedNationAt(0);
-		
-		this.save();
-		BukkitTools.fireEvent(new NationRemoveTownEvent(this, oldNation));
-
-		ProximityUtil.removeOutOfRangeTowns(oldNation);
-	}
-	
-	public void setNation(Nation nation) throws AlreadyRegisteredException {
-		setNation(nation, true);
-	}
-	
-	public void setNation(Nation nation, boolean updateJoinedAt) throws AlreadyRegisteredException {
-
-		if (this.nation == nation)
-			return;
-
-		if (nation == null) {
-			this.nation = null;
-			return;
-		}
-
-		if (hasNation())
-			throw new AlreadyRegisteredException();
-
-		this.nation = nation;
-		nation.addTown(this);
-
-		if (updateJoinedAt)
-			setJoinedNationAt(System.currentTimeMillis());
-
-		TownyPerms.updateTownPerms(this);
-		BukkitTools.fireEvent(new NationAddTownEvent(this, nation));
+		return world.getNation();
 	}
 
 	private boolean residentsSorted = false;
@@ -403,9 +332,11 @@ public class Town extends Government implements TownBlockOwner {
 		return resident == mayor;
 	}
 
+	// Should always return true...
+	// TODO: Add a test?
 	public boolean hasNation() {
 
-		return nation != null;
+		return world.getNation() != null;
 	}
 
 	public int getNumResidents() {
@@ -415,7 +346,7 @@ public class Town extends Government implements TownBlockOwner {
 
 	public boolean isCapital() {
 
-		return hasNation() && nation.isCapital(this);
+		return hasNation() && world.getNation().isCapital(this);
 	}
 
 	public void setHasUpkeep(boolean hasUpkeep) {
@@ -1494,7 +1425,7 @@ public class Town extends Government implements TownBlockOwner {
 	 */
 	@Nullable
 	public String getNationMapColorHexCode() {
-		String rawMapColorHexCode = hasNation() ? nation.getMapColorHexCode() : null;
+		String rawMapColorHexCode = hasNation() ? world.getNation().getMapColorHexCode() : null;
 		TownMapColourNationalCalculationEvent event = new TownMapColourNationalCalculationEvent(this, rawMapColorHexCode);
 		BukkitTools.fireEvent(event);
 		return event.getMapColorHexCode();
@@ -1507,26 +1438,6 @@ public class Town extends Government implements TownBlockOwner {
 
 	public void saveTownBlocks() {
 		townBlocks.values().stream().forEach(tb -> tb.save());
-	}
-
-	public int getNationZoneOverride() {
-		return nationZoneOverride;
-	}
-	
-	public void setNationZoneOverride(int size) {
-		this.nationZoneOverride = size;
-	}
-	
-	public boolean hasNationZoneOverride() {
-		return nationZoneOverride > 0;
-	}
-
-	public long getJoinedNationAt() {
-		return joinedNationAt;
-	}
-
-	public void setJoinedNationAt(long joinedNationAt) {
-		this.joinedNationAt = joinedNationAt;
 	}
 	
 	public long getMovedHomeBlockAt() {
@@ -1561,20 +1472,6 @@ public class Town extends Government implements TownBlockOwner {
 		trustedResidents.remove(resident);
 	}
 
-	@Override
-	public int getNationZoneSize() {
-		if (!TownySettings.getNationZonesEnabled() || !hasNation())
-			return 0;
-		
-		if (!isCapital() && TownySettings.getNationZonesCapitalsOnly())
-			return 0;
-		
-		if (hasNationZoneOverride())
-			return getNationZoneOverride();
-		
-		return nation.getNationZoneSize() + (isCapital() ? TownySettings.getNationZonesCapitalBonusSize() : 0);
-	}
-
 	/**
 	 * Only to be used when loading the database.
 	 * @param towns List&lt;Town&gt; which will be loaded in as trusted towns.
@@ -1600,6 +1497,15 @@ public class Town extends Government implements TownBlockOwner {
 		return getTrustedTowns().isEmpty();
 	}
 
+	public void removeNation() {
+		try {
+			world.getNation().removeTown(this);
+		}
+		// FIXME: Ignore this?
+		catch (EmptyNationException ignore) {
+		}
+	}
+
 	public boolean hasTrustedTown(Town town) {
 		return trustedTowns.containsKey(town.getUUID());
 	}
@@ -1610,13 +1516,6 @@ public class Town extends Government implements TownBlockOwner {
 	
 	public List<UUID> getTrustedTownsUUIDS() {
 		return Collections.unmodifiableList(trustedTowns.keySet().stream().collect(Collectors.toList()));
-	}
-	public boolean isNationZoneEnabled() {
-		return nationZoneEnabled;
-	}
-	
-	public void setNationZoneEnabled(boolean nationZoneEnabled) {
-		this.nationZoneEnabled = nationZoneEnabled;
 	}
 
 	/**
@@ -1714,14 +1613,6 @@ public class Town extends Government implements TownBlockOwner {
 
 	public void playerBroadCastMessageToTown(Player player, String message) {
 		TownyMessaging.sendPrefixedTownMessage(this, Translatable.of("town_say_format", player.getName(), TownyComponents.stripClickTags(message)));
-	}
-
-	public void checkTownHasEnoughResidentsForNationRequirements() {
-		TownUtil.checkNationResidentsRequirementsOfTown(this);
-	}
-
-	public boolean hasEnoughResidentsToJoinANation() {
-		return TownUtil.townHasEnoughResidentsToJoinANation(this);
 	}
 
 	public boolean hasEnoughResidentsToBeANationCapital() {

@@ -43,7 +43,6 @@ import com.palmergames.bukkit.towny.event.town.toggle.TownToggleUnknownEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleExplosionEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleFireEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleMobsEvent;
-import com.palmergames.bukkit.towny.event.town.toggle.TownToggleNationZoneEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleOpenEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownTogglePublicEvent;
 import com.palmergames.bukkit.towny.event.town.toggle.TownToggleTaxPercentEvent;
@@ -1218,7 +1217,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		case "mobs" -> townToggleMobs(sender, split, admin, town, choice);
 		case "taxpercent" -> townToggleTaxPercent(sender, admin, town, choice);
 		case "open" -> townToggleOpen(sender, admin, town, choice);
-		case "nationzone" -> townToggleNationZone(sender, admin, town, choice);
 		default -> {
 			if (TownyCommandAddonAPI.hasCommand(CommandType.TOWN_TOGGLE, split[0])) {
 				TownyCommandAddonAPI.getAddonCommand(CommandType.TOWN_TOGGLE, split[0]).execute(sender, "town", split);
@@ -1354,24 +1352,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		// Send a warning when toggling on (a reminder about plot permissions).
 		if (town.isOpen())
 			TownyMessaging.sendMsg(sender, Translatable.of("msg_toggle_open_on_warning"));
-	}
-
-	private static void townToggleNationZone(CommandSender sender, boolean admin, Town town, Optional<Boolean> choice) throws TownyException {
-		// Towns don't always have nationzones.
-		if (town.getNationZoneSize() < 1)
-			throw new TownyException(Translatable.of("msg_err_your_town_has_no_nationzone_to_toggle"));
-
-		// Fire cancellable event directly before setting the toggle.
-		TownToggleNationZoneEvent preEvent = new TownToggleNationZoneEvent(sender, town, admin, choice.orElse(!town.isNationZoneEnabled()));
-		BukkitTools.ifCancelledThenThrow(preEvent);
-
-		// Set the toggle setting.
-		town.setNationZoneEnabled(preEvent.getFutureState());
-
-		// Send message feedback.
-		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_changed_nationzone", town.isNationZoneEnabled() ? Translatable.of("enabled") : Translatable.of("disabled")));
-		if (admin)
-			TownyMessaging.sendMsg(sender, Translatable.of("msg_changed_nationzone", town.isNationZoneEnabled() ? Translatable.of("enabled") : Translatable.of("disabled")));
 	}
 	
 	private static void parseUnJailCommand(CommandSender sender, Town town, String[] split, boolean admin) throws TownyException {
@@ -2602,7 +2582,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_left_town", resident.getName()));
 		TownyMessaging.sendMsg(player, Translatable.of("msg_left_town", resident.getName()));
 
-		town.checkTownHasEnoughResidentsForNationRequirements();
 	}
 
 	/**
@@ -2790,7 +2769,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		if (kickedResidents.isEmpty())
 			throw new TownyException(Translatable.of("msg_invalid_name"));
 
-		town.checkTownHasEnoughResidentsForNationRequirements();
 		town.save();
 
 		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_kicked",  resident.getName(), StringMgmt.join(kickedResidents, ", ")));

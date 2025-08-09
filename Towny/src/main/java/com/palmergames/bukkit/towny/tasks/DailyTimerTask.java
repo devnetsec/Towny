@@ -278,10 +278,9 @@ public class DailyTimerTask extends TownyTimerTask {
 
 		// Town is unable to pay the nation's tax.
 		if (!TownySettings.isTownBankruptcyEnabled() || !TownySettings.doBankruptTownsPayNationTax()) {
-		// Bankruptcy disabled, remove town for not paying nation tax, 
+		// Bankruptcy disabled
 		// OR Bankruptcy enabled but towns aren't allowed to use debt to pay nation tax. 
 
-			town.removeNation();
 			TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_your_town_couldnt_pay_the_nation_tax_of", prettyMoney(taxAmount)));
 			return "delinquent";
 		}

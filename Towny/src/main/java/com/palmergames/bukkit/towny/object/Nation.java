@@ -474,14 +474,6 @@ public class Nation extends Government {
 	public void save() {
 		TownyUniverse.getInstance().getDataSource().saveNation(this);
 	}
-	
-	@Override
-	public int getNationZoneSize() {
-		if (!TownySettings.getNationZonesEnabled())
-			return 0;
-		
-		return getNationLevel().nationZonesSize();
-	}
 
 	/**
 	 * Get the Nation's current NationLevel.

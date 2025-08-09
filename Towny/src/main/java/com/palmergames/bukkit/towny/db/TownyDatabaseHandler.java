@@ -9,12 +9,10 @@ import com.palmergames.bukkit.towny.db.TownyFlatFileSource.elements;
 import com.palmergames.bukkit.towny.event.DeleteNationEvent;
 import com.palmergames.bukkit.towny.event.DeletePlayerEvent;
 import com.palmergames.bukkit.towny.event.DeleteTownEvent;
-import com.palmergames.bukkit.towny.event.NationRemoveTownEvent;
 import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
 import com.palmergames.bukkit.towny.event.RenameNationEvent;
 import com.palmergames.bukkit.towny.event.RenameResidentEvent;
 import com.palmergames.bukkit.towny.event.RenameTownEvent;
-import com.palmergames.bukkit.towny.event.town.TownPreRuinedEvent;
 import com.palmergames.bukkit.towny.event.town.TownPreUnclaimEvent;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.event.PreDeleteNationEvent;
@@ -505,13 +503,7 @@ public abstract class TownyDatabaseHandler extends TownyDataSource {
 				res.updatePermsForNationRemoval();
 				res.save();
 			}
-			try {
-				town.setNation(null);
-			} catch (AlreadyRegisteredException ignored) {
-				// Cannot reach AlreadyRegisteredException
-			}
 			town.save();
-			BukkitTools.fireEvent(new NationRemoveTownEvent(town, nation));
 		}
 
 		plugin.resetCache();
@@ -1091,31 +1083,6 @@ public abstract class TownyDatabaseHandler extends TownyDataSource {
 	public void deleteFile(String fileName) {
 		File file = new File(fileName);
 		queryQueue.add(new DeleteFileTask(file, true));
-	}
-
-	/** 
-	 * Merges the succumbingNation into the prevailingNation.
-	 * 
-	 * @param succumbingNation - Nation to be removed, towns put into prevailingNation.
-	 * @param prevailingNation - Nation which survives, absorbs other nation's towns.
-	 */
-	public void mergeNation(Nation succumbingNation, Nation prevailingNation) {
-
-		if (TownyEconomyHandler.isActive())
-			succumbingNation.getAccount().payTo(succumbingNation.getAccount().getHoldingBalance(), prevailingNation, "Nation merge bank accounts.");
-
-		
-		lock.lock();
-		List<Town> towns = new ArrayList<>(succumbingNation.getTowns());
-		for (Town town : towns) {			
-			town.removeNation();
-			try {
-				town.setNation(prevailingNation);
-			} catch (AlreadyRegisteredException ignored) {
-			}
-			saveTown(town);
-		}
-		lock.unlock();
 	}
 
 	/**

@@ -461,9 +461,6 @@ public class TownyFormatter {
 				ClickEvent.runCommand("/towny:town " + capital.getName())
 			);
 			
-			// Nation Zone Size: 3
-			if (TownySettings.getNationZonesEnabled())
-				screen.addComponentOf("nationzone", colourKeyValue(translator.of("status_nation_zone_size"), String.valueOf(nation.getNationZoneSize())));
 		}
 		
 		screen.addComponentOf("newline", Component.newline());

@@ -37,24 +37,12 @@ public class NationUtil {
 	private static Component buildNationComponentHover(Town town, Translator translator, Nation nation, List<String> towns) {
 		Component hover = TownyComponents.miniMessage(Colors.translateColorCodes(String.format(TownySettings.getPAPIFormattingNation(), nation.getFormattedName())))
 				.append(Component.newline())
-				.append(TownyComponents.miniMessage(getTownJoinedNationDate(town, translator)))
-				.append(Component.newline())
 				.append(TownyComponents.miniMessage(TownyFormatter.colourKeyValue(translator.of("status_nation_king"), nation.getCapital().getMayor().getFormattedName())))
 				.append(Component.newline())
 				.append(TownyComponents.miniMessage(TownyFormatter.colourKeyValue(translator.of("town_plu"), StringMgmt.join(towns, ", "))));
 
-		int nationZoneSize = town.getNationZoneSize();
-		if (nationZoneSize > 0)
-			hover = hover.append(Component.newline().append(TownyComponents.miniMessage(
-					TownyFormatter.colourKeyValue(translator.of("status_nation_zone_size"), town.isNationZoneEnabled() ? String.valueOf(nationZoneSize) : translator.of("status_off_bad")))));
-
 		hover = hover.append(Component.newline()).append(translator.component("status_hover_click_for_more"));
 		return hover;
-	}
-
-	private static String getTownJoinedNationDate(Town town, Translator translator) {
-		return TownyFormatter.colourKeyValue(translator.of("status_joined_nation"),
-				town.getJoinedNationAt() > 0 ? TownyFormatter.lastOnlineFormatIncludeYear.format(town.getJoinedNationAt()) : translator.of("status_unknown"));
 	}
 
 	public static boolean hasReachedMaximumResidents(Nation nation) {
