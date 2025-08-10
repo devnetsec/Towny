@@ -322,9 +322,9 @@ public class Resident extends TownyObject implements InviteReceiver, EconomyHand
 		
 		BukkitTools.fireEvent(new TownPreRemoveResidentEvent(this, town));
 
-		// Remove any non-embassy plots owned by the player in the town that the resident will leave.
+		// Remove any plots owned by the player in the town that the resident will leave.
 		for (TownBlock townBlock : town.getTownBlocks()) {
-			if (townBlock.getType() == TownBlockType.EMBASSY || !townBlock.hasResident(this))
+			if (!townBlock.hasResident(this))
 				continue;
 			
 			if (townBlock.removeResident()) {

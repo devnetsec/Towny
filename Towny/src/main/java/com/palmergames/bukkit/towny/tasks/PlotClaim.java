@@ -175,7 +175,7 @@ public class PlotClaim implements Runnable {
 			throw new TownyException(Translatable.of("msg_err_plot_nfs"));
 
 		Town town = townBlock.getTownOrNull();
-		if (!townBlock.getType().equals(TownBlockType.EMBASSY) && !town.hasResident(resident))
+		if (!town.hasResident(resident))
 			throw new TownyException(Translatable.of("msg_err_not_part_town"));
 
 		testMaxPlotsOrThrow(1);

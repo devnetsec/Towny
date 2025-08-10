@@ -29,9 +29,7 @@ public class ChunkNotification {
 	public static String notificationFormat = Colors.Gold + " ~ %s";
 	public static String notificationSplitter = Colors.LightGray + " - ";
 	public static String areaWildernessNotificationFormat = Colors.Green + "%s";
-	public static String areaWildernessPvPNotificationFormat = Colors.Green + "%s";
 	public static String areaTownNotificationFormat = Colors.Green + "%s";
-	public static String areaTownPvPNotificationFormat = Colors.Green + "%s";
 	public static String ownerNotificationFormat = Colors.LightGreen + "%s";
 	public static String noOwnerNotificationFormat = Colors.LightGreen + "%s";
 	public static String plotNotificationSplitter = " ";
@@ -53,9 +51,7 @@ public class ChunkNotification {
 		notificationFormat = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_FORMAT));
 		notificationSplitter = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_SPLITTER));
 		areaWildernessNotificationFormat = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_AREA_WILDERNESS));
-		areaWildernessPvPNotificationFormat = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_AREA_WILDERNESS_PVP));
 		areaTownNotificationFormat = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_AREA_TOWN));
-		areaTownPvPNotificationFormat = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_AREA_TOWN_PVP));
 		ownerNotificationFormat = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_OWNER));
 		noOwnerNotificationFormat = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_NO_OWNER));
 		plotNotificationSplitter = Colors.translateColorCodes(TownySettings.getString(ConfigNodes.NOTIFICATION_PLOT_SPLITTER));
@@ -172,35 +168,13 @@ public class ChunkNotification {
 
 		if (fromWild ^ toWild || !fromWild && !toWild && fromTown != null && toTown != null && fromTown != toTown) {
 			if (toWild) {
-				if (TownySettings.getNationZonesEnabled() && TownySettings.getNationZonesShowNotifications()) {
-					Player player = resident.getPlayer();
-					TownyWorld toWorld = to.getTownyWorld();
-					if (PlayerCacheUtil.fetchTownBlockStatus(player, this.to).equals(TownBlockStatus.NATION_ZONE)) {
-						Town nearestTown = null; 
-						nearestTown = toWorld.getClosestTownWithNationFromCoord(this.to.getCoord(), nearestTown);
-						return String.format(areaWildernessNotificationFormat, Translatable.of("nation_zone_this_area_under_protection_of", toWorld.getFormattedUnclaimedZoneName(), nearestTown.getNationOrNull().getName()).forLocale(resident));
-					}
-				}
-				
 				return String.format(areaWildernessNotificationFormat, to.getTownyWorld().getFormattedUnclaimedZoneName());
-			
 			} else if (TownySettings.isNotificationsTownNamesVerbose())
 				return String.format(areaTownNotificationFormat, toTown.getFormattedName());
 			else 
 				return String.format(areaTownNotificationFormat, toTown);
 			
-		} else if (fromWild && toWild)
-			if (TownySettings.getNationZonesEnabled() && TownySettings.getNationZonesShowNotifications()) {
-				Player player = resident.getPlayer();
-				TownyWorld toWorld = this.to.getTownyWorld();
-				if (PlayerCacheUtil.fetchTownBlockStatus(player, this.to).equals(TownBlockStatus.NATION_ZONE) && PlayerCacheUtil.fetchTownBlockStatus(player, this.from).equals(TownBlockStatus.UNCLAIMED_ZONE)) {
-					Town nearestTown = null; 
-					nearestTown = toWorld.getClosestTownWithNationFromCoord(this.to.getCoord(), nearestTown);
-					return String.format(areaWildernessNotificationFormat, Translatable.of("nation_zone_this_area_under_protection_of", toWorld.getFormattedUnclaimedZoneName(), nearestTown.getNationOrNull().getName()).forLocale(resident));
-				} else if (PlayerCacheUtil.fetchTownBlockStatus(player, this.to).equals(TownBlockStatus.UNCLAIMED_ZONE) && PlayerCacheUtil.fetchTownBlockStatus(player, this.from).equals(TownBlockStatus.NATION_ZONE)) {
-					return String.format(areaWildernessNotificationFormat, to.getTownyWorld().getFormattedUnclaimedZoneName());
-				}
-			}
+		}
 		return null;
 	}
 

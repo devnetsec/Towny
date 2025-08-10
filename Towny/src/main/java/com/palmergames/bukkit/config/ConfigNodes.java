@@ -102,18 +102,6 @@ public enum ConfigNodes {
 			"false",
 			"",
 			"# Default Open status of the town (are new towns open and joinable by anyone at creation?)"),
-	TOWN_DEF_NEUTRAL(
-			"town.default_neutral",
-			"false",
-			"",
-			"# Default neutral status of the town (are new towns neutral by default?)"),
-	TOWN_DEF_ALLOWED_TO_WAR(
-			"town.default_allowed_to_war",
-			"true",
-			"",
-			"# Default status of new towns, (are they allowed to have a war/battle?)",
-			"# This setting is not used internally by Towny. It is available for war/battle plugins to use.",
-			"# Setting this false should mean your town cannot be involved in a war supplied by another plugin."),
 	TOWN_DEF_BOARD("town.default_board", 
 			"/town set board [msg]",
 			"",
@@ -141,11 +129,6 @@ public enum ConfigNodes {
 			"0.0",
 			"",
 			"# Default amount of shop tax of a new town."),
-	TOWN_DEF_TAXES_EMBASSY_TAX(
-			"town.default_taxes.embassy_tax",
-			"0.0",
-			"",
-			"# Default amount of embassy tax of a new town."),
 	TOWN_DEF_TAXES_PLOT_TAX(
 			"town.default_taxes.plot_tax",
 			"0.0",
@@ -219,16 +202,6 @@ public enum ConfigNodes {
 			"# A required minimum tax amount for the default_tax, will not change any nations which already have a tax set.",
 			"# Do not forget to set the default_tax to more than 0 or new nations will still begin with a tax of zero.",
 			"# This setting has no effect when negative taxes are allowed."),
-	NATION_DEF_TAXES_CONQUEREDTAX(
-			"nation.default_taxes.default_nation_conquered_tax",
-			"0",
-			"",
-			"# The default amount of money that nations will charge their conquered towns."),
-	NATION_DEF_TAXES_MAX_CONQUEREDTAX(
-			"nation.default_taxes.max_nation_conquered_tax",
-			"100",
-			"",
-			"# The maximum amount of money that can be charged by a nation on their conquered towns."),
 
 
 	NWS(
@@ -259,33 +232,6 @@ public enum ConfigNodes {
 			"# Are new worlds claimable by default?",
 			"# Setting this to false means that Towny will still be active but no land can be claimed by towns.",
 			"# You can adjust this setting for an existing world using /townyworld toggle claimable"),
-	NWS_WORLD_PVP_HEADER("new_world_settings.pvp", "", ""),
-	NWS_WORLD_PVP(
-			"new_world_settings.pvp.world_pvp",
-			"true",
-			"# Do new worlds have pvp enabled by default?",
-			"# You can adjust this setting for an existing world using /townyworld toggle pvp"),
-	NWS_FORCE_PVP_ON(
-			"new_world_settings.pvp.force_pvp_on",
-			"false",
-			"",
-			"# Do new worlds have pvp forced on by default?",
-			"# This setting overrides a towns' setting.",
-			"# You can adjust this setting for an existing world using /townyworld toggle forcepvp"),
-	NWS_FRIENDLY_FIRE_ENABLED(
-			"new_world_settings.pvp.friendly_fire_enabled",
-			"false",
-			"",
-			"# Do new world have friendly fire enabled by default?",
-			"# Does not affect Arena Plots which have FF enabled all the time.",
-			"# When true players on the same town or nation will harm each other.",
-			"# You can adjust this setting for an existing world using /townyworld toggle friendlyfire"),
-	NWS_WAR_ALLOWED(
-			"new_world_settings.pvp.war_allowed",
-			"true",
-			"",
-			"# Do new worlds have their war_allowed enabled by default?",
-			"# You can adjust this setting for an existing world using /townyworld toggle warallowed"),
 	NWS_WORLD_MONSTERS_HEADER("new_world_settings.mobs", "", ""),
 	NWS_WORLD_MONSTERS_ON(
 			"new_world_settings.mobs.world_monsters_on",
@@ -536,25 +482,7 @@ public enum ConfigNodes {
 			"global_town_settings.beacons.beacons_for_allies_only",
 			"false",
 			"",
-			"# When true, a beacon placed in a town will only affect the allies of the town. This includes residents, nation residents and allied nation residents."),
-	GTOWN_SETTINGS_BEACONS_EXCLUDE_CONQUERED_TOWNS(
-			"global_town_settings.beacons.exclude_conquered_towns",
-			"false",
-			"",
-			"# When true, conquered towns are not considered allies."),
-
-	GTOWN_SETTINGS_PVP_COOLDOWN_TIMER(
-			"global_town_settings.pvp_cooldown_time",
-			"30",
-			"",
-			"# Number of seconds that must pass before pvp can be toggled by a town.",
-			"# Applies to residents of the town using /res toggle pvp, as well as",
-			"# plots having their PVP toggled using /plot toggle pvp."),
-	GTOWN_SETTINGS_NEUTRAL_COOLDOWN_TIMER(
-			"global_town_settings.peaceful_cooldown_time",
-			"30",
-			"",
-			"# Number of seconds that must pass before peacefulness can be toggled by a town or nation."),
+			"# When true, a beacon placed in a town will only affect the residents of the town."),
 	GTOWN_SETTINGS_TOWN_DELETE_COOLDOWN_TIMER(
 			"global_town_settings.town_delete_cooldown_time",
 			"0",
@@ -651,11 +579,6 @@ public enum ConfigNodes {
 			"somecommandhere,othercommandhere",
 			"",
 			"# Commands an outlawed player cannot use while in the town they are outlawed in."),
-	GTOWN_SETTINGS_WAR_BLACKLISTED_COMMANDS(
-			"global_town_settings.war_blacklisted_commands",
-			"somecommandhere,othercommandhere",
-			"",
-			"# Commands that cannot be run by players who have an active war."),
 	GTOWN_SETTINGS_MAX_NUMBER_RESIDENTS_WITHOUT_NATION(
 			"global_town_settings.maximum_number_residents_without_nation",
 			"0",
@@ -663,20 +586,6 @@ public enum ConfigNodes {
 			"# When set above zero this is the largest number of residents a town can support before they join/create a nation.",
 			"# Do not set this value to an amount less than the required_number_residents_join_nation below.",
 			"# Do not set this value to an amount less than the required_number_residents_create_nation below."),
-	GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_JOIN_NATION(
-			"global_town_settings.required_number_residents_join_nation",
-			"0",
-			"",
-			"# The required number of residents in a town to join a nation",
-			"# If the number is 0, towns will not require a certain amount of residents to join a nation"
-	),
-	GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_CREATE_NATION(
-			"global_town_settings.required_number_residents_create_nation",
-			"0",
-			"",
-			"# The required number of residents in a town to create a nation",
-			"# If the number is 0, towns will not require a certain amount of residents to create a nation"
-	),
 	GTOWN_SETTINGS_REFUND_DISBAND_LOW_RESIDENTS(
 			"global_town_settings.refund_disband_low_residents",
 			"true",
@@ -716,19 +625,6 @@ public enum ConfigNodes {
 			"# If set to true, Towny will prevent a townblock from being unclaimed while an outsider is within the townblock's boundaries.",
 			"# When active this feature can cause a bit of lag when the /t unclaim command is used, depending on how many players are online."
 	),
-	GTOWN_SETTINGS_OUTSIDERS_PREVENT_PVP_TOGGLE(
-			"global_town_settings.outsiders_prevent_pvp_toggle",
-			"false",
-			"",
-			"# If set to true, Towny will prevent a town or plot from enabling PVP while an outsider is within the town's or plot's boundaries.",
-			"# When active this feature can cause a bit of lag when the /t toggle pvp command is used, depending on how many players are online."
-	),
-	GTOWN_SETTINGS_HOMEBLOCKS_PREVENT_FORCEPVP(
-			"global_town_settings.homeblocks_prevent_forcepvp",
-			"false",
-			"",
-			"# If set to true, when a world has forcepvp set to true, homeblocks of towns will not be affected and have PVP set to off.",
-			"# Does not have any effect when Event War is active."),
 	GTOWN_SETTINGS_ADMINS_CAN_ALWAYS_PVP(
 			"global_town_settings.admins_can_always_pvp",
 			"false",
@@ -750,20 +646,6 @@ public enum ConfigNodes {
 			"# If People should keep their inventories on death in their own town.",
 			"# Is not guaranteed to work with other keep inventory plugins!"
 	),
-	GTOWN_SETTINGS_KEEP_INVENTORY_ON_DEATH_IN_ALLIED_TOWN(
-			"global_town_settings.keep_inventory_on_death_in_allied_town",
-			"false",
-			"",
-			"# If People should keep their inventories on death in an allied town.",
-			"# Is not guaranteed to work with other keep inventory plugins!"
-	),
-	GTOWN_SETTINGS_KEEP_INVENTORY_ON_DEATH_IN_ARENA(
-		"global_town_settings.keep_inventory_on_death_in_arena",
-		"false",
-		"",
-		"# If People should keep their inventories on death in an arena townblock.",
-		"# Is not guaranteed to work with other keep inventory plugins!"
-	),
 	GTOWN_SETTINGS_KEEP_EXPERIENCE_ON_DEATH_IN_TOWN(
 			"global_town_settings.keep_experience_on_death_in_town",
 			"false",
@@ -771,19 +653,6 @@ public enum ConfigNodes {
 			"# If People should keep their experience on death in a town.",
 			"# Is not guaranteed to work with other keep experience plugins!"
 	),
-	GTOWN_SETTINGS_KEEP_EXPERIENCE_ON_DEATH_IN_ARENA(
-			"global_town_settings.keep_experience_on_death_in_arena",
-			"false",
-			"",
-			"# If People should keep their experience on death in an arena townblock.",
-			"# Is not guaranteed to work with other keep experience plugins!"
-	),
-	GTOWN_SETTINGS_PREVENT_ITEM_DEGRADE_IN_ARENAS(
-			"global_town_settings.prevent_item_degrading_in_arenas",
-			"false",
-			"",
-			"# While true, weapons and armour items worn by players in Arena plots will not lose durability."),
-
 	GTOWN_SETTINGS_MAX_BUYTOWN_PRICE(
 			"global_town_settings.max_buytown_price",
 			"999999999",
@@ -881,13 +750,6 @@ public enum ConfigNodes {
 			"# as well as residents that are members of a town that is trusted,) will be able to use",
 			"# commands that only town residents could use."
 	),
-	GTOWN_TOWN_TOURIST_BLOCKED_COMMANDS_ALLIES_BYPASS(
-			"global_town_settings.town_command_blacklisting.own_town_and_wilderness_limited_commands_allow_allies",
-			"false",
-			"",
-			"# When set to true, residents which are allies of the town (which could be nation members as well as allied nations' members) will be able to use",
-			"# commands that only town residents could use."
-	),
 	GTOWN_SETTINGS_AUTOMATIC_CAPITALISATION(
 			"global_town_settings.automatic_capitalisation",
 			"false",
@@ -931,65 +793,11 @@ public enum ConfigNodes {
 			"# +------------------------------------------------------+ #",
 			"############################################################",
 			""),
-	GNATION_SETTINGS_NATIONZONE(
-			"global_nation_settings.nationzone",
-			"",
-			"",
-			"# Nation Zones are a special type of wilderness surrounding Capitals of Nations or Nation Capitals and their Towns.",
-			"# When it is enabled players who are members of the nation can use the wilderness surrounding the town like normal.",
-			"# Players who are not part of that nation will find themselves unable to break/build/switch/itemuse in this part of the wilderness.",
-			"# The amount of townblocks used for the zone is determined by the size of the nation and configured in the nation levels.",
-			"# Because these zones are still wilderness anyone can claim these townblocks.",
-			"# It is recommended that whatever size you choose, these numbers should be less than the min_plot_distance_from_town_plot otherwise",
-			"# someone might not be able to build/destroy in the wilderness outside their town."),
-	GNATION_SETTINGS_NATIONZONE_ENABLE(
-			"global_nation_settings.nationzone.enable",
-			"false",
-			"",
-			"# Nation zone feature is disabled by default. This is because it can cause a higher server load for servers with a large player count."),
-	GNATION_SETTINGS_NATIONZONE_ONLY_CAPITALS(
-			"global_nation_settings.nationzone.only_capitals",
-			"true",
-			"",
-			"# When set to true, only the capital town of a nation will be surrounded by a nation zone type of wilderness."),
-	GNATION_SETTINGS_NATIONZONE_CAPITAL_BONUS_SIZE(
-			"global_nation_settings.nationzone.capital_bonus_size",
-			"0",
-			"",
-			"# Amount of buffer added to nation zone width surrounding capitals only. Creates a larger buffer around nation capitals."),
-	GNATION_SETTINGS_NATIONZONE_SKIPS_CONQUERED_TOWNS(
-			"global_nation_settings.nationzone.not_for_conquered_towns",
-			"false",
-			"",
-			"# When set to true, players which are part of a conquered town, will not have access to their nation's nationzone.",
-			"# They will still be able to use the nation_zone outside of their own town."),
-	GNATION_SETTINGS_NATIONZONE_PROTECTS_CONQUERED_TOWNS(
-			"global_nation_settings.nationzone.protect_conquered_towns",
-			"false",
-			"",
-			"# When set to true, the nation zone of a conquered town will only be usable by the conquered town's players.",
-			"# The players belonging to the conquering nation will not be able to use the nation zone."),
-	GNATION_SETTINGS_NATIONZONE_WAR_DISABLES(
-			"global_nation_settings.nationzone.war_disables",
-			"true",
-			"",
-			"# When set to true, nation zones are disabled during the the Towny war types."),
-	GNATION_SETTINGS_NATIONZONE_SHOW_NOTIFICATIONS(
-			"global_nation_settings.nationzone.show_notifications",
-			"false",
-			"",
-			"# When set to true, players will receive a notification when they enter into a nationzone.",
-			"# Set to false by default because, like the nationzone feature, it will generate more load on servers."),
 	GNATION_SETTINGS_DISPLAY_NATIONBOARD_ONLOGIN(
 			"global_nation_settings.display_board_onlogin",
 			"true",
 			"",
 			"# If Towny should show players the nationboard when they login."),
-	GNATION_SETTINGS_CAPITAL_CANNOT_BE_NEUTRAL(
-			"global_nation_settings.capitals_cannot_be_neutral",
-			"false",
-			"",
-			"# If true the capital city of nation cannot be neutral/peaceful."),
 	GNATION_SETTINGS_NATION_LEVEL_IS_DETERMINED_BY_TOWNS_COUNT(
 			"global_nation_settings.nation_level_is_determined_by_town_count_instead_of_resident_count",
 			"false",
@@ -1014,26 +822,6 @@ public enum ConfigNodes {
 			"",
 			"# This setting determines the list of allowed nation map colors.",
 			"# The color codes are in hex format."),
-	GNATION_SETTINGS_MAX_ALLIES(
-			"global_nation_settings.max_allies",
-			"-1",
-			"",
-			"# The maximum amount of allies that a nation can have, set to -1 to have no limit."),
-	GNATION_SETTINGS_ARE_CONQUERED_TOWNS_CONSIDERED_ALLIES(
-			"global_nation_settings.are_conquered_towns_considered_allies",
-			"true",
-			"",
-			"# While true, conquered towns will be considered a member of good standing in the nation.",
-			"# When set to false CombatUtil#isAlly() tests will treat conquered towns and their nations as not allied.",
-			"# Setting this to false could result in strange unforseen behaviour."),
-	GNATION_SETTINGS_ARE_CONQUERED_TOWNS_GIVEN_NATION_PLOT_PERMS(
-			"global_nation_settings.are_conquered_towns_given_nation_plot_perms",
-			"true",
-			"",
-			"# While true, conquered towns will be considered a member of good standing in the nation, and will be",
-			"# treated as normal nation members when plot perms are calculated.",
-			"# When set to false plot permission tests will treat conquered towns' residents as not members of their nations,",
-			"# preventing them from using their host nation's plots while the nation's towns have nation plot perms enabled."),
 	GNATION_SETTINGS_PROXIMITY_ROOT(
 			"global_nation_settings.proximity", "", ""),
 	GNATION_SETTINGS_NATION_PROXIMITY_TO_CAPITAL(
@@ -1171,12 +959,6 @@ public enum ConfigNodes {
 			"",
 			"# If true, the below settings: min_plot_distance_from_town_plot and min_distance_from_town_homeblock",
 			"# will be ignored for towns that are in the same nation. Setting to false will keep all towns separated the same."),
-	CLAIMING_MIN_DISTANCE_IGNORED_FOR_ALLIES(
-			"claiming.distance_rules.min_distances_ignored_for_towns_in_allied_nation",
-			"false",
-			"",
-			"# If true, the below settings: min_plot_distance_from_town_plot and min_distance_from_town_homeblock",
-			"# will be ignored for towns that are mutually allied. Setting to false will keep all towns separated the same."),
 	CLAIMING_MIN_PLOT_DISTANCE_FROM_TOWN_PLOT(
 			"claiming.distance_rules.min_plot_distance_from_town_plot",
 			"5",
@@ -1296,13 +1078,6 @@ public enum ConfigNodes {
 			"0m",
 			"",
 			"# When in use, requires an amount of time to pass before the /t takeoverclaim command can be used again."),
-	CLAIMING_OVERCLAIMING_REQUIRES_NATIONS_TO_BE_ENEMIES(
-			"claiming.overclaiming.nations_required_to_be_enemies",
-			"false",
-			"",
-			"# When true, when the towns involved in the overclaiming both have nations, the overclaiming town's nation will have to have the overclaimed town's nation declared as an enemy.",
-			"# Towns with no nation are not affected by this rule."),
-
 	CLAIMING_BUY_BONUS_ROOT("claiming.purchased_bonus_blocks", "", "", ""),
 	CLAIMING_MAX_PURCHASED_BLOCKS(
 			"claiming.purchased_bonus_blocks.max_purchased_blocks",
@@ -1399,19 +1174,6 @@ public enum ConfigNodes {
 			"# Valid values are: true, false, war, peace",
 			"# When war or peace is set, it is only possible to teleport to the town,",
 			"# when there is a war or peace."),
-	SPAWNING_ALLOW_TOWN_SPAWN_TRAVEL_ALLY(
-			"spawning.town_spawn.allow_town_spawn_travel_ally",
-			"true",
-			"",
-			"# Allow regular residents to use /town spawn [town] to other towns in a nation allied with your nation.",
-			"# Valid values are: true, false, war, peace",
-			"# When war or peace is set, it is only possible to teleport to the town,",
-			"# when there is a war or peace."),
-	SPAWNING_IS_ALLY_TOWN_SPAWNING_REQUIRING_PUBLIC_STATUS(
-			"spawning.town_spawn.is_nation_ally_spawning_to_town_requiring_public_status",
-			"false",
-			"",
-			"# When set to true both nation and ally spawn travel will also require the target town to have their status set to public."),
 	SPAWNING_SETTINGS_IS_TRUSTED_RESIDENTS_COUNT_AS_RESIDENTS(
 			"spawning.town_spawn.do_trusted_residents_count_as_residents",
 			"false",
@@ -1430,13 +1192,6 @@ public enum ConfigNodes {
 			"",
 			"# Prevent players from using /town spawn while within unclaimed areas and/or enemy/neutral towns.",
 			"# Allowed options: unclaimed,enemy,neutral,outlaw"),
-	SPAWNING_ENEMIES_ALLOWED_TO_SPAWN_TO_PEACEFUL_TOWNS(
-			"spawning.town_spawn.allow_enemies_spawn_to_peaceful_towns",
-			"false",
-			"",
-			"# When true, players will be allowed to spawn to peaceful/neutral towns in which they are considered enemies.",
-			"# Setting this to true will make town spawn points unsafe for private towns which are part of nations with enemies."),
-
 	SPAWNING_TOWN_SPAWN_COOLDOWN_ROOT(
 			"spawning.town_spawn.spawning_cooldowns", "", ""),
 	SPAWNING_TOWN_SPAWN_COOLDOWN_TIMER(
@@ -1454,11 +1209,6 @@ public enum ConfigNodes {
 			"30",
 			"",
 			"# Number of seconds that must pass before a player of the same nation can use /t spawn."),
-	SPAWNING_TOWN_SPAWN_NATION_ALLY_COOLDOWN_TIMER(
-			"spawning.town_spawn.spawning_cooldowns.nation_ally_town_spawn_cooldown_time",
-			"30",
-			"",
-			"# Number of seconds that must pass before a player in an allied nation can use /t spawn."),
 	SPAWNING_TOWN_SPAWN_UNAFFILIATED_COOLDOWN_TIMER(
 			"spawning.town_spawn.spawning_cooldowns.unaffiliated_town_spawn_cooldown_time",
 			"30",
@@ -1487,20 +1237,6 @@ public enum ConfigNodes {
 			"# Valid values are: true, false, war, peace",
 			"# When war or peace is set, it is only possible to teleport to the nation,",
 			"# when there is a war or peace."),
-	SPAWNING_ALLOW_NATION_SPAWN_TRAVEL_ALLY(
-			"spawning.nation_spawn.allow_nation_spawn_travel_ally",
-			"true",
-			"",
-			"# Allow regular residents to use /nation spawn [nation] to other nations allied with your nation.",
-			"# Valid values are: true, false, war, peace",
-			"# When war or peace is set, it is only possible to teleport to the nations,",
-			"# when there is a war or peace."),
-	SPAWNING_DENY_CONQUERED_TOWNS_USE_OF_NATION_SPAWN(
-			"spawning.nation_spawn.deny_conquered_towns_use_of_nation_spawn",
-			"false",
-			"",
-			"# When set to true, towns conquered by their nation will not be allowed to use /n spawn."),
-
 	SPAWNING_NATION_SPAWN_COOLDOWN_ROOT(
 			"spawning.nation_spawn.spawning_cooldowns", "", ""),
 	SPAWNING_NATION_SPAWN_NATION_MEMBER_COOLDOWN_TIMER(
@@ -1508,11 +1244,6 @@ public enum ConfigNodes {
 			"30",
 			"",
 			"# Number of seconds that must pass before a player of the same nation can use /n spawn."),
-	SPAWNING_NATION_SPAWN_NATION_ALLY_COOLDOWN_TIMER(
-			"spawning.nation_spawn.spawning_cooldowns.nation_ally_nation_spawn_cooldown_time",
-			"30",
-			"",
-			"# Number of seconds that must pass before a player allied with the nation can use /n spawn."),
 	SPAWNING_NATION_SPAWN_NATION_UNAFFILIATED_COOLDOWN_TIMER(
 			"spawning.nation_spawn.spawning_cooldowns.unaffiliated_nation_spawn_cooldown_time",
 			"30",
@@ -1854,21 +1585,6 @@ public enum ConfigNodes {
 			"&2",
 			"",
 			"# Used when two players are in the same nation."),
-	FILTERS_PAPI_REL_FORMATTING_CONQUERED_TOWN(
-			"filters_colour_chat.papi_relational_formatting.conquered_town",
-			"&e",
-			"",
-			"# Used when the player is a member of one of your nation's conquered towns."),
-	FILTERS_PAPI_REL_FORMATTING_ALLY(
-			"filters_colour_chat.papi_relational_formatting.ally",
-			"&b",
-			"",
-			"# Used when two players' nations are allied."),
-	FILTERS_PAPI_REL_FORMATTING_ENEMY(
-			"filters_colour_chat.papi_relational_formatting.enemy",
-			"&c",
-			"",
-			"# Used when two players are enemies."),
 	
 	PROT(
 			"protection",
@@ -2111,9 +1827,7 @@ public enum ConfigNodes {
 	NOTIFICATION_FORMAT("notification.format", "&6 ~ %s"),
 	NOTIFICATION_SPLITTER("notification.splitter", "&7 - "),
 	NOTIFICATION_AREA_WILDERNESS("notification.area_wilderness", "&2%s"),
-	NOTIFICATION_AREA_WILDERNESS_PVP("notification.area_wilderness_pvp", "%s"),
 	NOTIFICATION_AREA_TOWN("notification.area_town", "&6%s"),
-	NOTIFICATION_AREA_TOWN_PVP("notification.area_town_pvp", "%s"),
 	NOTIFICATION_OWNER("notification.owner", "&a%s"),
 	NOTIFICATION_NO_OWNER("notification.no_owner", "&a%s"),
 	NOTIFICATION_PLOT("notification.plot", ""),
@@ -2256,12 +1970,6 @@ public enum ConfigNodes {
 	FLAGS_RES_TOWN_DESTROY("default_perm_flags.resident.town.destroy", "false"),
 	FLAGS_RES_TOWN_ITEM_USE("default_perm_flags.resident.town.item_use","false"),
 	FLAGS_RES_TOWN_SWITCH("default_perm_flags.resident.town.switch", "false"),
-	FLAGS_RES_ALLY_BUILD("default_perm_flags.resident.ally.build", "false"),
-	FLAGS_RES_ALLY_DESTROY("default_perm_flags.resident.ally.destroy", "false"),
-	FLAGS_RES_ALLY_ITEM_USE(
-			"default_perm_flags.resident.ally.item_use",
-			"false"),
-	FLAGS_RES_ALLY_SWITCH("default_perm_flags.resident.ally.switch", "false"),
 	FLAGS_RES_OUTSIDER_BUILD(
 			"default_perm_flags.resident.outsider.build",
 			"false"),
@@ -2287,7 +1995,6 @@ public enum ConfigNodes {
 			"# destroy - break blocks and other items",
 			"# itemuse - use items such as flint and steel or buckets (as defined in item_use_ids)",
 			"# switch - trigger or activate switches (as defined in switch_ids)"),
-	FLAGS_TOWN_DEF_PVP("default_perm_flags.town.default.pvp", "true"),
 	FLAGS_TOWN_DEF_FIRE("default_perm_flags.town.default.fire", "false"),
 	FLAGS_TOWN_DEF_EXPLOSION(
 			"default_perm_flags.town.default.explosion",
@@ -2302,10 +2009,6 @@ public enum ConfigNodes {
 	FLAGS_TOWN_NATION_DESTROY("default_perm_flags.town.nation.destroy", "false"),
 	FLAGS_TOWN_NATION_ITEM_USE("default_perm_flags.town.nation.item_use", "false"),
 	FLAGS_TOWN_NATION_SWITCH("default_perm_flags.town.nation.switch", "false"),
-	FLAGS_TOWN_ALLY_BUILD("default_perm_flags.town.ally.build", "false"),
-	FLAGS_TOWN_ALLY_DESTROY("default_perm_flags.town.ally.destroy", "false"),
-	FLAGS_TOWN_ALLY_ITEM_USE("default_perm_flags.town.ally.item_use", "false"),
-	FLAGS_TOWN_ALLY_SWITCH("default_perm_flags.town.ally.switch", "false"),
 	FLAGS_TOWN_OUTSIDER_BUILD("default_perm_flags.town.outsider.build", "false"),
 	FLAGS_TOWN_OUTSIDER_DESTROY(
 			"default_perm_flags.town.outsider.destroy",
@@ -2399,17 +2102,6 @@ public enum ConfigNodes {
 			"35",
 			"",
 			"# How many invites a town can send out to players, to join the town."),
-	INVITE_SYSTEM_MAXIMUM_INVITES_SENT_NATION(
-			"invite_system.maximum_invites_sent.nation_totown",
-			"35",
-			"",
-			"# How many invites a nation can send out to towns, to join the nation."),
-	INVITE_SYSTEM_MAXIMUM_REQUESTS_SENT_NATION(
-			"invite_system.maximum_invites_sent.nation_tonation",
-			"35",
-			"",
-			"# How many requests a nation can send out to other nations, to ally with the nation.",
-			"# Only used when war.disallow_one_way_alliance is set to true."),
 	INVITE_SYSTEM_MAXIMUM_INVITES_RECEIVED(
 			"invite_system.maximum_invites_received",
 			"",
@@ -2421,16 +2113,6 @@ public enum ConfigNodes {
 			"10",
 			"",
 			"# How many invites can one player have from towns."),
-	INVITE_SYSTEM_MAXIMUM_INVITES_RECEIVED_TOWN(
-			"invite_system.maximum_invites_received.town",
-			"10",
-			"",
-			"# How many invites can one town have from nations."),
-	INVITE_SYSTEM_MAXIMUM_REQUESTS_RECEIVED_NATION(
-			"invite_system.maximum_invites_received.nation",
-			"10",
-			"",
-			"# How many requests can one nation have from other nations for an alliance."),
 	INVITE_SYSTEM_MAX_DISTANCE_FROM_TOWN_SPAWN(
 			"invite_system.maximum_distance_from_town_spawn",
 			"0",
@@ -2570,11 +2252,6 @@ public enum ConfigNodes {
 			"5.0",
 			"",
 			"# Cost to use '/town spawn [town]' to another town in your nation."),
-	ECO_PRICE_TOWN_SPAWN_TRAVEL_ALLY(
-			"economy.spawn_travel.price_town_ally_spawn_travel",
-			"10.0",
-			"",
-			"# Cost to use '/town spawn [town]' to another town in a nation that is allied with your nation."),
 	ECO_PRICE_TOWN_SPAWN_TRAVEL_PUBLIC(
 			"economy.spawn_travel.price_town_public_spawn_travel",
 			"10.0",
@@ -2593,32 +2270,6 @@ public enum ConfigNodes {
 			"",
 			"# When set to true, any cost paid by a player to use any variant of '/town spawn' will be paid to the town bank.",
 			"# When false the amount will be paid to the server account whose name is set in the closed economy setting below.."),
-	ECO_PRICE_NATION_NEUTRALITY(
-			"economy.price_nation_neutrality",
-			"100.0",
-			"",
-			"# The daily upkeep to remain neutral, paid by the Nation bank. If unable to pay, neutral/peaceful status is lost.",
-			"# This cost is multiplied by the nation_level peacefulCostMultiplier.",
-			"# Neutrality will exclude you from a war event, as well as deterring enemies."),
-	ECO_PRICE_NATION_NEUTRALITY_CHARGES_PER_TOWN(
-			"economy.price_nation_neutrality_charges_per_town",
-			"false",
-			"",
-			"# When it is true, the peaceful cost is multiplied by the nation's number of towns.",
-			"# Note that the base peacful cost is calculated by the price_nation_neutrality X nation_level peacefulCostMultiplier."),
-
-	ECO_PRICE_TOWN_NEUTRALITY(
-			"economy.price_town_neutrality",
-			"25.0",
-			"",
-			"# The daily upkeep to remain neutral, paid by the Town bank. If unable to pay, neutral/peaceful status is lost.",
-			"# This cost is multiplied by the town_level peacefulCostMultiplier."),
-	ECO_PRICE_TOWN_NEUTRALITY_CHARGES_PER_PLOT(
-			"economy.price_town_neutrality_charges_per_plot",
-			"false",
-			"",
-			"# When it is true, the peaceful cost is multiplied by the town's number of claimed townblocks.",
-			"# Note that the base peacful cost is calculated by the price_town_neutrality X town_level peacefulCostMultiplier."),
 
 	ECO_NEW_EXPAND("economy.new_expand", "", ""),
 	ECO_PRICE_NEW_NATION(
@@ -2642,12 +2293,6 @@ public enum ConfigNodes {
 			"",
 			"# The percentage that a town has to pay per plot to merge with another town. The town that initiates the merge pays the cost.",
 			"# This is based on the price_claim_townblock."),
-	ECO_PRICE_RECLAIM_RUINED_TOWN(
-			"economy.new_expand.price_reclaim_ruined_town",
-			"500.0",
-			"",
-			"# How much it costs to reclaim a ruined town.",
-			"# This is only applicable if the town-ruins & town-reclaim features are enabled."),
 	ECO_PRICE_OUTPOST(
 			"economy.new_expand.price_outpost",
 			"500.0",
@@ -3023,13 +2668,6 @@ public enum ConfigNodes {
 			"",
 			"# If a town has reached their debt cap and is unable to pay the upkeep with debt,",
 			"# will Towny delete them?"),
-	ECO_BANKRUPTCY_NEUTRALITY(
-			"economy.bankruptcy.neutrality", "", ""),
-	ECO_BANKRUPTCY_NEUTRALITY_CAN_BANKRUPT_TOWNS_PAY_NEUTRALITY(
-			"economy.bankruptcy.neutrality.can_bankrupt_towns_pay_for_neutrality",
-			"true",
-			"",
-			"# If a town is bankrupt can they still pay for neutrality?"),
 	ECO_BANKRUPTCY_NATION("economy.bankruptcy.nation_tax", "", ""),
 	ECO_BANKRUPTCY_DO_BANKRUPT_TOWNS_PAY_NATION_TAX(
 			"economy.bankruptcy.nation_tax.do_bankrupt_towns_pay_nation_tax",
@@ -3047,12 +2685,6 @@ public enum ConfigNodes {
 			"",
 			"# If a town can no longer pay their nation tax with debt because they have",
 			"# reach their debtcap, are they kicked from the nation?"),
-	ECO_BANKRUPTCY_DOES_NATION_TAX_DELETE_CONQUERED_TOWNS(
-			"economy.bankruptcy.nation_tax.does_nation_tax_delete_conquered_towns_that_cannot_pay",
-			"false",
-			"",
-			"# Does a conquered town which cannot pay the nation tax get deleted?"),
-
 	ECO_ADVANCED_ROOT("economy.advanced","",""),
 	ECO_ADVANCED_MODERN(
 			"economy.advanced.modern",
@@ -3140,11 +2772,6 @@ public enum ConfigNodes {
 			"# +------------------------------------------------------+ #",
 			"############################################################",
 			""),
-	JAIL_IS_JAILING_ATTACKING_ENEMIES(
-			"jail.is_jailing_attacking_enemies",
-			"false",
-			"",
-			"# If true attacking players who die on enemy-town land will be placed into the defending town's jail if it exists."),
 	JAIL_IS_JAILING_ATTACKING_OUTLAWS(
 			"jail.is_jailing_attacking_outlaws",
 			"false",
@@ -3155,11 +2782,6 @@ public enum ConfigNodes {
 			"5",
 			"",
 			"# How many hours an attacking outlaw will be jailed for."),
-	JAIL_POW_JAIL_HOURS(
-			"jail.pow_jail_hours",
-			"5",
-			"",
-			"# How many hours an attacking enemy will be jailed for."),
 	JAIL_MAX_JAIL_HOURS(
 			"jail.maximum_jail_hours",
 			"5",
@@ -3237,11 +2859,6 @@ public enum ConfigNodes {
 			"home,spawn,teleport,tp,tpa,tphere,tpahere,back,dback,ptp,jump,kill,warp,suicide",
 			"",
 			"# Commands which a jailed player cannot use."),
-	JAIL_PLOTS_DENY_PVP(
-			"jail.do_jail_plots_deny_pvp",
-			"false",
-			"",
-			"# When true, jail plots will prevent any PVP from occuring. Applies to jailed residents only."),
 	JAIL_PREVENTS_LOGGING_OUT(
 			"jail.prevent_newly_jailed_players_logging_out",
 			"false",
@@ -3289,72 +2906,6 @@ public enum ConfigNodes {
 			"",
 			"# If true, towns which have one or more bank plots will no longer be able to use their homeblock for withdraw/depositing.",
 			"# Requires the above is_banking_limited_to_bank_plots to be true as well."),
-	
-	TOWN_RUINING_HEADER("town_ruining", "", "", "",
-			"############################################################",
-			"# +------------------------------------------------------+ #",
-			"# |               Town Ruining Settings                  | #",
-			"# +------------------------------------------------------+ #",
-			"############################################################",
-			""),
-	TOWN_RUINING_TOWN_RUINS_ENABLED(
-			"town_ruining.town_ruins.enabled", 
-			"false",
-			"",
-			"# If this is true, then if a town falls, it remains in a 'ruined' state for a time.",
-			"# In this state, the town cannot be claimed, but can be looted.",
-			"# The feature prevents mayors from escaping attack/occupation, ",
-			"# by deleting then quickly recreating their town."),
-	TOWN_RUINING_TOWN_RUINS_MAX_DURATION_HOURS(
-			"town_ruining.town_ruins.max_duration_hours", 
-			"72",
-			"",
-			"# This value determines the maximum duration in which a town can lie in ruins",
-			"# After this time is reached, the town will be completely deleted.",
-			"# Does not accept values greater than 8760, which is equal to one year."),
-	TOWN_RUINING_TOWN_RUINS_MIN_DURATION_HOURS(
-			"town_ruining.town_ruins.min_duration_hours", 
-			"4",
-			"",
-			"# This value determines the minimum duration in which a town must lie in ruins,",
-			"# before it can be reclaimed by a resident."),
-	TOWN_RUINING_TOWN_RUINS_RECLAIM_ENABLED(
-			"town_ruining.town_ruins.reclaim_enabled", 
-			"true",
-			"",
-			"# If this is true, then after a town has been ruined for the minimum configured time,",
-			"# it can then be reclaimed by any resident who runs /t reclaim, and pays the required price. (price is configured in the eco section)"),
-	TOWN_RUINING_TOWNS_BECOME_PUBLIC(
-			"town_ruining.town_ruins.ruins_become_public",
-			"false",
-			"",
-			"# If this is true, when a town becomes a ruin they also receive public status,",
-			"# meaning anyone can use /t spawn NAME to teleport to that town."),
-	TOWN_RUINING_TOWNS_BECOME_OPEN(
-			"town_ruining.town_ruins.ruins_become_open",
-			"false",
-			"",
-			"# If this is true, when a town becomes a ruin they also become open to join,",
-			"# meaning any townless player could join the town and reclaim it.",
-			"# You should expect this to be abused by players who will reclaim a town to prevent someone else reclaiming it."),
-	TOWN_RUINING_TOWN_DEPOSITS_BANK_TO_NATION(
-			"town_ruining.town_ruins.town_bank_is_sent_to_nation",
-			"false",
-			"",
-			"# If this is true, when a town becomes a ruin, and they are a member of a nation, any money in the town bank will be deposited to the nation bank."),
-	TOWN_RUINING_TOWN_PLOTS_PERMISSIONS_OPEN_UP_PROGRESSIVELY(
-			"town_ruining.town_ruins.do_plots_permissions_change_to_allow_all",
-			"false",
-			"",
-			"# If this is true, when a town becomes a ruin, every hour more and more of their plots will have their permissions turned to allow",
-			"# build, destroy, switch, itemuse to on. This will affect the newest claims first and progress until the first claims made are opened up",
-			"# right before the max_duration_hours have passed. When a town has more claims than max_duration_hours, multiple plots will be opened up",
-			"# each hour, ie: 500 claims and 72 max hours = 7 claims per hour.",
-			"# If a Town has less claims than max_duration hours, those claims' permissions are opened up much more slowly with hours passing between",
-			"# plots opening up, ie: 36 claims and 72 max hours = 1 claim every 2 hours.",
-			"# This system is meant to give players across many time zones the chance to loot a town when it falls into ruin."),
-
-
 	ASCII_MAP_SYMBOLS("ascii_map_symbols", "", "", "",
 			"############################################################",
 			"# +------------------------------------------------------+ #",

@@ -80,10 +80,8 @@ public class Town extends Government implements TownBlockOwner {
 	private double plotTax= TownySettings.getTownDefaultPlotTax();
 	private double commercialPlotTax = TownySettings.getTownDefaultShopTax();
 	private double plotPrice = 0.0;
-	private double embassyPlotTax = TownySettings.getTownDefaultEmbassyTax();
 	private double maxPercentTaxAmount = TownySettings.getMaxTownTaxPercentAmount();
 	private double commercialPlotPrice;
-	private double embassyPlotPrice;
 	private double debtBalance = 0.0;
 	private boolean hasUpkeep = true;
 	private boolean hasUnlimitedClaims = false;
@@ -989,7 +987,6 @@ public class Town extends Government implements TownBlockOwner {
 	public double getPlotTypePrice(TownBlockType type) {
 		double plotPrice = switch (type.getName().toLowerCase(Locale.ROOT)) {
 			case "shop" -> getCommercialPlotPrice();
-			case "embassy" -> getEmbassyPlotPrice();
 			default -> getPlotPrice();
 		};
 		
@@ -1006,18 +1003,6 @@ public class Town extends Government implements TownBlockOwner {
 	public double getCommercialPlotPrice() {
 
 		return commercialPlotPrice;
-	}
-
-	public void setEmbassyPlotPrice(double embassyPlotPrice) {
-		if (embassyPlotPrice < 0)
-			embassyPlotPrice = -1;
-		
-		this.embassyPlotPrice = Math.min(embassyPlotPrice, TownySettings.getMaxPlotPrice());
-	}
-
-	public double getEmbassyPlotPrice() {
-
-		return embassyPlotPrice;
 	}
 
 	public boolean isHomeBlock(TownBlock townBlock) {
@@ -1038,14 +1023,6 @@ public class Town extends Government implements TownBlockOwner {
 
 	public double getCommercialPlotTax() {
 		return commercialPlotTax;
-	}
-
-	public void setEmbassyPlotTax(double embassyPlotTax) {
-		this.embassyPlotTax = Math.min(embassyPlotTax, TownySettings.getMaxPlotTax());
-	}
-
-	public double getEmbassyPlotTax() {
-		return embassyPlotTax;
 	}
 
 	public void collect(double amount) {
@@ -1613,10 +1590,6 @@ public class Town extends Government implements TownBlockOwner {
 
 	public void playerBroadCastMessageToTown(Player player, String message) {
 		TownyMessaging.sendPrefixedTownMessage(this, Translatable.of("town_say_format", player.getName(), TownyComponents.stripClickTags(message)));
-	}
-
-	public boolean hasEnoughResidentsToBeANationCapital() {
-		return TownUtil.townHasEnoughResidentsToBeANationCapital(this);
 	}
 
 	/**

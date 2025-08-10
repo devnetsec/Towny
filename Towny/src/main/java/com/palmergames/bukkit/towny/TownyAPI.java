@@ -705,45 +705,6 @@ public class TownyAPI {
     	townyUniverse.addCustomCustomDataField(field);
 	}
 
-    /**
-     * Method to figure out if a location is in a NationZone.
-     * 
-     * @param location - Location to test.
-     * @return true if the location is in a NationZone.
-     */
-    public boolean isNationZone(Location location) {
-    	if (!isWilderness(location))
-    		return false;
-    	TownBlockStatus status = hasNationZone(location);
-    	if (status.equals(TownBlockStatus.NATION_ZONE))
-    		return true;
-    	
-    	return false;
-    }
-    /**
-     * Method to figure out if a location in the wilderness is normal wilderness of nation zone.
-     * Recommended to use {@link TownyAPI#isWilderness(Location)} prior to using this, to confirm the location is not in a town.  
-     * 
-     * @param location - Location to test whether it is a nation zone or normal wilderness.
-     * @return returns either UNCLAIMED_ZONE or NATION_ZONE
-     */
-    public TownBlockStatus hasNationZone(Location location) {
-    	
-    	return hasNationZone(WorldCoord.parseWorldCoord(location));
-    }
-
-    /**
-     * Method to figure out if a worldcoord in the wilderness is normal wilderness of nation zone.
-     * Recommended to use {@link TownyAPI#isWilderness(WorldCoord)} prior to using this, to confirm the location is not in a town.  
-     * 
-     * @param worldCoord - WorldCoord to test whether it is a nation zone or normal wilderness.
-     * @return returns either UNCLAIMED_ZONE or NATION_ZONE
-     */
-    public TownBlockStatus hasNationZone(WorldCoord worldCoord) {
-		// TODO: Remove this method
-		return TownBlockStatus.UNCLAIMED_ZONE;
-	}
-
 	/**
 	 * See TranslationLoader for an easy-to-use way of creating the Map needed for
 	 * this method.

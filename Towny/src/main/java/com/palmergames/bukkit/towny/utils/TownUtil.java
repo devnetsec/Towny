@@ -38,26 +38,6 @@ public class TownUtil {
 				.collect(Collectors.toList());
 	}
 
-	private static boolean findNewCapital(Town town, Nation nation) {
-		for (Town newCapital : nation.getTowns())
-			if (newCapital.hasEnoughResidentsToBeANationCapital()) {
-				// We've found a suitable new capital that has enough residents.
-				nation.setCapital(newCapital);
-
-				// Announce the new capital and return true.
-				TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_not_enough_residents_no_longer_capital", newCapital.getName()));
-				return true;
-			}
-		// Return false and require the nation to be deleted.
-		return false;
-	}
-
-	public static boolean townHasEnoughResidentsToBeANationCapital(Town town) {
-		if (TownySettings.getNumResidentsCreateNation() < 1)
-			return true;
-		return town.getNumResidents() >= TownySettings.getNumResidentsCreateNation();
-	}
-
 	public static boolean townCanHaveThisAmountOfResidents(Town town, int residentCount, boolean isCapital) {
 		int maxResidents = !isCapital
 				? !town.hasNation() ? getMaxAllowedNumberOfResidentsWithoutNation(town) : TownySettings.getMaxResidentsPerTown()

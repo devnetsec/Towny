@@ -118,7 +118,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		"surname",
 		"tag",
 		"mapcolor",
-		"conqueredtax",
 		"taxpercentcap"
 	);
 	
@@ -665,8 +664,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 	private Town getTownForNationCapital(Player player) throws TownyException {
 		Resident resident = getResidentOrThrow(player);
 		Town town = getTownFromResidentOrThrow(resident);
-		if (!town.hasEnoughResidentsToBeANationCapital())
-			throw new TownyException(Translatable.of("msg_err_not_enough_residents_new_nation"));
 
 		if (!resident.isMayor() && !town.hasResidentWithRank(resident, "assistant"))
 			throw new TownyException(Translatable.of("msg_peasant_right"));
@@ -1057,12 +1054,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			TownyMessaging.sendErrorMsg(sender, Translatable.of("msg_warn_town_already_capital", newCapital.getName()));
 			return;
 		}
-
-		boolean capitalNotEnoughResidents = !newCapital.hasEnoughResidentsToBeANationCapital();
-		if (capitalNotEnoughResidents && !admin) {
-			TownyMessaging.sendErrorMsg(sender, Translatable.of("msg_not_enough_residents_capital", newCapital.getName()));
-			return;
-		}
 		
 		boolean capitalTooManyResidents = !existingCapital.isAllowedThisAmountOfResidents(existingCapital.getNumResidents(), false); 
 		if (capitalTooManyResidents && !admin) {
@@ -1126,7 +1117,7 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			.sendTo(sender);
 		};
 
-		if (capitalNotEnoughResidents || capitalTooManyResidents)
+		if (capitalTooManyResidents)
 			Confirmation.runOnAccept(processCommand)
 				.setTitle(Translatable.of("msg_warn_overriding_server_config"))
 				.sendTo(sender);

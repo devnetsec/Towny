@@ -636,9 +636,6 @@ public class TownBlock extends TownyObject {
 	 *                        allowed to claim the land.
 	 */
 	public void testTownMembershipAgePreventsThisClaimOrThrow(Resident resident) throws TownyException {
-		if ((this.getType().equals(TownBlockType.EMBASSY) && !town.hasResident(resident)) 
-				|| (!hasMinTownMembershipDays() && !hasMaxTownMembershipDays()))
-			return;
 
 		Town residentTown = resident.getTownOrNull();
 		if (residentTown == null || !residentTown.equals(this.town))

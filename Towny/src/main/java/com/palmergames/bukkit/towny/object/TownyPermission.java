@@ -39,7 +39,7 @@ public class TownyPermission {
 	}
 
 	public enum PermLevel {
-		RESIDENT (0, 'f'), NATION (1, 'n'), OUTSIDER (3, 'o');
+		RESIDENT (0, 'f'), NATION (1, 'n'), OUTSIDER (2, 'o');
 		
 		private static final PermLevel[] values = PermLevel.values();
 		
@@ -69,7 +69,7 @@ public class TownyPermission {
 	// So they can inherently be represented by a 2d array
 	protected boolean[][] perms;
 	
-	public boolean pvp, fire, explosion, mobs;
+	public boolean fire, explosion, mobs;
 
 	public TownyPermission() {
 		// Fill the perms array
@@ -121,7 +121,6 @@ public class TownyPermission {
 	public void setAll(boolean b) {
 		setAllNonEnvironmental(b);
 		
-		pvp = b;
 		fire = b;
 		explosion = b;
 		mobs = b;
@@ -211,8 +210,6 @@ public class TownyPermission {
 			}
 		}
 
-		if (pvp)
-			output.append(output.length() > 0 ? "," : "").append("pvp");
 		if (fire)
 			output.append(output.length() > 0 ? "," : "").append("fire");
 		if (explosion)
@@ -274,12 +271,10 @@ public class TownyPermission {
 		}
 
 		if (owner instanceof Town) {
-			pvp = TownySettings.getPermFlag_Town_Default_PVP();
 			fire = TownySettings.getPermFlag_Town_Default_FIRE();
 			explosion = TownySettings.getPermFlag_Town_Default_Explosion();
 			mobs = TownySettings.getPermFlag_Town_Default_Mobs();
 		} else {
-			pvp = owner.getPermissions().pvp;
 			fire = owner.getPermissions().fire;
 			explosion = owner.getPermissions().explosion;
 			mobs = owner.getPermissions().mobs;
@@ -292,7 +287,7 @@ public class TownyPermission {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + Arrays.deepHashCode(perms);
-		result = prime * result + Objects.hash(explosion, fire, mobs, pvp);
+		result = prime * result + Objects.hash(explosion, fire, mobs);
 		return result;
 	}
 
@@ -306,6 +301,6 @@ public class TownyPermission {
 			return false;
 		TownyPermission other = (TownyPermission) obj;
 		return explosion == other.explosion && fire == other.fire && mobs == other.mobs
-				&& Arrays.deepEquals(perms, other.perms) && pvp == other.pvp;
+				&& Arrays.deepEquals(perms, other.perms);
 	}
 }

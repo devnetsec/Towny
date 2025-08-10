@@ -181,7 +181,7 @@ public class PlayerCacheUtil {
 		if (townBlock == null || town == null)
 			// When nation zones are enabled we do extra tests to determine if this is near to a nation.
 			// If NationZones are not enabled we return normal wilderness.
-			return TownySettings.getNationZonesEnabled() ? TownyAPI.getInstance().hasNationZone(worldCoord) : TownBlockStatus.UNCLAIMED_ZONE;  
+			return TownBlockStatus.UNCLAIMED_ZONE;  
 
 		/*
 		 * Find the resident data for this player.
@@ -234,7 +234,7 @@ public class PlayerCacheUtil {
 			return TownBlockStatus.TOWN_RESIDENT;
 		
 		// Nation group.
-		if (TownySettings.areConqueredTownsGivenNationPlotPerms() && CombatUtil.isSameNation(town, resident.getTownOrNull()))
+		if (CombatUtil.isSameNation(town, resident.getTownOrNull()))
 			return TownBlockStatus.TOWN_NATION;
 
 		// Nothing left but Outsider.
@@ -302,36 +302,6 @@ public class PlayerCacheUtil {
 				return false;
 			}
 			
-			/*
-			 * Handle the possiblity that NationZones are enabled the 
-			 * TownBlockStatus is NATION_ZONE instead of UNCLAIMED_ZONE.
-			 * In all situations the player still has to have hasWildOverride.
-			 */
-			if (TownySettings.getNationZonesEnabled() && status == TownBlockStatus.NATION_ZONE) {
-				// Admins that also have wilderness permission can bypass the nation zone.
-				if (res.hasPermissionNode(PermissionNodes.TOWNY_ADMIN_NATION_ZONE.getNode()))
-					return true;
-
-				// Wasn't able to build in the wilderness, regardless.
-				if (!hasWildOverride) {
-					cacheBlockErrMsg(player, Translatable.of("msg_cache_block_error_wild", Translatable.of(action.toString())).forLocale(player));
-					return false;
-				}
-
-				// We know that the nearest Town will have a nation because the TownBlockStatus.
-				Town nearestTown = pos.getTownyWorld().getClosestTownWithNationFromCoord(pos.getCoord(), null);
-				Nation nearestNation = nearestTown.getNationOrNull();
-
-				// This player is in their nation's nationzone.
-				if (nearestNation.hasResident(res)) {
-					// Allow a resident to use their nation's nation zone.
-					return true;
-				}
-
-				// The player is not a nation member of this NationZone.
-				cacheBlockErrMsg(player, Translatable.of("nation_zone_this_area_under_protection_of", pos.getTownyWorld().getFormattedUnclaimedZoneName(), nearestNation.getName()).forLocale(player));
-				return false;
-			}
 		}
 		
 		/*
@@ -423,7 +393,7 @@ public class PlayerCacheUtil {
 		/*
 		 * Handle both personally-owned and town-owned Outsider and Enemy statuses.
 		 */
-		if (status == TownBlockStatus.OUTSIDER || status == TownBlockStatus.ENEMY) {
+		if (status == TownBlockStatus.OUTSIDER) {
 			
 			// Plot allows Outsider perms and we aren't stopped by a TownBlockType overriding the allowed material and action.
 			if (townBlock.getPermissions().getOutsiderPerm(action) && isAllowedMaterial(townBlock, material, action))
@@ -436,12 +406,6 @@ public class PlayerCacheUtil {
 				cacheBlockErrMsg(player, Translatable.of("msg_cache_block_error_town_outsider", Translatable.of(action.toString())).forLocale(player));
 			return false;
 		}
-		
-		/*
-		 * Towny doesn't set a WARZONE status itself, some other plugin has used the API. 
-		 */
-		if (status == TownBlockStatus.WARZONE)
-			return true;
 
 		TownyMessaging.sendErrorMsg(player, "Error updating " + action.toString() + " permission.");
 		return false;

@@ -181,7 +181,7 @@ public class CombatUtil {
 					if (defendingEntity instanceof Wolf wolf) {
 						if (!isOwner(wolf, attackingPlayer) && !isTargetingPlayer(wolf, attackingPlayer)) {
 							if (EntityTypeUtil.isProtectedEntity(defendingEntity))
-								return !(defenderTB.getPermissions().pvp || TownyActionEventExecutor.canDestroy(attackingPlayer, wolf.getLocation(), Material.STONE));
+								return !(TownyActionEventExecutor.canDestroy(attackingPlayer, wolf.getLocation(), Material.STONE));
 						} else
 							// The player doesn't own the wolf, and the wolf is actively angry and targeting the player.
 							// Allow the combat.

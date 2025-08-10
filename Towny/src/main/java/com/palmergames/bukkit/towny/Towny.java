@@ -855,8 +855,6 @@ public class Towny extends JavaPlugin {
 			
 			return "Unknown";
 		}));
-
-		metrics.addCustomChart(new SimplePie("nation_zones_enabled", () -> TownySettings.getNationZonesEnabled() ? "true" : "false"));
 		
 		metrics.addCustomChart(new SimplePie("database_type", () -> TownySettings.getSaveDatabase().toLowerCase(Locale.ROOT)));
 		

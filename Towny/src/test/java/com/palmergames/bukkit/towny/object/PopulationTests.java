@@ -40,8 +40,6 @@ public class PopulationTests {
 		TownySettings.getConfig().set(ConfigNodes.GTOWN_MAX_RESIDENTS_PER_TOWN.getRoot(), 0);
 		TownySettings.getConfig().set(ConfigNodes.GTOWN_MAX_RESIDENTS_CAPITAL_OVERRIDE.getRoot(), 0);
 		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_MAX_NUMBER_RESIDENTS_WITHOUT_NATION.getRoot(), 0);
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_CREATE_NATION.getRoot(), 0);
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_JOIN_NATION.getRoot(), 0);
 		TownySettings.getConfig().set(ConfigNodes.GNATION_SETTINGS_MAX_RESIDENTS_PER_NATION.getRoot(), 0);
 	}
 
@@ -118,28 +116,6 @@ public class PopulationTests {
 		TownySettings.getConfig().set(ConfigNodes.GTOWN_MAX_RESIDENTS_PER_TOWN.getRoot(), 10);
 		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_MAX_NUMBER_RESIDENTS_WITHOUT_NATION.getRoot(), 5);
         assertFalse(town.isAllowedThisAmountOfResidents(6, false));
-	}
-
-	/*
-	 * Test capital population requirements.
-	 */
-
-	@Test
-	void testSuccessTownMakingNationWithFeatureDisabled() {
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_CREATE_NATION.getRoot(), 0);
-        assertTrue(town.hasEnoughResidentsToBeANationCapital());
-	}
-
-	@Test
-	void testSucceedTownPopAllowsBeingCapital() {
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_CREATE_NATION.getRoot(), 5);
-        assertTrue(town.hasEnoughResidentsToBeANationCapital());
-	}
-
-	@Test
-	void testFailTownPopAllowsBeingCapital() {
-		TownySettings.getConfig().set(ConfigNodes.GTOWN_SETTINGS_REQUIRED_NUMBER_RESIDENTS_CREATE_NATION.getRoot(), 6);
-        assertFalse(town.hasEnoughResidentsToBeANationCapital());
 	}
 
 	/*

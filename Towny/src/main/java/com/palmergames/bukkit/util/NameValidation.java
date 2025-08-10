@@ -35,7 +35,7 @@ public class NameValidation {
 		bannedNames = new HashSet<>(
 			Arrays.asList("here","leave","list","online","new","plots","add","kick","claim","unclaim","withdraw","delete",
 					"outlawlist","deposit","outlaw","outpost","ranklist","rank","reclaim","reslist","say","set","toggle","join",
-					"invite","buy","mayor","bankhistory","enemy","ally","townlist","allylist","enemylist","king","merge","jail",
+					"invite","buy","mayor","bankhistory","townlist","king","merge","jail",
 					"plotgrouplist","trust","purge","leader","baltop","all","help", "spawn", "takeoverclaim", "ban", "unjail",
 					"trusttown","forsale","fs","notforsale","nfs","buytown","sanctiontown","create","cede"));
 

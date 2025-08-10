@@ -991,8 +991,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			town.setVisibleOnTopLists(rs.getBoolean("visibleOnTopLists"));
 			town.setPlotPrice(rs.getFloat("plotPrice"));
 			town.setPlotTax(rs.getFloat("plotTax"));
-			town.setEmbassyPlotPrice(rs.getFloat("embassyPlotPrice"));
-			town.setEmbassyPlotTax(rs.getFloat("embassyPlotTax"));
 			town.setCommercialPlotPrice(rs.getFloat("commercialPlotPrice"));
 			town.setCommercialPlotTax(rs.getFloat("commercialPlotTax"));
 			town.setSpawnCost(rs.getFloat("spawnCost"));
@@ -2292,8 +2290,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			twn_hm.put("purchased", town.getPurchasedBlocks());
 			twn_hm.put("commercialPlotPrice", town.getCommercialPlotPrice());
 			twn_hm.put("commercialPlotTax", town.getCommercialPlotTax());
-			twn_hm.put("embassyPlotPrice", town.getEmbassyPlotPrice());
-			twn_hm.put("embassyPlotTax", town.getEmbassyPlotTax());
 			twn_hm.put("spawnCost", town.getSpawnCost());
 			twn_hm.put("plotPrice", town.getPlotPrice());
 			twn_hm.put("plotTax", town.getPlotTax());

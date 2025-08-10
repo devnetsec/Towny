@@ -770,22 +770,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 						town.setCommercialPlotTax(0);
 					}
 				
-				line = keys.get("embassyPlotPrice");
-				if (line != null)
-					try {
-						town.setEmbassyPlotPrice(Double.parseDouble(line));
-					} catch (Exception e) {
-						town.setEmbassyPlotPrice(0);
-					}
-				
-				line = keys.get("embassyPlotTax");
-				if (line != null)
-					try {
-						town.setEmbassyPlotTax(Double.parseDouble(line));
-					} catch (Exception e) {
-						town.setEmbassyPlotTax(0);
-					}
-				
 				line = keys.get("spawnCost");
 				if (line != null)
 					try {
@@ -1970,10 +1954,6 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("commercialPlotPrice=" + town.getCommercialPlotPrice());
 		// Commercial Tax
 		list.add("commercialPlotTax=" + town.getCommercialPlotTax());
-		// Embassy Plot Price
-		list.add("embassyPlotPrice=" + town.getEmbassyPlotPrice());
-		// Embassy Tax
-		list.add("embassyPlotTax=" + town.getEmbassyPlotTax());
 		// Town Spawn Cost
 		list.add("spawnCost=" + town.getSpawnCost());
 		// Upkeep

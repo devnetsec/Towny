@@ -518,7 +518,7 @@ public class AreaSelectionUtil {
 			return false;
 		}
 		Town town = townBlock.getTownOrNull();
-		return town != null && townBlockIsForSale(townBlock) && (town.hasResident(resident) || townBlock.getType().equals(TownBlockType.EMBASSY));
+		return town != null && townBlockIsForSale(townBlock) && (town.hasResident(resident));
 	}
 
 	private static boolean townBlockIsForSale(TownBlock townBlock) {

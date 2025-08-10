@@ -220,8 +220,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		"plotprice",
 		"shopprice",
 		"shoptax",
-		"embassyprice",
-		"embassytax",
 		"title",
 		"surname",
 		"taxpercentcap",
@@ -1721,10 +1719,8 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		case "taxes" -> townSetTaxes(sender, subArgs, admin, town);
 		case "plottax" -> townSetPlotTax(sender, subArgs, admin, town);
 		case "shoptax" -> townSetShopTax(sender, subArgs, admin, town);
-		case "embassytax" -> townSetEmbassyTax(sender, subArgs, admin, town);
 		case "plotprice" -> townSetPlotPrice(sender, subArgs, admin, town);
 		case "shopprice" -> townSetShopPrice(sender, subArgs, admin, town);
-		case "embassyprice" -> townSetEmbassyPrice(sender, subArgs, admin, town);
 		case "spawncost" -> townSetSpawnCost(sender, subArgs, admin, town);
 		case "name" -> townSetName(sender, subArgs, town);
 		case "tag" -> townSetTag(sender, subArgs, admin, town);
@@ -1931,20 +1927,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_set_alttax", sender.getName(), "shop", price));
 	}
 
-	public static void townSetEmbassyTax(CommandSender sender, String[] split, boolean admin, Town town) throws TownyException {
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWN_SET_EMBASSYTAX.getNode());
-		if (split.length == 0)
-			throw new TownyException("Eg: /town set embassytax 10");
-		double amount = MathUtil.getDoubleOrThrow(split[0]);
-		if (!TownySettings.isNegativePlotTaxAllowed() && amount < 0)
-			throw new TownyException(Translatable.of("msg_err_negative_money"));
-		town.setEmbassyPlotTax(amount);
-		town.save();
-		String price = prettyMoney(town.getEmbassyPlotTax());
-		if (admin) TownyMessaging.sendMsg(sender, Translatable.of("msg_town_set_alttax", sender.getName(), "embassy", price));
-		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_set_alttax", sender.getName(), "embassy", price));
-	}
-
 	public static void townSetPlotPrice(CommandSender sender, String[] split, boolean admin, Town town) throws TownyException {
 		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWN_SET_PLOTPRICE.getNode());
 		if (split.length == 0)
@@ -1971,20 +1953,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		String price = prettyMoney(town.getCommercialPlotPrice());
 		if (admin) TownyMessaging.sendMsg(sender, Translatable.of("msg_town_set_altprice", sender.getName(), "shop", price));
 		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_set_altprice", sender.getName(), "shop", price));
-	}
-
-	public static void townSetEmbassyPrice(CommandSender sender, String[] split, boolean admin, Town town) throws TownyException {
-		checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWN_SET_EMBASSYPRICE.getNode());
-		if (split.length == 0)
-			throw new TownyException("Eg: /town set embassyprice 50");
-		
-		double amount = MathUtil.getDoubleOrThrow(split[0]);
-
-		town.setEmbassyPlotPrice(amount);
-		town.save();
-		String price = prettyMoney(town.getEmbassyPlotPrice());
-		if (admin) TownyMessaging.sendMsg(sender, Translatable.of("msg_town_set_altprice", sender.getName(), "embassy", price));
-		TownyMessaging.sendPrefixedTownMessage(town, Translatable.of("msg_town_set_altprice", sender.getName(), "embassy", price));
 	}
 
 	public static void townSetSpawnCost(CommandSender sender, String[] split, boolean admin, Town town) throws TownyException {
@@ -3065,8 +3033,7 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		TownyMessaging.sendMessage(sender, (Colors.Green + translator.of("status_perm") + " " + ((townBlockOwner instanceof Resident) ? perm.getColourString().replace("n", "t") : perm.getColourString().replace("f", "r"))));
 		String on = translator.of("status_on");
 		String off = translator.of("status_off");
-		TownyMessaging.sendMessage(sender, Colors.Green + translator.of("status_pvp") + " " + (perm.pvp ? on : off) + " " +
-										   Colors.Green + translator.of("explosions") + " " + (perm.explosion ? on : off) + " " +
+		TownyMessaging.sendMessage(sender, Colors.Green + translator.of("explosions") + " " + (perm.explosion ? on : off) + " " +
 										   Colors.Green + translator.of("firespread") + " " + (perm.fire ? on : off) + " " +
 										   Colors.Green + translator.of("mobspawns") + " " + (perm.mobs ? on : off));
 

@@ -216,7 +216,6 @@ public class TownyFormatter {
 		// Perm: Build = f-- Destroy = fa- Switch = fao Item = ---
 		screen.addComponentOf("ownsXPlots", colourKey(translator.of("owner_of_x_plots", resident.getTownBlocks().size())));
 		screen.addComponentOf("perm", colourKeyValue(translator.of("status_perm"), resident.getPermissions().getColourString().replace("n", "t")));
-		screen.addComponentOf("pvp", colourKeyValue(translator.of("status_pvp"), (resident.getPermissions().pvp) ? translator.of("status_on"): translator.of("status_off")));
 		screen.addComponentOf("explosions", colourKeyValue(translator.of("explosions"), (resident.getPermissions().explosion) ? translator.of("status_on"): translator.of("status_off"))); 
 		screen.addComponentOf("firespread", colourKeyValue(translator.of("firespread"), (resident.getPermissions().fire) ? translator.of("status_on"): translator.of("status_off"))); 
 		screen.addComponentOf("mobspawns", colourKeyValue(translator.of("mobspawns"), (resident.getPermissions().mobs) ? translator.of("status_on"): translator.of("status_off")));
@@ -282,7 +281,7 @@ public class TownyFormatter {
 		// ___[ Raccoon City ]___
 		screen.addComponentOf("title", ChatTools.formatTitle(town));
 		
-		// (PvP) (Open) (Peaceful)
+		// (Open)
 		List<String> sub = getTownSubtitle(town, world, translator);
 		if (!sub.isEmpty())
 			screen.addComponentOf("subtitle", ChatTools.formatSubTitle(StringMgmt.join(sub, " ")));

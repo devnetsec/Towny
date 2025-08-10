@@ -453,10 +453,10 @@ public class TownyCommand extends BaseCommand implements CommandExecutor {
 		if (town != null) {
 			output.add(translator.of("towny_prices_townname", town.getFormattedName()));
 			output.add(translator.of("towny_prices_price_plot", prettyMoney(town.getPlotPrice()),prettyMoney(TownySettings.getOutpostCost())));
-			output.add(translator.of("towny_prices_price_shop", prettyMoney(town.getCommercialPlotPrice()), prettyMoney(town.getEmbassyPlotPrice())));
+			output.add(translator.of("towny_prices_price_shop", prettyMoney(town.getCommercialPlotPrice())));
 
 			output.add(translator.of("towny_prices_taxes_plot", (town.isTaxPercentage()? town.getTaxes() + "%" : prettyMoney(town.getTaxes())), prettyMoney(town.getPlotTax())));
-			output.add(translator.of("towny_prices_taxes_shop", prettyMoney(town.getCommercialPlotTax()), prettyMoney(town.getEmbassyPlotTax())));
+			output.add(translator.of("towny_prices_taxes_shop", prettyMoney(town.getCommercialPlotTax())));
 			
 			output.add(translator.of("towny_prices_plots"));
 			List<TownBlockType> townBlockTypes = new ArrayList<>(TownBlockTypeHandler.getTypes().values());

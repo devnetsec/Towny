@@ -108,18 +108,6 @@ public class InviteHandler {
 				.collect(Collectors.toList());
 	}
 
-	public static int getSentAllyRequestsMaxAmount(Nation sender) {
-		int amount = 0;
-		if (sender != null) {
-			if (TownySettings.getMaximumRequestsSentNation() == 0){
-				amount = 100;
-			} else {
-				amount = TownySettings.getMaximumRequestsSentNation();
-			}
-		}
-		return amount;
-	}
-
 	public static int getReceivedInvitesMaxAmount(InviteReceiver receiver) {
 
 		int amount = 0;
@@ -128,20 +116,6 @@ public class InviteHandler {
 				amount = 100;
 			} else {
 				amount = TownySettings.getMaximumInvitesReceivedResident();
-			}
-		}
-		if (receiver instanceof Town) {
-			if (TownySettings.getMaximumInvitesReceivedTown() == 0) {
-				amount = 100;
-			} else {
-				amount = TownySettings.getMaximumInvitesReceivedTown();
-			}
-		}
-		if (receiver instanceof Nation) {
-			if (TownySettings.getMaximumRequestsReceivedNation() == 0) {
-				amount = 100;
-			} else {
-				amount = TownySettings.getMaximumRequestsReceivedNation();
 			}
 		}
 		return amount;
@@ -154,13 +128,6 @@ public class InviteHandler {
 				amount = 100;
 			} else {
 				amount = TownySettings.getMaximumInvitesSentTown();
-			}
-		}
-		if (sender instanceof Nation) {
-			if (TownySettings.getMaximumInvitesSentNation() == 0) {
-				amount = 100;
-			} else {
-				amount = TownySettings.getMaximumInvitesSentNation();
 			}
 		}
 		return amount;

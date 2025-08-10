@@ -21,12 +21,6 @@ public class TownBlockType {
 			return town.getCommercialPlotTax() + town.getPlotTax();
 		}
 	}); // Just like residential but has additional tax
-	public static final TownBlockType EMBASSY = new TownBlockType("Embassy", new TownBlockData() {
-		@Override
-		public double getTax(Town town) {
-			return town.getEmbassyPlotTax() + town.getPlotTax();
-		}
-	}); // For other towns to own a plot in your town.
 	public static final TownBlockType WILDS = new TownBlockType("Wilds"); //Limits build/destroy-able blocks to the world's unclaimedZoneIgnoreIDs.
 	public static final TownBlockType INN = new TownBlockType("Inn"); //Allows use of beds outside your own plot, when deny_bed_use is true.
 	public static final TownBlockType JAIL = new TownBlockType("Jail"); //Enables setting the jail spawn.		
@@ -83,7 +77,6 @@ public class TownBlockType {
 	static {
 		legacyLookupMap.put(0, "default");
 		legacyLookupMap.put(1, "shop");
-		legacyLookupMap.put(3, "embassy");
 		legacyLookupMap.put(4, "wilds");
 		legacyLookupMap.put(6, "inn");
 		legacyLookupMap.put(7, "jail");
