@@ -56,12 +56,13 @@ public abstract class TownyDataSource {
 
 	public boolean loadAll() {
 
-		return loadWorldList() && loadNationList() && loadTownList() && loadPlotGroupList() && loadDistrictList() && loadJailList() && loadResidentList() && loadTownBlockList() && loadWorlds() && loadResidents() && loadTowns() && loadNations() && loadTownBlocks() && loadPlotGroups() && loadDistricts() && loadJails() && loadRegenList() && loadCooldowns();
+		// Nations are loaded twice to fulfill a circular dependency
+		return loadWorldList() && loadNationList() && loadTownList() && loadPlotGroupList() && loadDistrictList() && loadJailList() && loadResidentList() && loadTownBlockList() && loadNations() && loadWorlds() && loadResidents() && loadTowns() && loadNations() && loadTownBlocks() && loadPlotGroups() && loadDistricts() && loadJails() && loadRegenList() && loadCooldowns();
 	}
 
 	public boolean saveAll() {
 
-		return saveWorlds() && saveNations() && saveTowns() && saveResidents() && savePlotGroups() && saveDistricts() && saveTownBlocks() && saveJails() && saveRegenList() && saveCooldowns();
+		return saveNations() && saveWorlds() && saveTowns() && saveResidents() && savePlotGroups() && saveDistricts() && saveTownBlocks() && saveJails() && saveRegenList() && saveCooldowns();
 	}
 
 	public boolean saveAllWorlds() {

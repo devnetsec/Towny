@@ -152,6 +152,9 @@ public class Nation extends Government {
 	}
 
 	public Town getCapital() {
+		if (capital == null) {
+			findNewCapital();
+		} 
 		return capital;
 	}
 	

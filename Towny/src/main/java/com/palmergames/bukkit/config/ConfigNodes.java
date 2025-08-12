@@ -2191,7 +2191,7 @@ public enum ConfigNodes {
 			""),
 	ECO_USING_ECONOMY(
 			"economy.using_economy",
-			"true",
+			"false",
 			"",
 			"# This enables/disables all the economy functions of Towny.",
 			"# This will first attempt to use Vault or Reserve to bridge your economy plugin with Towny.",

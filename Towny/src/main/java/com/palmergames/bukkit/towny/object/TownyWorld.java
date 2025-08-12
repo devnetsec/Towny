@@ -35,8 +35,7 @@ public class TownyWorld extends TownyObject {
 
 	private final HashMap<String, Town> towns = new HashMap<>();
 
-	// TODO: Don't hardcode this; use TownySettings instead
-	private Nation nation = new Nation("Test Nation");
+	private Nation nation = null;
 
 	private boolean isDeletingEntitiesOnUnclaim = TownySettings.isDeletingEntitiesOnUnclaim();
 	private Set<EntityType> unclaimDeleteEntityTypes = null;

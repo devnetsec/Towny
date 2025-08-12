@@ -988,9 +988,11 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				line = keys.get("capital");
 				String cantLoadCapital = Translation.of("flatfile_err_nation_could_not_load_capital_disband", nation.getName());
 				if (line != null) {
+					universe.newTown(line);
 					Town town = universe.getTown(line);
-					if (town != null) {
+					if (loadTown(town)) {
 						try {
+							nation.addTown(town);
 							nation.forceSetCapital(town);
 						} catch (EmptyNationException e1) {
 							plugin.getLogger().warning(cantLoadCapital);
@@ -1450,14 +1452,12 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				line = keys.get("nation");
 				if (line != null && !line.isEmpty()) {
 					Nation nation = null;
-					if (universe.hasNation(line))
-						nation = universe.getNation(line);
-					else if (universe.getReplacementNameMap().containsKey(line))
-						nation = universe.getNation(universe.getReplacementNameMap().get(line));
-
-					// Only set the nation if it exists
-					if (nation != null)
+					nation.setName(line);
+					// TODO: Possibly a new exception here?
+					if (loadNation(nation))
 						world.setNation(nation);
+					// else if (universe.getReplacementNameMap().containsKey(line))
+					//	nation = universe.getNation(universe.getReplacementNameMap().get(line));
 				}
 
 				line = keys.get("metadata");
@@ -2266,8 +2266,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("jailing=" + world.isJailingEnabled());		
 		
 		// Nation
-		if (world.getNation() != null)
+		if (world.getNation() != null) {
+			boolean ignore = saveNation(world.getNation());
 			list.add("nation=" + world.getNation().getName());
+		}
 
 		// Metadata
 		list.add("");

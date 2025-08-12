@@ -9,6 +9,7 @@ import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.InvalidNameException;
 import com.palmergames.bukkit.towny.exceptions.KeyAlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.exceptions.EmptyNationException;
 import com.palmergames.bukkit.towny.exceptions.initialization.TownyInitException;
 import com.palmergames.bukkit.towny.object.District;
 import com.palmergames.bukkit.towny.object.Nation;
@@ -27,6 +28,7 @@ import com.palmergames.bukkit.towny.object.metadata.CustomDataField;
 import com.palmergames.bukkit.towny.permissions.TownyPermissionSource;
 import com.palmergames.bukkit.towny.tasks.BackupTask;
 import com.palmergames.bukkit.towny.tasks.CleanupTask;
+import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.util.BukkitTools;
 import com.palmergames.bukkit.util.NameValidation;
 import com.palmergames.util.Trie;
@@ -759,8 +761,30 @@ public class TownyUniverse {
 		if (getWorldIDMap().containsKey(world.getUID()))
 			return;
 		TownyWorld townyWorld = new TownyWorld(world.getName(), world.getUID());
+		
+		/*
+		try {
+			saveDataSource.newNation("Test");
+			Nation townyWorldNation = getNation("Test");
+			newTown("Test_City");
+			Town townyWorldNationCapital = getTown("Test_City");
+			townyWorld.addTown(townyWorldNationCapital);
+			townyWorldNation.addTown(townyWorldNationCapital);
+			townyWorldNation.forceSetCapital(townyWorldNationCapital);
+			townyWorld.setNation(getNation("Test"));
+		} catch (AlreadyRegisteredException ignored) {
+			TownyMessaging.sendMsg("CITYSTATE DEBUG: The world, world nation, or default world nation capital already exists.");
+		} catch (InvalidNameException ignored) {
+			TownyMessaging.sendMsg("CITYSTATE DEBUG: An invalid name was used at world creation.");
+		} catch (EmptyNationException ignored) {
+			TownyMessaging.sendMsg("CITYSTATE DEBUG: This world's nation is null!");
+		} catch (NotRegisteredException ignored) {
+			TownyMessaging.sendMsg("CITYSTATE DEBUG: Failed to create this world's nation!");
+		}
+		*/
 		registerTownyWorld(townyWorld);
 		townyWorld.save();
+		// TownyMessaging.sendMsg("CITYSTATE DEBUG: World loaded.");
 	}
 
 	public void registerTownyWorld(@NotNull TownyWorld world) {

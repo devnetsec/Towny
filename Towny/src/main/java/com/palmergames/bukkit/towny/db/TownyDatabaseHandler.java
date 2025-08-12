@@ -229,7 +229,15 @@ public abstract class TownyDatabaseHandler extends TownyDataSource {
 			throw new AlreadyRegisteredException("The nation " + filteredName + " is already in use.");
 
 		Nation nation = new Nation(filteredName);
-		
+
+		try {
+			universe.newTown("testcity");
+		} catch (InvalidNameException e) {
+			throw new NotRegisteredException(e.getMessage());
+		}
+
+		nation.setCapital(universe.getTown("testcity"));
+
 		if (uuid != null)
 			nation.setUUID(uuid);
 		
@@ -242,6 +250,14 @@ public abstract class TownyDatabaseHandler extends TownyDataSource {
 		if (universe.getWorldMap().containsKey(name.toLowerCase(Locale.ROOT)))
 			throw new AlreadyRegisteredException("The world " + name + " is already in use.");
 
+		// TODO: Don't hardcode these names; use TownySettings instead
+		try {
+			newNation("test");
+		} catch (NotRegisteredException ignored) {
+			TownyMessaging.sendErrorMsg("CITYSTATE DEBUG: An invalid name was used at world creation.");
+		}
+
+		universe.getWorld(name).setNation(universe.getNation("test"));
 		universe.getWorldMap().put(name.toLowerCase(Locale.ROOT), new TownyWorld(name));
 	}
 

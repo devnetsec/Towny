@@ -2535,7 +2535,9 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 
 			nat_hm.put("jailing", world.isJailingEnabled());
 
+			// Nation
 			nat_hm.put("nation", world.getNation().getName());
+			saveNation(world.getNation());
 
 			if (world.hasMeta())
 				nat_hm.put("metadata", serializeMetadata(world));
