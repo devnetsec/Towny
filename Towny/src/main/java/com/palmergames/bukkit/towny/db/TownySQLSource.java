@@ -1115,7 +1115,10 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			} catch (IllegalArgumentException | NullPointerException ee) {
 				town.setUUID(UUID.randomUUID());
 			}
-			universe.registerTownUUID(town);
+			try {
+				universe.registerTownUUID(town);
+			} catch (AlreadyRegisteredException ignored) {
+			}
 
 			try {
 				long registered = rs.getLong("registered");
@@ -1238,7 +1241,8 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			TownyMessaging.sendDebugMsg("Loading nation " + nation.getName());
 
 			Town town = universe.getTown(rs.getString("capital"));
-			if (town != null) {
+			nation.addTown(town);
+			if (loadTown(town)) {
 				try {
 					nation.forceSetCapital(town);
 				} catch (EmptyNationException e1) {
@@ -1276,7 +1280,10 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			} catch (IllegalArgumentException | NullPointerException ee) {
 				nation.setUUID(UUID.randomUUID());
 			}
-			universe.registerNationUUID(nation);
+			try {
+				universe.registerNationUUID(nation);
+			} catch (AlreadyRegisteredException ignored) {
+			}
 
 			line = rs.getString("nationSpawn");
 			if (line != null) {
@@ -1331,8 +1338,6 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			return true;
 		} catch (SQLException e) {
 			TownyMessaging.sendErrorMsg("SQL: Load Nation " + name + " SQL Error - " + e.getMessage());
-		} catch (TownyException ex) {
-			plugin.getLogger().log(Level.WARNING, "SQL: Load Nation " + name + " unknown Error - ", ex);
 		}
 
 		return false;
@@ -1705,9 +1710,8 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 				line = rs.getString("nation");
 				if (line != null && !line.isEmpty()) {
 					Nation nation = universe.getNation(line);
-					// Only set nation if it exists
-					if (nation != null)
-						world.setNation(nation);
+					// TODO: Possibly a new exception here?
+					world.setNation(nation);
 				}
 			} catch (SQLException ignored) {
 			}
@@ -2394,6 +2398,7 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 		try {
 			HashMap<String, Object> nat_hm = new HashMap<>();
 			nat_hm.put("name", nation.getName());
+			boolean ignored = saveTown(nation.getCapital());
 			nat_hm.put("capital", nation.hasCapital() ? nation.getCapital().getName() : "");
 			nat_hm.put("nationBoard", nation.getBoard());
 			nat_hm.put("mapColorHexCode", nation.getMapColorHexCode());
@@ -2536,8 +2541,8 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			nat_hm.put("jailing", world.isJailingEnabled());
 
 			// Nation
+			boolean ignored = saveNation(world.getNation());
 			nat_hm.put("nation", world.getNation().getName());
-			saveNation(world.getNation());
 
 			if (world.hasMeta())
 				nat_hm.put("metadata", serializeMetadata(world));

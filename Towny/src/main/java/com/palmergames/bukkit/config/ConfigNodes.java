@@ -223,6 +223,8 @@ public enum ConfigNodes {
 			"#                                                          #",
 			"############################################################",
 			""),
+	NWS_NATION_NAME("new_world_settings.nation_name", "Minecraft",
+			"# What name should a new world's Nation and its capital have initially?"),
 	NWS_WORLD_USING_TOWNY("new_world_settings.using_towny", "true",
 			"# Do new worlds have Towny enabled by default?",
 			"# You can adjust this setting for an existing world using /townyworld toggle usingtowny"),

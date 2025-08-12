@@ -2316,6 +2316,11 @@ public class TownySettings {
 		return t;
 	}
 
+	public static String getNationName() {
+
+		return getString(ConfigNodes.NWS_NATION_NAME);
+	}
+
 	public static boolean isUsingTowny() {
 
 		return getBoolean(ConfigNodes.NWS_WORLD_USING_TOWNY);

@@ -191,8 +191,8 @@ public class OnPlayerLogin implements Runnable {
 	private void assignDefaultTownIfRequired(Resident resident) {
 		Town town = TownyUniverse.getInstance().getTown(TownySettings.getDefaultTownName());
 		if (town == null) {
-			// TODO: Don't hardcode this name; use TownySettings instead
-			town = TownyUniverse.getInstance().getTown("Test_City");
+			// Add this Resident to the nation capital
+			town = TownyUniverse.getInstance().getTown(TownySettings.getNationName() + "_City");
 			return;
 		}
 		try {

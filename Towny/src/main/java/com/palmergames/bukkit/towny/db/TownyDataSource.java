@@ -57,7 +57,8 @@ public abstract class TownyDataSource {
 	public boolean loadAll() {
 
 		// Nations are loaded twice to fulfill a circular dependency
-		return loadWorldList() && loadNationList() && loadTownList() && loadPlotGroupList() && loadDistrictList() && loadJailList() && loadResidentList() && loadTownBlockList() && loadWorlds() && loadResidents() && loadTowns() && loadNations() && loadTownBlocks() && loadPlotGroups() && loadDistricts() && loadJails() && loadRegenList() && loadCooldowns();
+		// Then Towns and Nations are loaded again to make sure the default Nation and its capital are registered at world creation
+		return loadWorldList() && loadNationList() && loadTownList() && loadPlotGroupList() && loadDistrictList() && loadJailList() && loadResidentList() && loadTownBlockList() && loadTowns() && loadResidents() && loadNations() && loadWorlds() && loadTownBlocks() && loadPlotGroups() && loadDistricts() && loadJails() && loadRegenList() && loadCooldowns();
 	}
 
 	public boolean saveAll() {

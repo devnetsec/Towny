@@ -85,16 +85,14 @@ public class TownyWorld extends TownyObject {
 
 	public TownyWorld(String name) {
 		super(name);
-		// TODO: Don't hardcode this name; use TownySettings instead
-		nation = new Nation("Test");
+		nation = new Nation(TownySettings.getNationName());
 		nation.setOpen(true);
 		nation.setPublic(true);
 	}
 
 	public TownyWorld(String name, UUID uuid) {
 		super(name);
-		// TODO: Don't hardcode this name; use TownySettings instead
-		nation = new Nation("Test");
+		nation = new Nation(TownySettings.getNationName());
 		this.uuid = uuid;
 	}
 

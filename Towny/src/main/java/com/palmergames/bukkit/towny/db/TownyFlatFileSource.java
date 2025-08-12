@@ -295,9 +295,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 			
 			try {
 				universe.newTownInternal(name);
-			} catch (AlreadyRegisteredException | InvalidNameException e) {
+			} catch (InvalidNameException e) {
 				// Thrown if the town name does not pass the filters.
 				rejectedTowns.add(town);
+			} catch (AlreadyRegisteredException ignored) {
 			}
 		}
 		
@@ -347,9 +348,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		
 			try {
 				newNation(name);
-			} catch (AlreadyRegisteredException | NotRegisteredException e) {
+			} catch (NotRegisteredException e) {
 				// Thrown if the town name does not pass the filters.
 				rejectedNations.add(nation);
+			} catch (AlreadyRegisteredException ignored) {
 			}
 		}
 		
@@ -993,7 +995,7 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				if (line != null) {
 					Town town = universe.getTown(line);
 					nation.addTown(town);
-					if (loadTown(town)) {
+					if (town != null) {
 						try {
 							nation.forceSetCapital(town);
 						} catch (EmptyNationException e1) {
@@ -1458,13 +1460,7 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				if (line != null && !line.isEmpty()) {
 					Nation nation = universe.getNation(line);
 					// TODO: Possibly a new exception here?
-					// Set the same Nation and capital for all dimensions, but only register them once 
-					if (!world.getName().contains("the_end") && !world.getName().contains("nether")) {
-						boolean ignored = loadNation(nation);
-					}
 					world.setNation(nation);
-					// else if (universe.getReplacementNameMap().containsKey(line))
-					//	nation = universe.getNation(universe.getReplacementNameMap().get(line));
 				}
 
 				line = keys.get("metadata");
