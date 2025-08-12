@@ -1166,6 +1166,10 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			else
 				town.setMapColorHexCode(MapUtil.generateRandomTownColourAsHexCode());
 			
+			line = rs.getString("world");
+			if (line != null)
+				town.setWorld(universe.getWorld(line));
+
 			line = rs.getString("visibleOnTopLists");
 			if (line != null && !line.isEmpty())
 				town.setVisibleOnTopLists(rs.getBoolean("visibleOnTopLists"));
@@ -2344,7 +2348,9 @@ public final class TownySQLSource extends TownyDatabaseHandler {
 			
 			twn_hm.put("trustedResidents", StringMgmt.join(toUUIDList(town.getTrustedResidents()), "#"));
 			twn_hm.put("trustedTowns", StringMgmt.join(town.getTrustedTownsUUIDS(), "#"));
-			
+
+			twn_hm.put("world", town.getWorld().getName());
+
 			updateDB("TOWNS", twn_hm, Collections.singletonList("name"));
 			return true;
 

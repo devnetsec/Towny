@@ -963,6 +963,11 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				} else {
 					town.setMapColorHexCode(MapUtil.generateRandomTownColourAsHexCode());
 				}
+
+				// TODO: New exception here?
+				line = keys.get("world");
+				if (line != null)
+					town.setWorld(universe.getWorld(line));
 				
 			} catch (Exception e) {
 				plugin.getLogger().log(Level.WARNING, Translation.of("flatfile_err_reading_town_file_at_line", town.getName(), line, town.getName()), e);
@@ -2026,6 +2031,9 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		
 		list.add("mapColorHexCode=" + town.getMapColorHexCode());
 		
+		list.add("mapColorHexCode=" + town.getMapColorHexCode());
+
+		list.add("world=" + town.getWorld().getName());
 		/*
 		 *  Make sure we only save in async
 		 */

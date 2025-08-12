@@ -91,8 +91,7 @@ public class TownyWorld extends TownyObject {
 	}
 
 	public TownyWorld(String name, UUID uuid) {
-		super(name);
-		nation = new Nation(TownySettings.getNationName());
+		this(name);
 		this.uuid = uuid;
 	}
 

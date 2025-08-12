@@ -208,11 +208,12 @@ public abstract class TownyDataSource {
 	public boolean loadWorlds() {
 
 		TownyMessaging.sendDebugMsg("Loading Worlds");
-		for (TownyWorld world : universe.getTownyWorlds())
+		for (TownyWorld world : universe.getTownyWorlds()) {
 			if (!loadWorld(world)) {
 				plugin.getLogger().severe("Loading Error: Could not read world data '" + world.getName() + "'.");
 				return false;
 			}
+		}
 		return true;
 	}
 	
