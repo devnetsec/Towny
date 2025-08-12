@@ -900,7 +900,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 					}
 					
 					town.setUUID(townUUID);
-					universe.registerTownUUID(town);
+					try {
+						universe.registerTownUUID(town);
+					} catch (AlreadyRegisteredException ignored) {
+					}
 				}
 				line = keys.get("registered");
 				if (line != null) {
@@ -988,11 +991,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 				line = keys.get("capital");
 				String cantLoadCapital = Translation.of("flatfile_err_nation_could_not_load_capital_disband", nation.getName());
 				if (line != null) {
-					universe.newTown(line);
 					Town town = universe.getTown(line);
+					nation.addTown(town);
 					if (loadTown(town)) {
 						try {
-							nation.addTown(town);
 							nation.forceSetCapital(town);
 						} catch (EmptyNationException e1) {
 							plugin.getLogger().warning(cantLoadCapital);
@@ -1054,7 +1056,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 					} catch (IllegalArgumentException ee) {
 						nation.setUUID(UUID.randomUUID());
 					}
-					universe.registerNationUUID(nation);
+					try {
+						universe.registerNationUUID(nation);
+					} catch (AlreadyRegisteredException ignored) {
+					}
 				}
 				line = keys.get("registered");
 				if (line != null) {
@@ -1451,11 +1456,13 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 
 				line = keys.get("nation");
 				if (line != null && !line.isEmpty()) {
-					Nation nation = null;
-					nation.setName(line);
+					Nation nation = universe.getNation(line);
 					// TODO: Possibly a new exception here?
-					if (loadNation(nation))
-						world.setNation(nation);
+					// Set the same Nation and capital for all dimensions, but only register them once 
+					if (!world.getName().contains("the_end") && !world.getName().contains("nether")) {
+						boolean ignored = loadNation(nation);
+					}
+					world.setNation(nation);
 					// else if (universe.getReplacementNameMap().containsKey(line))
 					//	nation = universe.getNation(universe.getReplacementNameMap().get(line));
 				}
@@ -1924,8 +1931,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		// Name
 		list.add("name=" + town.getName());
 		// Mayor
-		if (town.hasMayor())
+		if (town.hasMayor()) {
+			boolean ignored = saveResident(town.getMayor());
 			list.add("mayor=" + town.getMayor().getName());
+		}
 
 		list.add(newLine);
 		// Town Board
@@ -2073,8 +2082,10 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 
 		List<String> list = new ArrayList<>();
 
-		if (nation.hasCapital())
+		if (nation.hasCapital()) {
+			boolean ignored = saveTown(nation.getCapital());
 			list.add("capital=" + nation.getCapital().getName());
+		}
 
 		list.add("nationBoard=" + nation.getBoard());
 
@@ -2266,10 +2277,8 @@ public final class TownyFlatFileSource extends TownyDatabaseHandler {
 		list.add("jailing=" + world.isJailingEnabled());		
 		
 		// Nation
-		if (world.getNation() != null) {
-			boolean ignore = saveNation(world.getNation());
-			list.add("nation=" + world.getNation().getName());
-		}
+		boolean ignore = saveNation(world.getNation());
+		list.add("nation=" + world.getNation().getName());
 
 		// Metadata
 		list.add("");

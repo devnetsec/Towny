@@ -50,7 +50,10 @@ public class Nation extends Government {
 
 	public Nation(String name) {
 		super(name);
-		
+		// TODO: Don't hardcode this name; use TownySettings instead
+		capital = new Town("Test_City");
+		capital.setPublic(true);
+		capital.setOpen(true);
 		// Set defaults
 		setTaxes(TownySettings.getNationDefaultTax());
 		setBoard(TownySettings.getNationDefaultBoard());

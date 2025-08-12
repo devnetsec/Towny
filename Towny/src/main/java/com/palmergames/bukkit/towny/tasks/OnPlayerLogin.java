@@ -190,8 +190,11 @@ public class OnPlayerLogin implements Runnable {
 
 	private void assignDefaultTownIfRequired(Resident resident) {
 		Town town = TownyUniverse.getInstance().getTown(TownySettings.getDefaultTownName());
-		if (town == null)
+		if (town == null) {
+			// TODO: Don't hardcode this name; use TownySettings instead
+			town = TownyUniverse.getInstance().getTown("Test_City");
 			return;
+		}
 		try {
 			resident.setTown(town);
 		} catch (AlreadyRegisteredException ignore) {}

@@ -35,7 +35,7 @@ public class TownyWorld extends TownyObject {
 
 	private final HashMap<String, Town> towns = new HashMap<>();
 
-	private Nation nation = null;
+	private Nation nation;
 
 	private boolean isDeletingEntitiesOnUnclaim = TownySettings.isDeletingEntitiesOnUnclaim();
 	private Set<EntityType> unclaimDeleteEntityTypes = null;
@@ -85,10 +85,16 @@ public class TownyWorld extends TownyObject {
 
 	public TownyWorld(String name) {
 		super(name);
+		// TODO: Don't hardcode this name; use TownySettings instead
+		nation = new Nation("Test");
+		nation.setOpen(true);
+		nation.setPublic(true);
 	}
 
 	public TownyWorld(String name, UUID uuid) {
 		super(name);
+		// TODO: Don't hardcode this name; use TownySettings instead
+		nation = new Nation("Test");
 		this.uuid = uuid;
 	}
 
