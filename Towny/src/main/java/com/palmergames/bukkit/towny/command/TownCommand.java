@@ -155,7 +155,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 	@VisibleForTesting
 	public static final List<String> townTabCompletes = Arrays.asList(
 		"add",
-		"allylist",
 		"baltop",
 		"buytown",
 		"ban",
@@ -166,7 +165,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		"create",
 		"deposit",
 		"delete",
-		"enemylist",
 		"forsale",
 		"fs",
 		"here",
@@ -241,7 +239,6 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		"explosion",
 		"fire",
 		"mobs",
-		"nationzone",
 		"public",
 		"taxpercent",
 		"open"
@@ -3045,9 +3042,9 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 	private static void displaySetPlotPermissionsHelp(CommandSender sender, TownBlockOwner townBlockOwner) {
 		TownyMessaging.sendMessage(sender, ChatTools.formatTitle("/... set perm"));
 		if (townBlockOwner instanceof Town)
-			TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Level", "[resident/nation/ally/outsider]", "", ""));
+			TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Level", "[resident/nation/outsider]", "", ""));
 		if (townBlockOwner instanceof Resident)
-			TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Level", "[friend/town/ally/outsider]", "", ""));
+			TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Level", "[friend/town/outsider]", "", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("Type", "[build/destroy/switch/itemuse]", "", ""));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("", "set perm", "[on/off]", "Toggle all permissions"));
 		TownyMessaging.sendMessage(sender, ChatTools.formatCommand("", "set perm", "[level/type] [on/off]", ""));

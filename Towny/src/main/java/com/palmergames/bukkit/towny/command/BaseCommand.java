@@ -40,7 +40,6 @@ public class BaseCommand implements TabCompleter{
 		"friend",
 		"town",
 		"nation",
-		"ally",
 		"outsider",
 		"build",
 		"destroy",
@@ -51,7 +50,6 @@ public class BaseCommand implements TabCompleter{
 
 	private static final List<String> setLevelCompletes = Arrays.asList(
 		"resident",
-		"ally",
 		"outsider",
 		"nation",
 		"friend",

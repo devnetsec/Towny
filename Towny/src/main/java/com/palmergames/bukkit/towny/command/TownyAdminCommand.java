@@ -154,7 +154,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		"outlaw",
 		"leavenation",
 		"invite",
-		"unruin",
 		"trust",
 		"trusttown",
 		"checkoutposts",
@@ -172,7 +171,7 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		Stream.of("foundingdate")).collect(Collectors.toList());
 	
 	private static final List<String> adminTownToggleTabCompletes = Stream.concat(TownCommand.townToggleTabCompletes.stream(),
-			Arrays.asList("forcemobs", "forcepvp", "forcedisablepvp", "unlimitedclaims", "upkeep", "allowedtowar", "conquered", "visibleontoplists").stream()).collect(Collectors.toList());
+			Arrays.asList("forcemobs", "forcepvp", "forcedisablepvp", "unlimitedclaims", "upkeep", "visibleontoplists").stream()).collect(Collectors.toList());
 
 	private static final List<String> adminNationTabCompletes = Arrays.asList(
 		"add",
@@ -188,8 +187,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		"withdraw",
 		"bankhistory",
 		"rank",
-		"enemy",
-		"ally",
 		"merge",
 		"transfer",
 		"forcemerge",
@@ -249,7 +246,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		"title",
 		"founder",
 		"surname",
-		"nationzoneoverride",
 		"plot"
 	);
 	
@@ -335,7 +331,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 							}
 						case "capital":
 						case "founder":
-						case "nationzoneoverride":
 						case "plot":
 							if (args.length == 3)
 								return getTownyStartingWith(args[2], "t");
@@ -581,12 +576,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 										.map(Town::getName)
 										.collect(Collectors.toList()), args[4]);
 							break;
-						case "enemy":
-						case "ally":
-							if (args.length == 4)
-								return Arrays.asList("add", "remove");
-							if (args.length == 5)
-								return getTownyStartingWith(args[4], "n");
 						default:
 							if (args.length == 3)
 								return NameUtil.filterByStart(TownyCommandAddonAPI.getTabCompletes(CommandType.TOWNYADMIN_NATION, adminNationTabCompletes), args[2]);

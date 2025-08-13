@@ -18,8 +18,6 @@ import com.palmergames.bukkit.towny.event.nation.NationSanctionTownRemoveEvent;
 import com.palmergames.bukkit.towny.event.nation.NationSetSpawnEvent;
 import com.palmergames.bukkit.towny.event.NewNationEvent;
 import com.palmergames.bukkit.towny.event.nation.PreNewNationEvent;
-import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleOpenEvent;
-import com.palmergames.bukkit.towny.event.nation.toggle.NationTogglePublicEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleTaxPercentEvent;
 import com.palmergames.bukkit.towny.event.NationPreRenameEvent;
 import com.palmergames.bukkit.towny.event.nation.NationKingChangeEvent;
@@ -87,14 +85,11 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 		"leave",
 		"withdraw",
 		"deposit",
-		"new",
-		"create",
 		"rank",
 		"ranklist",
 		"say",
 		"set",
 		"toggle",
-		"invite",
 		"townlist",
 		"spawn",
 		"sanctiontown",
@@ -135,8 +130,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 	);
 	
 	static final List<String> nationToggleTabCompletes = Arrays.asList(
-		"public",
-		"open",
 		"taxpercent"
 	);
 
@@ -1208,14 +1201,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			choice = BaseCommand.parseToggleChoice(split[1]);
 
 		switch (split[0].toLowerCase(Locale.ROOT)) {
-		case "public":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_TOGGLE_PUBLIC.getNode());
-			nationTogglePublic(sender, nation, choice, admin);
-			break;
-		case "open":
-			checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_TOGGLE_OPEN.getNode());
-			nationToggleOpen(sender, nation, choice, admin);
-			break;
         case "taxpercent":
             checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_NATION_TOGGLE_TAXPERCENT.getNode());
             nationToggleTaxPercent(sender, nation, choice, admin);
@@ -1231,32 +1216,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 			return;
 		}
 		nation.save();
-	}
-
-	private static void nationTogglePublic(CommandSender sender, Nation nation, Optional<Boolean> choice, boolean admin) throws TownyException {
-		// Fire cancellable event directly before setting the toggle.
-		NationTogglePublicEvent preEvent = new NationTogglePublicEvent(sender, nation, admin, choice.orElse(!nation.isPublic()));
-		if (BukkitTools.isEventCancelled(preEvent))
-			throw new TownyException(preEvent.getCancelMessage());
-
-		// Set the toggle setting.
-		nation.setPublic(preEvent.getFutureState());
-
-		// Send message feedback.
-		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_changed_public", nation.isPublic() ? Translatable.of("enabled") : Translatable.of("disabled")));
-	}
-
-	private static void nationToggleOpen(CommandSender sender, Nation nation, Optional<Boolean> choice, boolean admin) throws TownyException {
-		// Fire cancellable event directly before setting the toggle.
-		NationToggleOpenEvent preEvent = new NationToggleOpenEvent(sender, nation, admin, choice.orElse(!nation.isOpen()));
-		if (BukkitTools.isEventCancelled(preEvent))
-			throw new TownyException(preEvent.getCancelMessage());
-
-		// Set the toggle setting.
-		nation.setOpen(preEvent.getFutureState());
-
-		// Send message feedback.
-		TownyMessaging.sendPrefixedNationMessage(nation, Translatable.of("msg_nation_changed_open", nation.isOpen() ? Translatable.of("enabled") : Translatable.of("disabled")));
 	}
 
     private static void nationToggleTaxPercent(CommandSender sender, Nation nation, Optional<Boolean> choice, boolean admin) throws TownyException {

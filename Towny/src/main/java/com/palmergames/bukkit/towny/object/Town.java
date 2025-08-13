@@ -178,6 +178,9 @@ public class Town extends Government implements TownBlockOwner {
 
 	public Resident getMayor() {
 
+		if (!hasMayor()) {
+			findNewMayor();
+		} 
 		return mayor;
 	}
 
