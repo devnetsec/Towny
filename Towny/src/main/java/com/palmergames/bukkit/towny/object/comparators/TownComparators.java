@@ -10,7 +10,6 @@ import com.palmergames.bukkit.towny.object.Town;
  */
 public class TownComparators {
 	public static final Comparator<Town> BY_FORSALE = (t1, t2) -> doCompare(t1, t2, Town::isForSale);
-	public static final Comparator<Town> BY_RUINED = (t1, t2) -> doCompare(t1, t2, Town::isRuined);
 	public static final Comparator<Town> BY_BANKRUPT = (t1, t2) -> doCompare(t1, t2, Town::isBankrupt);
 
 	private static int doCompare(Town t1, Town t2, Function<Town, Boolean> func) {
