@@ -94,6 +94,9 @@ public class ComparatorCaches {
 			case TOWNBLOCKS:
 				slug = "(" + town.getTownBlocks().size() + ")";
 				break;
+			case FORSALE:
+				slug = "(" + getResidentCount(town) + ") " + (town.isForSale() ? Translation.of("status_forsale", TownyEconomyHandler.getFormattedBalance(town.getForSalePrice())) : "");
+				break;
 			case BANKRUPT:
 				slug = "(" + getResidentCount(town) + ") " + (town.isBankrupt() ? Translation.of("msg_bankrupt"):"");
 				break;

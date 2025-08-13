@@ -98,6 +98,7 @@ public enum PermissionNodes {
 		    TOWNY_COMMAND_TOWN_LIST_PUBLIC("towny.command.town.list.public"),
 		    TOWNY_COMMAND_TOWN_LIST_BALANCE("towny.command.town.list.balance"),
 		    TOWNY_COMMAND_TOWN_LIST_NAME("towny.command.town.list.name"),
+		    TOWNY_COMMAND_TOWN_LIST_FORSALE("towny.command.town.list.forsale"),
 		    TOWNY_COMMAND_TOWN_LIST_FOUNDED("towny.command.town.list.founded"),
 		    TOWNY_COMMAND_TOWN_LIST_TOWNBLOCKS("towny.command.town.list.townblocks"),
 		    TOWNY_COMMAND_TOWN_LIST_ONLINE("towny.command.town.list.online"),
@@ -179,6 +180,8 @@ public enum PermissionNodes {
 		TOWNY_COMMAND_TOWN_BANKHISTORY("towny.command.town.bankhistory"),
 		TOWNY_COMMAND_TOWN_RESLIST("towny.command.town.reslist"),
 		TOWNY_COMMAND_TOWN_OUTLAWLIST("towny.command.town.outlawlist"),
+		TOWNY_COMMAND_TOWN_ALLYLIST("towny.command.town.allylist"),
+		TOWNY_COMMAND_TOWN_ENEMYLIST("towny.command.town.enemylist"),
 	
 	/*
 	 * Plot command permissions
@@ -260,6 +263,7 @@ public enum PermissionNodes {
 		// Generic Modes
 		TOWNY_COMMAND_RESIDENT_TOGGLE_BEDSPAWN("towny.command.resident.toggle.bedspawn"),
 		TOWNY_COMMAND_RESIDENT_TOGGLE_BORDERTITLES("towny.command.resident.toggle.bordertitles"),
+		TOWNY_COMMAND_RESIDENT_TOGGLE_IGNOREINVITES("towny.command.resident.toggle.ignoreinvites"),
 		TOWNY_COMMAND_RESIDENT_TOGGLE_IGNOREOTHERCHANNELS("towny.command.resident.toggle.ignoreotherchannels"),
 		TOWNY_COMMAND_RESIDENT_TOGGLE_IGNOREPLOTS("towny.command.resident.toggle.ignoreplots"),
 		TOWNY_COMMAND_RESIDENT_TOGGLE_INFOTOOL("towny.command.resident.toggle.infotool"),
