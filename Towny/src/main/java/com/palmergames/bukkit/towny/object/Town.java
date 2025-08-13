@@ -1328,6 +1328,10 @@ public class Town extends Government implements TownBlockOwner {
 			BukkitTools.getWorlds().get(0);
 	}
 
+	public TownyWorld getTownyWorld() {
+		return world;
+	}
+	
 	@Override
 	public String getBankAccountPrefix() {
 		return ECONOMY_ACCOUNT_PREFIX;

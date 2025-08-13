@@ -37,7 +37,8 @@ public class NationUtil {
 	private static Component buildNationComponentHover(Town town, Translator translator, Nation nation, List<String> towns) {
 		Component hover = TownyComponents.miniMessage(Colors.translateColorCodes(String.format(TownySettings.getPAPIFormattingNation(), nation.getFormattedName())))
 				.append(Component.newline())
-				.append(TownyComponents.miniMessage(TownyFormatter.colourKeyValue(translator.of("status_nation_king"), nation.getCapital().getMayor().getFormattedName())))
+				// TODO: Use the Translator here
+				.append(TownyComponents.miniMessage(TownyFormatter.colourKeyValue(translator.of("status_nation_king"), nation.getCapital().hasMayor() ? nation.getCapital().getMayor().getFormattedName() : "[Empty]")))
 				.append(Component.newline())
 				.append(TownyComponents.miniMessage(TownyFormatter.colourKeyValue(translator.of("town_plu"), StringMgmt.join(towns, ", "))));
 

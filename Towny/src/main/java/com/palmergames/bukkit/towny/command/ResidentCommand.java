@@ -87,7 +87,6 @@ public class ResidentCommand extends BaseCommand implements CommandExecutor {
 	);
 	
 	private static final List<String> residentToggleChoices = Arrays.asList(
-		"pvp",
 		"fire",
 		"mobs",
 		"explosion"

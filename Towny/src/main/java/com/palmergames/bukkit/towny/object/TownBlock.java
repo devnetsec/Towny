@@ -338,9 +338,6 @@ public class TownBlock extends TownyObject {
 		BukkitTools.fireEvent(new PlotChangeTypeEvent(this.type, type, this));
 
 		switch (type.getName().toLowerCase(Locale.ROOT)) {
-			case "arena":
-				setPermissions("pvp");
-				break; 
 			case "jail":
 				setPermissions("denyAll");
 				break;
@@ -350,7 +347,6 @@ public class TownBlock extends TownyObject {
 				break;
 			case "default":
 			case "shop":
-			case "embassy":
 			case "bank":
 			case "inn":
 			default: // Any custom TownBlockTypes will also get caught here and reset to the town/resident default.

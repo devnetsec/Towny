@@ -152,7 +152,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		"withdraw",
 		"bankhistory",
 		"outlaw",
-		"leavenation",
 		"invite",
 		"trust",
 		"trusttown",
@@ -171,14 +170,13 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		Stream.of("foundingdate")).collect(Collectors.toList());
 	
 	private static final List<String> adminTownToggleTabCompletes = Stream.concat(TownCommand.townToggleTabCompletes.stream(),
-			Arrays.asList("forcemobs", "forcepvp", "forcedisablepvp", "unlimitedclaims", "upkeep", "visibleontoplists").stream()).collect(Collectors.toList());
+			Arrays.asList("forcemobs", "unlimitedclaims", "upkeep", "visibleontoplists").stream()).collect(Collectors.toList());
 
 	private static final List<String> adminNationTabCompletes = Arrays.asList(
 		"add",
 		"kick",
 		"meta",
 		"rename",
-		"delete",
 		"toggle",
 		"sanctiontown",
 		"set",
@@ -187,9 +185,7 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 		"withdraw",
 		"bankhistory",
 		"rank",
-		"merge",
 		"transfer",
-		"forcemerge",
 		"recheck"
 	);
 	private static final List<String> adminNationSetTabCompletes = Stream.concat(NationCommand.nationSetTabCompletes.stream(),
@@ -197,7 +193,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 	private static final List<String> adminToggleTabCompletes = Arrays.asList(
 		"wildernessuse",
 		"regenerations",
-		"neutral",
 		"npc",
 		"debug",
 		"devmode",
@@ -553,9 +548,6 @@ public class TownyAdminCommand extends BaseCommand implements CommandExecutor {
 								return NameUtil.filterByStart(adminMetaTabCompletes, args[3]);
 							}
 							break;
-						case "merge", "forcemerge":
-							if (args.length == 4)
-								return getTownyStartingWith(args[3], "n");
 						case "transfer":
 							if (args.length == 4)
 								return getTownyStartingWith(args[3], "t");

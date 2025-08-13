@@ -666,7 +666,7 @@ public enum ConfigNodes {
 			"global_town_settings.maximum_plot_price_cost",
 			"1000000.0",
 			"",
-			"# Maximum amount that a town can set their plot, embassy, shop, etc plots' prices to.",
+			"# Maximum amount that a town can set their plot, shop, etc plots' prices to.",
 			"# Setting this higher can be dangerous if you use Towny in a mysql database. Large numbers can become shortened to scientific notation. "
 	),
 	GTOWN_SETTINGS_MAX_PLOTS_PER_RESIDENT(
@@ -1156,26 +1156,17 @@ public enum ConfigNodes {
 			"spawning.town_spawn.allow_town_spawn",
 			"true",
 			"",
-			"# Allow the use of /town spawn",
-			"# Valid values are: true, false, war, peace",
-			"# When war or peace is set, it is only possible to teleport to the town,",
-			"# when there is a war or peace."),
+			"# Allow the use of /town spawn"),
 	SPAWNING_ALLOW_TOWN_SPAWN_TRAVEL(
 			"spawning.town_spawn.allow_town_spawn_travel",
 			"true",
 			"",
-			"# Allow regular residents to use /town spawn [town] (TP to other towns if they are public).",
-			"# Valid values are: true, false, war, peace",
-			"# When war or peace is set, it is only possible to teleport to the town,",
-			"# when there is a war or peace."),
+			"# Allow regular residents to use /town spawn [town] (TP to other towns if they are public)."),
 	SPAWNING_ALLOW_TOWN_SPAWN_TRAVEL_NATION(
 			"spawning.town_spawn.allow_town_spawn_travel_nation",
 			"true",
 			"",
-			"# Allow regular residents to use /town spawn [town] to other towns in your nation.",
-			"# Valid values are: true, false, war, peace",
-			"# When war or peace is set, it is only possible to teleport to the town,",
-			"# when there is a war or peace."),
+			"# Allow regular residents to use /town spawn [town] to other towns in your nation."),
 	SPAWNING_SETTINGS_IS_TRUSTED_RESIDENTS_COUNT_AS_RESIDENTS(
 			"spawning.town_spawn.do_trusted_residents_count_as_residents",
 			"false",
@@ -1190,10 +1181,10 @@ public enum ConfigNodes {
 			"# This requires them to not already be standing in the town, and also to be able to use /t spawn and whatever costs may be associated with it."),
 	SPAWNING_PREVENT_TOWN_SPAWN_IN(
 			"spawning.town_spawn.prevent_town_spawn_in",
-			"enemy,outlaw",
+			"outlaw",
 			"",
-			"# Prevent players from using /town spawn while within unclaimed areas and/or enemy/neutral towns.",
-			"# Allowed options: unclaimed,enemy,neutral,outlaw"),
+			"# Prevent players from using /town spawn while within unclaimed areas.",
+			"# Allowed options: unclaimed,outlaw"),
 	SPAWNING_TOWN_SPAWN_COOLDOWN_ROOT(
 			"spawning.town_spawn.spawning_cooldowns", "", ""),
 	SPAWNING_TOWN_SPAWN_COOLDOWN_TIMER(
@@ -1227,18 +1218,12 @@ public enum ConfigNodes {
 			"spawning.nation_spawn.allow_nation_spawn",
 			"true",
 			"",
-			"# Allow the use of /nation spawn",
-			"# Valid values are: true, false, war, peace",
-			"# When war or peace is set, it is only possible to teleport to the nation,",
-			"# when there is a war or peace."),
+			"# Allow the use of /nation spawn"),
 	SPAWNING_ALLOW_NATION_SPAWN_TRAVEL(
 			"spawning.nation_spawn.allow_nation_spawn_travel",
 			"true",
 			"",
-			"# Allow regular residents to use /nation spawn [nation] (TP to other nations if they are public).",
-			"# Valid values are: true, false, war, peace",
-			"# When war or peace is set, it is only possible to teleport to the nation,",
-			"# when there is a war or peace."),
+			"# Allow regular residents to use /nation spawn [nation] (TP to other nations if they are public)."),
 	SPAWNING_NATION_SPAWN_COOLDOWN_ROOT(
 			"spawning.nation_spawn.spawning_cooldowns", "", ""),
 	SPAWNING_NATION_SPAWN_NATION_MEMBER_COOLDOWN_TIMER(
@@ -1335,7 +1320,7 @@ public enum ConfigNodes {
 			"",
 			"# Configure what contexts to enable/disable here, contexts must be separated by a comma.",
 			"# Available contexts: towny:resident, towny:nation_resident, towny:mayor, towny:king, towny:insidetown, towny:insideowntown, towny:insideownplot, towny:townrank",
-			"# towny:nationrank, towny:town, towny:nation, towny:istownconquered"
+			"# towny:nationrank, towny:town, towny:nation"
 	),
 	
 	PLUGIN_COREPROTECT_SUPPORT(

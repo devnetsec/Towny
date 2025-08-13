@@ -1230,7 +1230,7 @@ public class TownCommand extends BaseCommand implements CommandExecutor {
 		// Propagate perms to all unchanged, town owned, townblocks because it is a
 		// townblock-affecting toggle.
 		switch(split[0].toLowerCase(Locale.ROOT)) {
-		case "pvp", "explosion", "fire", "mobs" -> {
+		case "explosion", "fire", "mobs" -> {
 			for (TownBlock townBlock : town.getTownBlocks()) {
 				if (!townBlock.hasResident() && !townBlock.isChanged()) {
 					townBlock.setType(townBlock.getType());

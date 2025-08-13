@@ -508,14 +508,6 @@ public class TownyPerms {
 		return null;
 	}
 
-	public static boolean hasPeacefulNodes() {
-		return !getList("peaceful").isEmpty();
-	}
-
-	public static boolean hasConqueredNodes() {
-		return !getList("conquered").isEmpty() || !getList("unconquered").isEmpty();
-	}
-
 	/*
 	 * Resident Primary Rank / Rank Prefix 
 	 */
@@ -795,8 +787,7 @@ public class TownyPerms {
 				"# You can add permission to a rank/group using the                                          #",
 				"# /ta townyperms group [name] addperm [node] command.                                       #",
 				"#                                                                                           #",
-				"# You may change the names of any of the ranks except: nomad, default, mayor, king, ranks,  #",
-				"# peaceful, conquered, unconquered.                                                         #",
+				"# You may change the names of any of the ranks except: nomad, default, mayor, king, ranks.  #",
 				"#                                                                                           #",
 				"# If you want to, you can negate permissions nodes from nodes by doing the following:       #",
 				"# Ex:                                                                                       #",
@@ -866,8 +857,6 @@ public class TownyPerms {
 		perms.addComment("nations.default", "", "# All nation members get these permissions.");
 		
 		perms.addComment("nations.king", "", "# Kings get these permissions in addition to the default set.");
-		
-		perms.addComment("peaceful", "", "# Nodes that are given to players who are in a peaceful/neutral town or nation.");
 	}
 
 	public static CommentedConfiguration getTownyPermsFile() {

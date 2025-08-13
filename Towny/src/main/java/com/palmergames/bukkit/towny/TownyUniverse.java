@@ -59,7 +59,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Towny's class for internal API Methods
- * If you don't want to change the dataSource, war, permissions or similar behavior
+ * If you don't want to change the dataSource, permissions or similar behavior
  * and only for example want to get Resident objects you should use {@link TownyAPI}
  *
  * @author Articdive

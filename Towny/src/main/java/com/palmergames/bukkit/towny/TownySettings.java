@@ -979,28 +979,6 @@ public class TownySettings {
 			types.add(new LinkedHashMap<>(type));
 			type.clear();
 
-			type.put("name", "arena");
-			type.put("cost", 0.0);
-			type.put("tax", 0.0);
-			type.put("mapKey", "A");
-			type.put("colour", "");
-			type.put("itemUseIds", "");
-			type.put("switchIds", "");
-			type.put("allowedBlocks", "");
-			types.add(new LinkedHashMap<>(type));
-			type.clear();
-			
-			type.put("name", "embassy");
-			type.put("cost", 0.0);
-			type.put("tax", 0.0);
-			type.put("mapKey", "E");
-			type.put("colour", "");
-			type.put("itemUseIds", "");
-			type.put("switchIds", "");
-			type.put("allowedBlocks", "");
-			types.add(new LinkedHashMap<>(type));
-			type.clear();
-
 			type.put("name", "wilds");
 			type.put("cost", 0.0);
 			type.put("tax", 0.0);

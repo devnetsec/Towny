@@ -75,8 +75,6 @@ public class TownyAsciiMap {
 			text("  ").append(text(forSaleSymbol, WHITE)).append(text(" = ", GRAY)).append(translator.component("towny_map_forsale").color(GRAY)),
 			text("  ").append(text(defaultSymbol, GREEN)).append(text(" = ", GRAY)).append(translator.component("towny_map_yourtown").color(GRAY)),
 			text("  ").append(text(defaultSymbol, YELLOW)).append(text(" = ", GRAY)).append(translator.component("towny_map_yourplot").color(GRAY)),
-			text("  ").append(text(defaultSymbol, DARK_GREEN)).append(text(" = ", GRAY)).append(translator.component("towny_map_ally").color(GRAY)),
-			text("  ").append(text(defaultSymbol, DARK_RED)).append(text(" = ", GRAY)).append(translator.component("towny_map_enemy").color(GRAY)),
 		};
 	}
 

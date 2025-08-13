@@ -241,7 +241,6 @@ public class PermHUD {
 		Team keyTitle = board.registerNewTeam(TEAM_TITLE);
 		Team keyResident = board.registerNewTeam(TEAM_RESIDENT);
 		Team keyFriend = board.registerNewTeam(TEAM_FRIEND);
-		Team keyAlly = board.registerNewTeam(TEAM_ALLY);
 
 		//add each team as an entry (this sets the prefix to each line of the HUD.)
 		keyPlotType.addEntry(keyPlotType_entry);
@@ -261,7 +260,6 @@ public class PermHUD {
 		keyTitle.addEntry(keyTitle_entry);
 		keyResident.addEntry(keyResident_entry);
 		keyFriend.addEntry(keyNation_entry);
-		keyAlly.addEntry(keyAlly_entry);
 
 		int score = HUDManager.MAX_SCOREBOARD_HEIGHT;
 		//set scores for positioning
@@ -279,7 +277,6 @@ public class PermHUD {
 		obj.getScore(keyTitle_entry).setScore(score--);
 		obj.getScore(keyResident_entry).setScore(score--);
 		obj.getScore(keyNation_entry).setScore(score--);
-		obj.getScore(keyAlly_entry).setScore(score--);
 	}
 
 	private static String prettyMoney(double price) {

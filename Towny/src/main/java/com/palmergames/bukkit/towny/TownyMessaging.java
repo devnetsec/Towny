@@ -440,12 +440,6 @@ public class TownyMessaging {
 				String cancelline = "t invite deny " + senderName;
 				sendInvitationMessage(player, firstline, confirmline, cancelline);
 			}
-			if (invite.getReceiver() instanceof Nation) { // Nation allied Nation
-				String firstline = translator.of("invitation_prefix") + translator.of("you_have_been_requested_to_ally2", Colors.colorNation(senderName));
-				String confirmline = "n ally accept " + senderName;
-				String cancelline = "n ally deny " + senderName;
-				sendInvitationMessage(player, firstline, confirmline, cancelline);
-			}
 		}
 	}
 

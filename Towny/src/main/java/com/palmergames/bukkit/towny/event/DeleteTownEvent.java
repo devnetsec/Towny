@@ -118,10 +118,6 @@ public class DeleteTownEvent extends TownyObjDeleteEvent  {
 		 */
 		MERGED,
 		/**
-		 * The town was previously ruined and its ruined time expired.
-		 */
-		RUINED,
-		/**
 		 * The town couldn't pay its daily upkeep.
 		 * @see #isUpkeep() 
 		 */

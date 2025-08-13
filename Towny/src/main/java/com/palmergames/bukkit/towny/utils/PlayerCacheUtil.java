@@ -179,8 +179,6 @@ public class PlayerCacheUtil {
 		final Town town = townBlock != null ? townBlock.getTownOrNull() : null;
 
 		if (townBlock == null || town == null)
-			// When nation zones are enabled we do extra tests to determine if this is near to a nation.
-			// If NationZones are not enabled we return normal wilderness.
 			return TownBlockStatus.UNCLAIMED_ZONE;  
 
 		/*
@@ -391,7 +389,7 @@ public class PlayerCacheUtil {
 		}
 		
 		/*
-		 * Handle both personally-owned and town-owned Outsider and Enemy statuses.
+		 * Handle personally-owned and town-owned Outsider statuses.
 		 */
 		if (status == TownBlockStatus.OUTSIDER) {
 			

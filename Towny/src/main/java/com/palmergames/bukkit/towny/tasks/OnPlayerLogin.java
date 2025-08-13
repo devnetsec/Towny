@@ -85,8 +85,6 @@ public class OnPlayerLogin implements Runnable {
 
 			if (townHasPendingNationInvites(town))
 				plugin.getScheduler().runLater(player, ()-> TownyMessaging.sendMsg(player, Translatable.of("msg_your_town_has_pending_nation_invites")), inviteNotificationTicksDelay);
-			else if (nationHasPendingAllyInvites(nation))
-				plugin.getScheduler().runLater(player, ()-> TownyMessaging.sendMsg(player, Translatable.of("msg_your_nation_has_pending_ally_invites")), inviteNotificationTicksDelay);
 		}
 
 		if (residentHasPendingTownInvites(resident))
@@ -193,7 +191,6 @@ public class OnPlayerLogin implements Runnable {
 		if (town == null) {
 			// Add this Resident to the nation capital
 			town = TownyUniverse.getInstance().getTown(TownySettings.getNationName() + "_City");
-			return;
 		}
 		try {
 			resident.setTown(town);
@@ -251,21 +248,6 @@ public class OnPlayerLogin implements Runnable {
 			}
 		}
 			
-		if (nation != null) {
-			double upkeep = TownySettings.getNationUpkeepCost(nation);
-			if (upkeep > 0 && !nation.getAccount().canPayFromHoldings(upkeep)) {
-				/*
-				 *  Warn that the nation is due to be deleted.
-				 */
-				TownyMessaging.sendMsg(resident, Translatable.of("msg_warning_delete", nation.getName()));
-				TownyMessaging.sendMsg(resident, Translatable.of("msg_warning_nation_deposit_hint"));
-			}
-		}
-	}
-
-	private boolean nationHasPendingAllyInvites(Nation nation) {
-		return nation != null && !nation.getReceivedInvites().isEmpty()
-				&& universe.getPermissionSource().testPermission(player, PermissionNodes.TOWNY_COMMAND_NATION_ALLY_ACCEPT.getNode());
 	}
 
 	private boolean townHasPendingNationInvites(Town town) {

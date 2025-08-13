@@ -11,7 +11,6 @@ import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.event.PreNewDayEvent;
 import com.palmergames.bukkit.towny.event.time.dailytaxes.NewDayTaxAndUpkeepPreCollectionEvent;
 import com.palmergames.bukkit.towny.event.time.dailytaxes.PreTownPaysNationTaxEvent;
-import com.palmergames.bukkit.towny.event.time.dailytaxes.TownPaysNationConqueredTaxEvent;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -238,7 +237,6 @@ public class DailyTimerTask extends TownyTimerTask {
 
 	private String processTownPaysNationTax(Town town, Nation nation) {
 		double taxAmount = nation.getTaxes();
-		double localConqueredTax = 0.0;
 
 		if (nation.isTaxPercentage()) {
 			taxAmount = town.getAccount().getHoldingBalance() * taxAmount / 100;
@@ -264,7 +262,7 @@ public class DailyTimerTask extends TownyTimerTask {
 		if (nation.getBankCap() != 0 && taxAmount + nation.getAccount().getHoldingBalance() > nation.getBankCap())
 			taxAmount = nation.getBankCap() - nation.getAccount().getHoldingBalance();
 
-		// This will stop towns paying $0 and stop conquered towns from getting a less-than-zero tax charge.
+		// This will stop towns paying $0.
 		if (taxAmount <= 0)
 			return "";
 

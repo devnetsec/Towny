@@ -113,9 +113,7 @@ public enum HelpMenu {
 				.add("[town] deposit [amount]", Translatable.of("townyadmin_town_help_13"))
 				.add("[town] withdraw [amount]", Translatable.of("townyadmin_town_help_14"))
 				.add("[town] bankhistory", Translatable.of("townyadmin_town_help_15"))
-				.add("[town] outlaw [add|remove] [name]", Translatable.of("townyadmin_town_help_16"))
-				.add("[town] leavenation", Translatable.of("townyadmin_town_help_17"))
-				.add("[town] conquered", Translatable.of("townyadmin_town_help_18"));
+				.add("[town] outlaw [add|remove] [name]", Translatable.of("townyadmin_town_help_16"));
 		}
 	},
 
@@ -137,8 +135,8 @@ public enum HelpMenu {
 				.add("spawn/outpost", Translatable.of("town_set_help_2"))
 				.add("perm ...", Translatable.of("town_set_help_3"))
 				.add("taxes [$]", Translatable.of("town_set_help_4"))
-				.add("[plottax/shoptax/embassytax] [$]", Translatable.of("town_set_help_5"))
-				.add("[plotprice/shopprice/embassyprice] [$]", Translatable.of("town_set_help_6"))
+				.add("[plottax/shoptax] [$]", Translatable.of("town_set_help_5"))
+				.add("[plotprice/shopprice] [$]", Translatable.of("town_set_help_6"))
 				.add("spawncost [$]", Translatable.of("town_set_help_7"))
 				.add("name [name]", Translatable.of("town_set_help_8"))
 				.add("tag [upto 4 letters] or clear", Translatable.of("town_set_help_9"))
@@ -151,8 +149,6 @@ public enum HelpMenu {
 		@Override
 		protected MenuBuilder load() {
 			return new MenuBuilder("ta town {townname} toggle")
-				.add("pvp", Translatable.of("townyadmin_town_toggle_help_0"))
-				.add("forcepvp", Translatable.of("townyadmin_town_toggle_help_1"))
 				.add("public", Translatable.of("townyadmin_town_toggle_help_2"))
 				.add("explosion", Translatable.of("townyadmin_town_toggle_help_3"))
 				.add("fire", Translatable.of("townyadmin_town_toggle_help_4"))
@@ -172,10 +168,7 @@ public enum HelpMenu {
 				.add("[nation] add [] .. []", Translatable.of("townyadmin_nation_help_2"))
 				.add("[nation] kick [] .. []", Translatable.of("townyadmin_nation_help_3"))
 				.add("[nation] rename [newname]", Translatable.of("townyadmin_nation_help_4"))
-				.add("[nation] delete", Translatable.of("townyadmin_nation_help_5"))
 				.add("[nation] recheck", Translatable.of("townyadmin_nation_help_6"))
-				.add("[nation] merge [nationname]", Translatable.of("townyadmin_nation_help_7"))
-				.add("[nation] forcemerge [nationname]", Translatable.of("townyadmin_nation_help_8"))
 				.add("[nation] toggle", Translatable.of("townyadmin_nation_help_9"))
 				.add("[nation] set", Translatable.of("townyadmin_nation_help_10"))
 				.add("[nation] deposit [amount]", Translatable.of("townyadmin_nation_help_11"))
@@ -196,10 +189,7 @@ public enum HelpMenu {
 				.add("[nation] add [] .. []", Translatable.of("townyadmin_nation_help_2"))
 				.add("[nation] kick [] .. []", Translatable.of("townyadmin_nation_help_3"))
 				.add("[nation] rename [newname]", Translatable.of("townyadmin_nation_help_4"))
-				.add("[nation] delete", Translatable.of("townyadmin_nation_help_5"))
 				.add("[nation] recheck", Translatable.of("townyadmin_nation_help_6"))
-				.add("[nation] merge [nationname]", Translatable.of("townyadmin_nation_help_7"))
-				.add("[nation] forcemerge [nationname]", Translatable.of("townyadmin_nation_help_8"))
 				.add("[nation] toggle", Translatable.of("townyadmin_nation_help_9"))
 				.add("[nation] set", Translatable.of("townyadmin_nation_help_10"))
 				.add("[nation] deposit [amount]", Translatable.of("townyadmin_nation_help_11"))
@@ -308,7 +298,6 @@ public enum HelpMenu {
 				.add("mayor [town] " + Translatable.of("town_help_2"), Translatable.of("ta_set_help_0"))
 				.add("mayor [town] npc", Translatable.of("ta_set_help_1"))
 				.add("capital [town] [nation]", Translatable.of("ta_set_help_2"))
-				.add("nationzoneoverride [town name] [size]", Translatable.of("ta_set_help_3"))
 				.add("title [resident] [title]", Translatable.of("ta_set_help_4"))
 				.add("surname [resident] [surname]", Translatable.of("ta_set_help_5"))
 				.add("plot [town]", Translatable.of("ta_set_help_6"))
@@ -348,15 +337,6 @@ public enum HelpMenu {
 				.add("[town]",  Translatable.of("msg_admin_set_plot_help_1"))
 				.add("[town name] {rect|circle} {radius}", Translatable.of("msg_admin_set_plot_help_2"))
 				.add("[town name] {rect|circle} auto", Translatable.of("msg_admin_set_plot_help_2"));
-		}
-	},
-	
-	TA_SET_NATIONZONE {
-		@Override
-		protected MenuBuilder load() {
-			return new MenuBuilder("townyadmin set nationzoneoverride")
-				.add("[town name] [size]", Translatable.of("ta_set_help_3"))
-				.add("[town name] 0", Translatable.of("ta_set_help_8"));
 		}
 	},
 	
@@ -517,9 +497,6 @@ public enum HelpMenu {
 			return new MenuBuilder("townyworld toggle")
 				.add("claimable", Translatable.of("world_toggle_help_0"))
 				.add("usingtowny", Translatable.of("world_toggle_help_1"))
-				.add("warallowed", Translatable.of("world_toggle_help_2"))
-				.add("pvp/forcepvp", Translatable.of("world_toggle_help_3"))
-				.add("friendlyfire", Translatable.of("world_toggle_help_4"))
 				.add("explosion/forceexplosion", Translatable.of("world_toggle_help_5"))
 				.add("fire/forcefire", Translatable.of("world_toggle_help_6"))
 				.add("townmobs/wildernessmobs/worldmobs", Translatable.of("world_toggle_help_7"))
@@ -537,9 +514,6 @@ public enum HelpMenu {
 			return new MenuBuilder("townyworld {worldname} toggle")
 				.add("claimable", Translatable.of("world_toggle_help_0"))
 				.add("usingtowny", Translatable.of("world_toggle_help_1"))
-				.add("warallowed", Translatable.of("world_toggle_help_2"))
-				.add("pvp/forcepvp", Translatable.of("world_toggle_help_3"))
-				.add("friendlyfire", Translatable.of("world_toggle_help_4"))
 				.add("explosion/forceexplosion", Translatable.of("world_toggle_help_5"))
 				.add("fire/forcefire", Translatable.of("world_toggle_help_6"))
 				.add("townmobs/wildernessmobs/worldmobs", Translatable.of("world_toggle_help_7"))
@@ -630,8 +604,8 @@ public enum HelpMenu {
 				.add("spawn/outpost", Translatable.of("town_set_help_2"))
 				.add("perm ...", Translatable.of("town_set_help_3"))
 				.add("taxes [$]", Translatable.of("town_set_help_4"))
-				.add("[plottax/shoptax/embassytax] [$]", Translatable.of("town_set_help_5"))
-				.add("[plotprice/shopprice/embassyprice] [$]", Translatable.of("town_set_help_6"))
+				.add("[plottax/shoptax] [$]", Translatable.of("town_set_help_5"))
+				.add("[plotprice/shopprice] [$]", Translatable.of("town_set_help_6"))
 				.add("spawncost [$]", Translatable.of("town_set_help_7"))
 				.add("name [name]", Translatable.of("town_set_help_8"))
 				.add("tag [upto 4 letters] or clear", Translatable.of("town_set_help_9"))
@@ -644,7 +618,6 @@ public enum HelpMenu {
 		@Override
 		protected MenuBuilder load() {
 			return new MenuBuilder("town toggle")
-				.add("pvp", Translatable.of("townyadmin_town_toggle_help_0"))
 				.add("public", Translatable.of("townyadmin_town_toggle_help_2"))
 				.add("explosion", Translatable.of("townyadmin_town_toggle_help_3"))
 				.add("fire", Translatable.of("townyadmin_town_toggle_help_4"))
@@ -917,7 +890,6 @@ public enum HelpMenu {
 		@Override
 		protected MenuBuilder load() {
 			return new MenuBuilder("plot group toggle")
-				.add("pvp", Translatable.of("plot_group_toggle_help_0"))
 				.add("explosion", Translatable.of("plot_group_toggle_help_1"))
 				.add("fire", Translatable.of("plot_group_toggle_help_2"))
 				.add("mobs", Translatable.of("plot_group_toggle_help_3"))
@@ -935,7 +907,7 @@ public enum HelpMenu {
 				.add("maxjoindays", Translatable.of("plot_set_help_1.6"))
 				.add("reset", Translatable.of("plot_set_help_2"))
 				.add("[name]", Translatable.of("plot_set_help_3"))
-				.add("Valid Levels: [resident/ally/outsider]")
+				.add("Valid Levels: [resident/outsider]")
 				.add("Valid Types: [build/destroy/switch/itemuse]")
 				.add("perm [on/off]", Translatable.of("plot_set_help_4"))
 				.add("perm [level/type] [on/off]", Translatable.of("plot_set_help_5"))
@@ -951,7 +923,6 @@ public enum HelpMenu {
 		@Override
 		protected MenuBuilder load() {
 			return new MenuBuilder("plot toggle")
-				.add("pvp", Translatable.of("plot_toggle_help_0"))
 				.add("explosion", Translatable.of("plot_toggle_help_1"))
 				.add("fire", Translatable.of("plot_toggle_help_2"))
 				.add("mobs", Translatable.of("plot_toggle_help_3"));
@@ -965,14 +936,10 @@ public enum HelpMenu {
 				.add(Translation.of("nation_help_2"), Translatable.of("nation_help_3"))
 				.add("list", Translatable.of("nation_help_4"))
 				.add("townlist (nation)", Translatable.of("nation_help_11"))
-				.add("allylist (nation)", Translatable.of("nation_help_12"))
-				.add("enemylist (nation)", Translatable.of("nation_help_13"))
 				.add("online", Translatable.of("nation_help_9"))
 				.add("spawn", Translatable.of("nation_help_10"))
 				.add("join (nation)", Translatable.of("nation_help_14"))
 				.add("rank", Translatable.of("nation_help_18"))
-				.add("delete", Translatable.of("nation_help_16"))
-				.add("merge [nation]", Translatable.of("king_help_8"))
 				.add("say", "[message]", Translatable.of("king_help_9"))
 				.add(Translation.of("res_sing"), "deposit [$]", Translatable.of("nation_help_15"))
 				.add(Translation.of("mayor_sing"), "leave", Translatable.of("nation_help_5"))
@@ -1019,7 +986,6 @@ public enum HelpMenu {
 				.add("king " + Translation.of("res_2"), Translatable.of("nation_set_help_0"))
 				.add("capital [town]", Translatable.of("nation_set_help_1"))
 				.add("taxes [$]", Translatable.of("nation_set_help_2"))
-				.add("conqueredtax [$]", Translatable.of("nation_set_help_3"))
 				.add("name [name]", Translatable.of("nation_set_help_4"))
 				.add("title/surname [resident] [text]", Translatable.of("nation_set_help_5"))
 				.add("tag [upto 4 letters] or clear", Translatable.of("nation_set_help_6"))
@@ -1041,10 +1007,7 @@ public enum HelpMenu {
 				.add("rank", Translatable.of("nation_help_18"))
 				.add("set [] .. []", Translatable.of("king_help_6"))
 				.add("toggle [] .. []", Translatable.of("king_help_7"))
-				.add("ally [] .. [] " + Translation.of("nation_help_2"), Translatable.of("king_help_2"))
-				.add("enemy [add/remove] " + Translation.of("nation_help_2"), Translatable.of("king_help_3"))
 				.add("delete", Translatable.of("nation_help_16"))
-				.add("merge [nation]", Translatable.of("king_help_8"))
 				.add("say", "[message]", Translatable.of("king_help_9"));
 		}
 	},
@@ -1057,20 +1020,6 @@ public enum HelpMenu {
 				.add("remove [town]", Translatable.of("nation_sanction_help_2"))
 				.add("list", Translatable.of("nation_sanction_help_3"))
 				.add("list [nation]", Translatable.of("nation_sanction_help_4"));
-		}
-	},
-
-	ALLIES_STRING {
-		@Override
-		protected MenuBuilder load() {
-			return new MenuBuilder("nation ally")
-				.add("add [nation]", Translatable.of("nation_ally_help_1"))
-				.add("add -[nation]", Translatable.of("nation_ally_help_7"))
-				.add("remove [nation]", Translatable.of("nation_ally_help_2"))
-				.add("sent", Translatable.of("nation_ally_help_3"))
-				.add("received", Translatable.of("nation_ally_help_4"))
-				.add("accept [nation]", Translatable.of("nation_ally_help_5"))
-				.add("deny [nation]", Translatable.of("nation_ally_help_6"));
 		}
 	},
 
@@ -1116,7 +1065,6 @@ public enum HelpMenu {
 		@Override
 		protected MenuBuilder load() {
 			return new MenuBuilder("nation toggle")
-				.add("peaceful/neutral", Translatable.of("nation_toggle_help_0"))
 				.add("public", Translatable.of("nation_toggle_help_1"))
 				.add("open", Translatable.of("nation_toggle_help_2"))
 				.add("taxpercent", Translatable.of("nation_toggle_help_3"));

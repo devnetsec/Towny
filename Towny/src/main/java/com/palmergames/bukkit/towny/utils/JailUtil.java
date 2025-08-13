@@ -98,7 +98,6 @@ public class JailUtil {
 				addJailedPlayerToLogOutMap(resident);
 			break;
 		case OUTLAW_DEATH:
-		case PRISONER_OF_WAR:
 		default:
 		}
 
@@ -247,11 +246,6 @@ public class JailUtil {
 		pages += TownySettings.JailDeniesTownLeave() ? translator.of("msg_jailed_handbook_4_cant") : translator.of("msg_jailed_handbook_4_can") + "\n";
 		if (TownySettings.isAllowingBail() && TownyEconomyHandler.isActive()) {
 			pages += translator.of("msg_jailed_handbook_bail_1");
-			if (reason == JailReason.PRISONER_OF_WAR) {
-				Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
-				if (resident.isMayor())
-					cost = resident.isKing() ? TownySettings.getBailAmountKing() : TownySettings.getBailAmountMayor();
-			}
 			pages += translator.of("msg_jailed_handbook_bail_2", TownyEconomyHandler.getFormattedBalance(cost)) + "\n\n";
 		}
 		pages += translator.of("msg_jailed_handbook_5");
@@ -259,8 +253,6 @@ public class JailUtil {
 		if (TownySettings.JailAllowsTeleportItems())
 			pages += translator.of("msg_jailed_teleport");
 		pages += "\n\n";
-		if (reason.equals(JailReason.PRISONER_OF_WAR))
-			pages += translator.of("msg_jailed_war_prisoner");
 
 		return pages;
 	}

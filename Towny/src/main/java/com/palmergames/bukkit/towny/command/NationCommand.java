@@ -82,7 +82,6 @@ public class NationCommand extends BaseCommand implements CommandExecutor {
 	public static final List<String> nationTabCompletes = Arrays.asList(
 		"list",
 		"online",
-		"leave",
 		"withdraw",
 		"deposit",
 		"rank",

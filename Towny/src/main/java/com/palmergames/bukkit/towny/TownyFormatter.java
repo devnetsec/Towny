@@ -233,11 +233,6 @@ public class TownyFormatter {
 			}
 			return screen;
 		}
-		
-		// Embassies in: Camelot, London, Tokyo.
-		List<Town> townEmbassies = resident.getEmbassyTowns();
-		if (townEmbassies.size() > 0)
-			screen.addComponentOf("embassiesInTowns", getFormattedTownyObjects(translator.of("status_embassy_town"), new ArrayList<>(townEmbassies)));
 			
 		// Town ranks
 		if (resident.hasTown() && !resident.getTownRanks().isEmpty())

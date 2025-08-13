@@ -141,8 +141,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 	private static final List<String> plotSetTabCompletes = Arrays.asList(
 		"reset",
 		"shop",
-		"embassy",
-		"arena",
 		"wilds",
 		"inn",
 		"jail",
@@ -163,7 +161,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 	private static final List<String> plotToggleTabCompletes = Arrays.asList(
 		"taxed",
 		"fire",
-		"pvp",
 		"explosion",
 		"mobs"
 	);
@@ -922,9 +919,9 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 
 			TownyMessaging.sendMessage(player, ChatTools.formatTitle("/... set perm"));
 			if (townBlockOwner instanceof Town)
-				TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[resident/nation/ally/outsider]", "", ""));
+				TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[resident/nation/outsider]", "", ""));
 			if (townBlockOwner instanceof Resident)
-				TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[friend/town/ally/outsider]", "", ""));
+				TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[friend/town/outsider]", "", ""));
 
 			TownyMessaging.sendMessage(player, ChatTools.formatCommand("Type", "[build/destroy/switch/itemuse]", "", ""));
 			TownyMessaging.sendMessage(player, ChatTools.formatCommand("", "set perm", "[on/off]", "Toggle all permissions"));
@@ -1101,7 +1098,7 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 	}
 
 	/**
-	 * Toggle the plots flags for pvp/explosion/fire/mobs (if town/world
+	 * Toggle the plots flags for explosion/fire/mobs (if town/world
 	 * permissions allow)
 	 * 
 	 * @param player - Player.
@@ -1707,16 +1704,16 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 	private void showPlotGroupHelp(Player player, TownBlockOwner townBlockOwner) {
 		HelpMenu.PLOT_GROUP_SET.send(player);
 		if (townBlockOwner instanceof Town)
-			TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[resident/nation/ally/outsider]", "", ""));
+			TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[resident/nation/outsider]", "", ""));
 		if (townBlockOwner instanceof Resident)
-			TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[friend/town/ally/outsider]", "", ""));
+			TownyMessaging.sendMessage(player, ChatTools.formatCommand("Level", "[friend/town/outsider]", "", ""));
 		TownyMessaging.sendMessage(player, ChatTools.formatCommand("Type", "[build/destroy/switch/itemuse]", "", ""));
 		TownyMessaging.sendMessage(player, ChatTools.formatCommand("/plot group set", "perm", "[on/off]", "Toggle all permissions"));
 		TownyMessaging.sendMessage(player, ChatTools.formatCommand("/plot group set", "perm", "[level/type] [on/off]", ""));
 		TownyMessaging.sendMessage(player, ChatTools.formatCommand("/plot group set", "perm", "[level] [type] [on/off]", ""));
 		TownyMessaging.sendMessage(player, ChatTools.formatCommand("/plot group set", "perm", "reset", ""));
 		TownyMessaging.sendMessage(player, ChatTools.formatCommand("Eg", "/plot group set perm", "friend build on", ""));
-		TownyMessaging.sendMessage(player, ChatTools.formatCommand("/plot group set", "[townblocktype]", "", "Farm, Wilds, Bank, Embassy, etc."));
+		TownyMessaging.sendMessage(player, ChatTools.formatCommand("/plot group set", "[townblocktype]", "", "Farm, Wilds, Bank, etc."));
 	}
 
 	public void parsePlotGroupSetPerm(String[] args, TownBlock townBlock, Player player, Town town, PlotGroup plotGroup, TownBlockOwner townBlockOwner) {
@@ -1913,7 +1910,7 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 	}
 
 	/**
-	 * Toggle the plot group flags for pvp/explosion/fire/mobs (if town/world
+	 * Toggle the plot group flags for explosion/fire/mobs (if town/world
 	 * permissions allow)
 	 *
 	 * @param player - Player.
@@ -1937,9 +1934,6 @@ public class PlotCommand extends BaseCommand implements CommandExecutor {
 
 		// Check permissions once before looping over the group's plots.
 		switch(split[0].toLowerCase(Locale.ROOT)) {
-		case "pvp":
-			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_PLOT_TOGGLE_PVP.getNode());
-			break;
 		case "explosion":
 			checkPermOrThrow(player, PermissionNodes.TOWNY_COMMAND_PLOT_TOGGLE_EXPLOSION.getNode());
 			break;

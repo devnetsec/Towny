@@ -1,26 +1,5 @@
-# Contributing to Towny
-Thanks for deciding to contribute to Towny! We really appreciate contributions, but to keep everything running smoothly and get contributions merged in a timely manner, we need to enforce some guidelines. :shipit:
-
-Contributions are welcome via GitHub Pull Requests.
-You must fork this repository and then open it via your IDE.   
-You can always ask for help on your contribution in the [Towny Discord](https://discord.gg/gnpVs5m).    
-
-## Before contributing
-- Make sure to read the [Towny license](https://github.com/TownyAdvanced/Towny/blob/master/LICENSE.md).
-- By opening an pull request, you:
-    - represent that you have the right to waive copyright and related rights to your contributions,
-    - agree that all copyright and related rights in your contributions will be waived,
-    - acknowledge that the TownyAdvanced organization has the copyright to use and modify your contributions under the [Towny license](https://github.com/TownyAdvanced/Towny/blob/master/LICENSE.md) for perpetuity.
-
-If you do not agree with the terms of our license, do not contribute to the Towny project.
-
-# About pull requests
-> Pull requests will have their commits squashed upon merge, and your various commits' messages will be used in the squashed commit. Take this into account when making your commits.
-
-1. Keep your commit messages self-explanatory. Keep them short but informative!
-2. Pull requests should address a single topic, or be as closed in scope as you can reasonably make it. Small pull requests are easier to review and thus, can result in a faster merge.
-3. Pull request forms should be filled out to the best of your abilities; describe your changes and reference issues/pull requests whenever applicable.
-4. Test your changes before sending them in! You should look for bugs, test configuration values, commands, and anything you've touched!
+# Contributing to CityState
+This is a personal project. I will probably not accept pull requests that don't fix bugs. However, feature requests and bug reports are welcome in the issue tracker. Before you open an issue or pull request, consider checking [upstream](https://github.com/TownyAdvanced/Towny/issues) for a duplicate. The sections below are from the original `CONTRIBUTING.MD`.
 
 # About Java code
 > Towny uses an [.editorconfig](https://editorconfig.org) file. IDEs that have [native EditorConfig support](https://editorconfig.org/#pre-installed) will automatically follow these rules.
