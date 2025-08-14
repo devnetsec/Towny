@@ -195,12 +195,6 @@
             <version>4.22.0</version>
         </dependency>
         <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>net.luckperms</groupId>
             <artifactId>api</artifactId>
             <version>5.4</version>
@@ -399,10 +393,6 @@
                             <relocation>
                                 <pattern>net.kyori.option</pattern>
                                 <shadedPattern>com.palmergames.option</shadedPattern>
-                            </relocation>
-                            <relocation>
-                                <pattern>org.bstats</pattern>
-                                <shadedPattern>com.palmergames.bukkit.metrics</shadedPattern>
                             </relocation>
                             <relocation>
                                 <pattern>solar.squares.pixelwidth</pattern>

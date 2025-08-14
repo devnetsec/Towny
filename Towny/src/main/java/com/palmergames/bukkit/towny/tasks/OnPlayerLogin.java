@@ -6,7 +6,6 @@ import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.TownyUpdateChecker;
 import com.palmergames.bukkit.towny.event.resident.NewResidentEvent;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
@@ -97,14 +96,6 @@ public class OnPlayerLogin implements Runnable {
 
 		//Schedule to setup default modes when the player has finished loading
 		plugin.getScheduler().runLater(player, () -> ResidentModeHandler.applyDefaultModes(resident, false), 1);
-
-		if (TownyUpdateChecker.shouldShowNotification() && player.hasPermission(PermissionNodes.TOWNY_ADMIN_UPDATEALERTS.getNode())) {
-			Audience audience = Towny.getAdventure().player(player);
-			ClickEvent clickEvent = ClickEvent.openUrl(TownyUpdateChecker.getUpdateURL());
-
-			audience.sendMessage(Translatable.of("default_towny_prefix").append(Translatable.of("msg_new_update_available", TownyUpdateChecker.getNewVersion(), Towny.getPlugin().getVersion())).locale(player).component().clickEvent(clickEvent));
-			audience.sendMessage(Translatable.of("default_towny_prefix").append(Translatable.of("msg_click_to_download")).locale(player).component().clickEvent(clickEvent));
-		}
 
 		if (TownyEconomyHandler.isActive() && TownyEconomyHandler.getProvider().isLegacy() && player.hasPermission(PermissionNodes.TOWNY_ADMIN_UPDATEALERTS.getNode())) {
 			Audience audience = Towny.getAdventure().player(player);

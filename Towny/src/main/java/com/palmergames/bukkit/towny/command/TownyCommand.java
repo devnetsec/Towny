@@ -9,7 +9,6 @@ import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.TownyCommandAddonAPI.CommandType;
-import com.palmergames.bukkit.towny.TownyUpdateChecker;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.hooks.PluginIntegrations;
 import com.palmergames.bukkit.towny.huds.HUDManager;
@@ -263,14 +262,8 @@ public class TownyCommand extends BaseCommand implements CommandExecutor {
 				case "v": {
 					checkPermOrThrow(sender, PermissionNodes.TOWNY_COMMAND_TOWNY_VERSION.getNode());
 
-					if (TownyUpdateChecker.shouldShowNotification()) {
-						TownyMessaging.sendMsg(sender, Translatable.of("msg_latest_version", plugin.getVersion(), TownyUpdateChecker.getNewVersion()));
-					} else {
-						TownyMessaging.sendMsg(sender, Translatable.of("msg_towny_version", plugin.getVersion()));
+					TownyMessaging.sendMsg(sender, Translatable.of("msg_towny_version", plugin.getVersion()));
 
-						if (TownyUpdateChecker.hasCheckedSuccessfully())
-							TownyMessaging.sendMsg(sender, Translatable.of("msg_up_to_date"));
-					}
 					break;
 				}
 				case "spy": {

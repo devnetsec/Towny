@@ -63,8 +63,6 @@ import com.palmergames.util.JavaUtil;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
 import io.papermc.lib.PaperLib;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -141,9 +139,6 @@ public class Towny extends JavaPlugin {
 			cycleTimers();
 			// Reset the player cache.
 			resetCache();
-			// Check for plugin updates if the Minecraft version is still supported.
-			if (isMinecraftVersionStillSupported())
-				TownyUpdateChecker.checkForUpdates(this);
 		} catch (TownyInitException tie) {
 			addError(tie.getError());
 			getLogger().log(Level.SEVERE, tie.getMessage(), tie);
@@ -160,8 +155,6 @@ public class Towny extends JavaPlugin {
 		// Setup bukkit command interfaces
 		registerSpecialCommands();
 		registerCommands();
-		// Add custom metrics charts.
-		addMetricsCharts();
 
 		// If we aren't going to enter safe mode, do the following:
 		if (!isError()) {
@@ -833,34 +826,6 @@ public class Towny extends JavaPlugin {
 		getCommand("nation").setExecutor(new NationCommand(this));
 		getCommand("plot").setExecutor(new PlotCommand(this));
 		getCommand("invite").setExecutor(new InviteCommand(this));
-	}
-
-	private void addMetricsCharts() {
-		/*
-		 * Register bStats Metrics
-		 */
-		Metrics metrics = new Metrics(this, 2244);
-		
-		metrics.addCustomChart(new SimplePie("language", () -> TownySettings.getString(ConfigNodes.LANGUAGE)));
-		
-		metrics.addCustomChart(new SimplePie("server_type", () -> {
-			if (isFolia)
-				return "Folia";
-			else if (PaperLib.isPaper())
-				return "Paper";
-			else if (PaperLib.isSpigot())
-				return "Spigot";
-			else if (getServer().getName().equalsIgnoreCase("craftbukkit"))
-				return "CraftBukkit";
-			
-			return "Unknown";
-		}));
-		
-		metrics.addCustomChart(new SimplePie("database_type", () -> TownySettings.getSaveDatabase().toLowerCase(Locale.ROOT)));
-		
-		metrics.addCustomChart(new SimplePie("town_block_size", () -> String.valueOf(TownySettings.getTownBlockSize())));
-		
-		metrics.addCustomChart(new SimplePie("closed_economy_enabled", () -> String.valueOf(TownySettings.isEcoClosedEconomyEnabled())));
 	}
 
 	/**
